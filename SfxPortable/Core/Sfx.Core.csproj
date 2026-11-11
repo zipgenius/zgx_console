@@ -3,6 +3,6 @@
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.50.7" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <Compile Include="../../zgshell/ZipBombGuard.cs" Link="ZipBombGuard.cs" />
+    <Compile Include="../../zgx/ZipBombGuard.cs" Link="ZipBombGuard.cs" />
   </ItemGroup>
 </Project>

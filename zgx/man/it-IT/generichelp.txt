@@ -37,4 +37,4 @@ Se il nome del comando non è riconosciuto, zg mostra un messaggio e termina con
 
 Per controllare un archivio senza estrarre file usa zg -test archivio. Guida: zg -help -test.
 
-Il comando -split non è disponibile in zgshell. Se lo usi, zg segnala un comando non riconosciuto e termina con codice 99.
+Il comando -split non è disponibile in zgx. Se lo usi, zg segnala un comando non riconosciuto e termina con codice 99.

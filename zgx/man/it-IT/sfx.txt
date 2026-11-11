@@ -35,12 +35,12 @@ La sorgente ZIP viene controllata prima di creare il pacchetto. Un avviso consen
 
 Per conoscere i codici finali usa zg -help -exitcodes.
 
-Il necessario per creare lo SFX è già incluso in zgshell. Il comando funziona anche nella versione console standalone: non serve installare l’app principale o procurarsi sfx_stub.exe. La copia temporanea usata durante la creazione viene rimossa al termine.
+Il necessario per creare lo SFX è già incluso in zgx. Il comando funziona anche nella versione console standalone: non serve installare l’app principale o procurarsi sfx_stub.exe. La copia temporanea usata durante la creazione viene rimossa al termine.
 
 [Piattaforme e nomi dei file:
 Su Windows il risultato è un file .exe. Su Linux è un eseguibile, per esempio documenti.run; se necessario, prima di aprirlo usa chmod +x documenti.run. Su macOS la variante grafica è un’app .app, mentre quella terminale è un eseguibile.
 Per creare e firmare localmente un pacchetto macOS occorre un Mac. Questa firma locale non sostituisce la firma e la notarizzazione richieste per una distribuzione pubblica su macOS.
-Ogni distribuzione di zgshell include i modelli preparati in fase di compilazione, senza file stub esterni. Se il modello scelto non è incluso, il comando lo segnala: non genera un pacchetto per un altro sistema al suo posto.
+Ogni distribuzione di zgx include i modelli preparati in fase di compilazione, senza file stub esterni. Se il modello scelto non è incluso, il comando lo segnala: non genera un pacchetto per un altro sistema al suo posto.
 L’icona personalizzata è disponibile solo con --ui=gui. Per personalizzare l’icona della GUI Windows x64 occorre creare il pacchetto su Windows.
 
 [Usare il pacchetto terminale:
@@ -55,4 +55,4 @@ Una destinazione fissata dall’autore non può essere cambiata con --destinatio
 *zg -sfx documenti.zip documenti.run --ui=gui --target=linux-x64
 *zg -sfx documenti.zip Documenti.app --ui=gui --target=osx-arm64
 
-Per vedere i modelli inclusi nella tua copia di zgshell usa: zg -sfx --list-targets
+Per vedere i modelli inclusi nella tua copia di zgx usa: zg -sfx --list-targets

@@ -35,11 +35,11 @@ Dalla cartella ZipGenius X:
 
 ```powershell
 # Usa il publish Windows già disponibile:
-& ../zgshell/packaging/Build-Packages.ps1 -WindowsOnly -SkipPublish -WindowsScope user
+& ../zgx/packaging/Build-Packages.ps1 -WindowsOnly -SkipPublish -WindowsScope user
 # Nuovo publish e MSI separati:
-& ../zgshell/packaging/Build-Packages.ps1 -WindowsOnly -WindowsScope both
+& ../zgx/packaging/Build-Packages.ps1 -WindowsOnly -WindowsScope both
 # Scegli solo l'installer di sistema:
-& ../zgshell/packaging/Build-Packages.ps1 -WindowsOnly -WindowsScope machine
+& ../zgx/packaging/Build-Packages.ps1 -WindowsOnly -WindowsScope machine
 ```
 
 WindowsScope accetta unified, machine, user o both; il valore predefinito è unified. La scelta non cambia i formati Linux. Le due varianti Windows condividono il payload pubblicato, ma non l'identità MSI. SHA256SUMS include entrambi i file.
@@ -47,8 +47,8 @@ WindowsScope accetta unified, machine, user o both; il valore predefinito è uni
 ## Verifica
 
 ```powershell
-& ../zgshell/packaging/Verify-Msi.ps1 -UserScope
-& ../zgshell/packaging/Test-UserInstaller.ps1
+& ../zgx/packaging/Verify-Msi.ps1 -UserScope
+& ../zgx/packaging/Test-UserInstaller.ps1
 ```
 
 Il primo script controlla identità delle azioni, privilegi limitati, assenza di ALLUSERS, scritture HKCU, estrazione e avvio. Il secondo deve essere eseguito senza elevazione e rifiuta di sostituire un'installazione personale già presente. Installa e ripara il prodotto, prova un aggiornamento MSI reale tramite una copia di test con ProductCode/PackageCode nuovi e lo stesso payload/versione, quindi disinstalla. La copia di prova resta in work ed è esclusa dalla distribuzione. Sono verificati file, PATH utente, PATH di sistema e rimozione della cartella personale. Non viene dichiarato il collaudo di aggiornamenti tra tutte le versioni future dell'applicazione.
@@ -59,4 +59,4 @@ Generato l'MSI utente aggiuntivo e verificati i metadati del database: privilegi
 
 Sono state eseguite transazioni MSI reali con token Windows non elevato: installazione, riparazione, major upgrade tramite la copia di prova e rimozione. Tutte concluse con codice 0; verificati il ripristino esatto del PATH utente, l'assenza di modifiche al PATH di sistema e la rimozione della cartella installata. Non è stato necessario fornire credenziali amministrative. L'installazione di prova è stata rimossa. Non è un collaudo delle policy di distribuzione di ogni ambiente aziendale.
 
-Log ignorati sotto zgshell: packaging-user-build.log, packaging-user-msi-verification.log, packaging-user-lifecycle.log; dettagli delle transazioni in packaging/work/user-*.log. La versione resta allineata al publish corrente e agli altri pacchetti; non è stata ricompilata l'app per il solo cambio di ambito MSI.
+Log ignorati sotto zgx: packaging-user-build.log, packaging-user-msi-verification.log, packaging-user-lifecycle.log; dettagli delle transazioni in packaging/work/user-*.log. La versione resta allineata al publish corrente e agli altri pacchetti; non è stata ricompilata l'app per il solo cambio di ambito MSI.

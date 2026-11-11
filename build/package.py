@@ -23,7 +23,7 @@ if payload.exists():
     shutil.rmtree(payload)
 payload.mkdir(parents=True)
 dist.mkdir(parents=True, exist_ok=True)
-subprocess.run(['dotnet', 'publish', str(root / 'zgshell/zg.csproj'), '-c', 'Release', '-r', a.rid,
+subprocess.run(['dotnet', 'publish', str(root / 'zgx/zg.csproj'), '-c', 'Release', '-r', a.rid,
                 '--self-contained', 'true', '-o', str(payload), f'-p:BuildNumber={a.build_number}'], check=True)
 for name in ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'README.md']:
     shutil.copy2(root / name, payload / name)
@@ -32,7 +32,7 @@ licenses.mkdir(exist_ok=True)
 shutil.copy2(root / 'native/sfx_stub/third_party/License.txt', licenses / '7zip.txt')
 # Preserve license metadata/files for the exact direct and transitive packages restored.
 import json
-assets = json.loads((root / 'zgshell/obj/project.assets.json').read_text(encoding='utf-8-sig'))
+assets = json.loads((root / 'zgx/obj/project.assets.json').read_text(encoding='utf-8-sig'))
 for library, data in assets['libraries'].items():
     if data['type'] != 'package':
         continue

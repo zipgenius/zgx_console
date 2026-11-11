@@ -72,27 +72,27 @@ jobs:
         if: matrix.rid != 'win-arm64'
         env:
           ZG_MANUAL_APP: ${{ github.workspace }}/artifacts/publish/${{ matrix.rid }}/zg${{ runner.os == 'Windows' && '.exe' || '' }}
-        run: python zgshell/tests/embedded_manuals_smoke.py
+        run: python zgx/tests/embedded_manuals_smoke.py
       - name: Verify archive integrity commands
         if: matrix.rid != 'win-arm64'
         env:
           ZG_TEST_APP: ${{ github.workspace }}/artifacts/publish/${{ matrix.rid }}/zg${{ runner.os == 'Windows' && '.exe' || '' }}
-        run: python zgshell/tests/archive_test_smoke.py
+        run: python zgx/tests/archive_test_smoke.py
       - name: Build Windows MSI and setup
         if: matrix.rid == 'win-x64'
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force zgshell/packaging/work/win-x64 | Out-Null
-          Copy-Item artifacts/publish/win-x64/* zgshell/packaging/work/win-x64 -Recurse -Force
-          ./zgshell/packaging/Build-Packages.ps1 -WindowsOnly -SkipPublish -Version '${{ needs.version.outputs.version }}'
-          Copy-Item zgshell/packaging/dist/*.exe artifacts/dist
-          Copy-Item zgshell/packaging/work/windows-msi/*.msi artifacts/dist
+          New-Item -ItemType Directory -Force zgx/packaging/work/win-x64 | Out-Null
+          Copy-Item artifacts/publish/win-x64/* zgx/packaging/work/win-x64 -Recurse -Force
+          ./zgx/packaging/Build-Packages.ps1 -WindowsOnly -SkipPublish -Version '${{ needs.version.outputs.version }}'
+          Copy-Item zgx/packaging/dist/*.exe artifacts/dist
+          Copy-Item zgx/packaging/work/windows-msi/*.msi artifacts/dist
       - name: Build Linux DEB and RPM
         if: matrix.rid == 'linux-x64'
         run: |
           sudo apt-get update
           sudo apt-get install -y rpm
-          python zgshell/packaging/build-linux.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '${{ needs.version.outputs.version }}'
+          python zgx/packaging/build-linux.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '${{ needs.version.outputs.version }}'
       - uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.rid }}

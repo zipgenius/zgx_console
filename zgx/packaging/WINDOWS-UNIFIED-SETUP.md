@@ -43,11 +43,11 @@ Codici principali: 0 successo, 3010 successo con riavvio necessario, 1223 autori
 
 ```powershell
 # Dai due MSI già disponibili:
-& ../zgshell/packaging/Build-WindowsSetup.ps1
+& ../zgx/packaging/Build-WindowsSetup.ps1
 # Nuovo publish Windows e setup unico (predefinito):
-& ../zgshell/packaging/Build-Packages.ps1 -WindowsOnly
+& ../zgx/packaging/Build-Packages.ps1 -WindowsOnly
 # Tutti i formati Linux opzionali e setup Windows unico:
-& ../zgshell/packaging/Build-Packages.ps1 -Distribution Ubuntu-26.04 -IncludeArchPackage -IncludeSandboxPackages
+& ../zgx/packaging/Build-Packages.ps1 -Distribution Ubuntu-26.04 -IncludeArchPackage -IncludeSandboxPackages
 ```
 
 Il valore predefinito WindowsScope è unified. I due MSI vengono generati in `work/windows-msi`, poi incorporati nel setup EXE; l'utente finale riceve un solo file. Machine/user/both restano disponibili come modalità avanzate per chi necessita di MSI separati. I vecchi file in dist restano artefatti storici: usare il nuovo -setup.exe per la distribuzione ordinaria.
@@ -68,4 +68,4 @@ Prove reali con account Windows non elevato: installazione personale dal setup, 
 
 La modalità di sistema è stata verificata nel piano del launcher e nei metadati del relativo MSI; non è stata eseguita una transazione elevata né inserita alcuna credenziale amministrativa. Questo limite resta distinto dal collaudo completo della modalità personale.
 
-I log MSI del launcher sono nella cartella temporanea standard Windows, non nella cartella applicativa sotto LocalAppData: le prove hanno rilevato problemi di accesso del servizio Installer a quest'ultima in questo ambiente. Il launcher utente usa CreateProcess con il token del chiamante; quello di sistema usa esplicitamente runas. Log del lavoro ignorati sotto zgshell: packaging-unified-build.log e packaging-unified-verification.log; copie diagnostiche dei piani e dell'MSI di migrazione in packaging/work/unified-setup.
+I log MSI del launcher sono nella cartella temporanea standard Windows, non nella cartella applicativa sotto LocalAppData: le prove hanno rilevato problemi di accesso del servizio Installer a quest'ultima in questo ambiente. Il launcher utente usa CreateProcess con il token del chiamante; quello di sistema usa esplicitamente runas. Log del lavoro ignorati sotto zgx: packaging-unified-build.log e packaging-unified-verification.log; copie diagnostiche dei piani e dell'MSI di migrazione in packaging/work/unified-setup.

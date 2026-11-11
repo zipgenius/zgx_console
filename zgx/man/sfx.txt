@@ -35,12 +35,12 @@ The source ZIP is checked before packaging. A warning allows creation to continu
 
 Use zg -help -exitcodes to learn about final exit codes.
 
-Everything needed to create an SFX is built into zgshell. The command also works in the standalone console version: there is no need to install the main app or obtain sfx_stub.exe. The temporary copy used during creation is removed afterwards.
+Everything needed to create an SFX is built into zgx. The command also works in the standalone console version: there is no need to install the main app or obtain sfx_stub.exe. The temporary copy used during creation is removed afterwards.
 
 [Platforms and output names:
 Windows produces an .exe. Linux produces an executable such as documents.run; if needed, run chmod +x documents.run before opening it. On macOS the GUI package is an .app, while the terminal package is an executable.
 Creating and locally signing a macOS package requires a Mac. This local signature does not replace signing and notarization for public distribution on macOS.
-Each zgshell distribution embeds the templates prepared during its build, without external stub files. If the requested template is missing, the command reports it instead of producing a package for another system.
+Each zgx distribution embeds the templates prepared during its build, without external stub files. If the requested template is missing, the command reports it instead of producing a package for another system.
 Custom icons require --ui=gui. Customizing the Windows x64 GUI icon requires creating that package on Windows.
 
 [Using a terminal package:
@@ -55,4 +55,4 @@ A destination fixed by the author cannot be changed with --destination.
 *zg -sfx documents.zip documents.run --ui=gui --target=linux-x64
 *zg -sfx documents.zip Documents.app --ui=gui --target=osx-arm64
 
-To see the templates included in your copy of zgshell, use: zg -sfx --list-targets
+To see the templates included in your copy of zgx, use: zg -sfx --list-targets

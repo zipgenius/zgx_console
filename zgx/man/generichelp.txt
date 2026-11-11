@@ -51,4 +51,4 @@ If a command name is not recognised, zg displays a message and exits with code 9
 
 To check an archive without extracting files, use zg -test archive. Help: zg -help -test.
 
-The -split command is not available in zgshell. If you use it, zg reports an unrecognised command and exits with code 99.
+The -split command is not available in zgx. If you use it, zg reports an unrecognised command and exits with code 99.

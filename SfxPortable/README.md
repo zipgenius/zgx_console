@@ -1,6 +1,6 @@
 # SFX portabili
 
-`zgshell` può creare pacchetti con una finestra (`--ui=gui`) oppure con domande
+`zgx` può creare pacchetti con una finestra (`--ui=gui`) oppure con domande
 nel terminale (`--ui=terminal`). La piattaforma di chi **aprirà** il pacchetto si
 sceglie con `--target`, indipendentemente dal formato dell'archivio sorgente.
 Per impostazione iniziale usa GUI, sistema operativo e processore del computer
@@ -13,25 +13,25 @@ che crea il pacchetto.
 | Linux glibc x64 / ARM64 | .NET autonomo | Avalonia autonomo, richiede desktop |
 | macOS Intel / Apple Silicon | .NET autonomo | Avalonia autonomo, pacchetto `.app` |
 
-Il destinatario non deve installare zgshell, .NET o 7-Zip. La variante grafica
+Il destinatario non deve installare zgx, .NET o 7-Zip. La variante grafica
 Linux usa le librerie del desktop (X11, fontconfig e relative dipendenze).
 La variante terminale funziona senza un desktop. Non si sostituisce una GUI
 richiesta con domande nel terminale senza segnalarlo.
 
 ## Compilazione e incorporamento
 
-Una normale build di `zgshell/zg.csproj` prepara automaticamente gli stub del
+Una normale build di `zgx/zg.csproj` prepara automaticamente gli stub del
 runtime scelto, li comprime e li incorpora nell'assembly. Il Win32 x64 esistente
 rimane incorporato a parte. Il compilatore degli stub è un piccolo programma
 .NET in `tools/BuildSfxTemplates`; non richiede PowerShell o Python sulla
 macchina di compilazione. Gli artefatti intermedi Unix sono conservati nella
 cache dell'utente, su filesystem nativo.
 
-Per preparare più piattaforme prima della build di zgshell:
+Per preparare più piattaforme prima della build di zgx:
 
 ```text
 dotnet run --project tools/BuildSfxTemplates -c Release -- --root . --rids win-x64,linux-x64 --output SfxPortable/templates
-dotnet build zgshell/zg.csproj
+dotnet build zgx/zg.csproj
 ```
 
 La compilazione degli stub per un'altra piattaforma è una pubblicazione .NET
@@ -75,10 +75,10 @@ password o annullamenti durante lo staging non pubblicano file incompleti.
 
 ```text
 dotnet build SfxPortable/Desktop/Sfx.Desktop.csproj
-dotnet build zgshell/zg.csproj
-python zgshell/tests/sfx_smoke.py
-python zgshell/tests/sfx_portable_smoke.py
-python zgshell/tests/zipbomb_security.py
+dotnet build zgx/zg.csproj
+python zgx/tests/sfx_smoke.py
+python zgx/tests/sfx_portable_smoke.py
+python zgx/tests/zipbomb_security.py
 ```
 
 Il test portabile esegue davvero lo SFX terminale Windows e, con WSL Ubuntu-26.04

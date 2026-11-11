@@ -16,7 +16,7 @@ string[] supported = ["win-x86", "win-x64", "win-arm64", "linux-x64", "linux-arm
 Directory.CreateDirectory(output);
 var sources = Directory.EnumerateFiles(Path.Combine(root, "SfxPortable"), "*", SearchOption.AllDirectories)
     .Where(path => (path.EndsWith(".cs") || path.EndsWith(".csproj")) && !path.Split(Path.DirectorySeparatorChar).Any(part => part is "bin" or "obj"))
-    .Append(Path.Combine(root, "zgshell", "ZipBombGuard.cs")).ToArray();
+    .Append(Path.Combine(root, "zgx", "ZipBombGuard.cs")).ToArray();
 DateTime newest = sources.Select(File.GetLastWriteTimeUtc).Max();
 // Refresh previously embedded targets too: never ship stale cached stubs after a source change.
 var targets = rids.Split([',', ';'], StringSplitOptions.RemoveEmptyEntries)

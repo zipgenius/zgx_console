@@ -13,4 +13,4 @@ cmake -S native/sqx -B native/sqx/build-x64 -A x64
 cmake --build native/sqx/build-x64 --config Release
 ```
 
-Copy each `Release/SqxBridge.dll` to the matching `zgshell/Libs/x86` or `zgshell/Libs/x64` directory.
+Copy each `Release/SqxBridge.dll` to the matching `zgx/Libs/x86` or `zgx/Libs/x64` directory.

@@ -25,11 +25,11 @@ Su Arch servono `base-devel`, `pacman`, Python 3 e un publish Linux x64 giÃ  p
 Dalla cartella ZipGenius X:
 
 ```powershell
-& ../zgshell/packaging/Build-ArchPackage.ps1 -Distribution Ubuntu-26.04
+& ../zgx/packaging/Build-ArchPackage.ps1 -Distribution Ubuntu-26.04
 # Include il formato Arch in una nuova build completa:
-& ../zgshell/packaging/Build-Packages.ps1 -Distribution Ubuntu-26.04 -IncludeArchPackage
+& ../zgx/packaging/Build-Packages.ps1 -Distribution Ubuntu-26.04 -IncludeArchPackage
 # Anche Snap e Flatpak:
-& ../zgshell/packaging/Build-Packages.ps1 -Distribution Ubuntu-26.04 -IncludeArchPackage -IncludeSandboxPackages
+& ../zgx/packaging/Build-Packages.ps1 -Distribution Ubuntu-26.04 -IncludeArchPackage -IncludeSandboxPackages
 ```
 
 `build-arch.py` accetta `--payload`, `--output`, `--version` e `--release`. Lo script PowerShell legge la versione dall'assembly del publish. Il template `arch/PKGBUILD` usa makepkg, include gli script di installazione, preserva gli assembly e gli stub disabilitando strip/debug/LTO e genera i metadati standard PKGINFO, BUILDINFO e MTREE. I file PDB non vengono distribuiti. SHA256SUMS comprende tutti i formati presenti.
@@ -52,4 +52,4 @@ Generato `zg-console-10.0.9796.41133-1-x86_64.pkg.tar.zst`; checksum verificato 
 
 La prova è stata eseguita in un root Arch ufficiale isolato tramite bubblewrap, dopo verifica SHA-256 dell'archivio bootstrap e aggiornamento completo con pacman. Dipendenze Arch effettive risolte senza --nodeps. Superati installazione, reinstallazione, startup/versione, help, aggiunta, test, informazioni, estrazione, creazione SFX, rimozione e confronto SHA-256 del profilo PATH preesistente. Il pacchetto di prova è stato rimosso dal root. Il root del sistema WSL principale e il suo database dei pacchetti non sono stati usati per l'installazione.
 
-Questo verifica l'ambiente utente Arch e le transazioni pacman, non un desktop Arch avviato, altre architetture o una revisione AUR. Log ignorati: packaging-arch-build.log, packaging-arch-environment.log e packaging-arch-verification.log, nella cartella zgshell.
+Questo verifica l'ambiente utente Arch e le transazioni pacman, non un desktop Arch avviato, altre architetture o una revisione AUR. Log ignorati: packaging-arch-build.log, packaging-arch-environment.log e packaging-arch-verification.log, nella cartella zgx.

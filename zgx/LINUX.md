@@ -20,9 +20,9 @@ Limiti del motore Linux:
 Verifica dalla radice del repository:
 
 ```sh
-dotnet build zgshell/zg.csproj
-python3 zgshell/tests/linux_conversion_smoke.py
-python3 zgshell/tests/linux_conversion_interactive.py
+dotnet build zgx/zg.csproj
+python3 zgx/tests/linux_conversion_smoke.py
+python3 zgx/tests/linux_conversion_interactive.py
 ```
 
 Il secondo test Python richiede `pexpect` e verifica richiesta password,

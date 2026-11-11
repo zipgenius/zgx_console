@@ -58,11 +58,11 @@ flatpak --user install flathub org.freedesktop.Platform/x86_64/25.08
 Dalla cartella ZipGenius X in PowerShell, dopo aver prodotto il publish Linux:
 
 ```powershell
-& ../zgshell/packaging/Build-SandboxPackages.ps1 -Distribution Ubuntu-26.04
+& ../zgx/packaging/Build-SandboxPackages.ps1 -Distribution Ubuntu-26.04
 # Solo un formato:
-& ../zgshell/packaging/Build-SandboxPackages.ps1 -Distribution Ubuntu-26.04 -Format flatpak
+& ../zgx/packaging/Build-SandboxPackages.ps1 -Distribution Ubuntu-26.04 -Format flatpak
 # Nuovo publish e tutti i formati:
-& ../zgshell/packaging/Build-Packages.ps1 -Distribution Ubuntu-26.04 -IncludeSandboxPackages
+& ../zgx/packaging/Build-Packages.ps1 -Distribution Ubuntu-26.04 -IncludeSandboxPackages
 ```
 
 Lo script legge la versione dall'assembly pubblicato, genera i file in dist e aggiorna SHA256SUMS. I file temporanei vengono creati sul filesystem Linux e rimossi alla fine. `build-sandbox.py` puÃ² essere usato direttamente su Linux, indicando `--payload`, `--output`, `--version` e facoltativamente `--format`/`--runtime`. La preparazione Snap incorpora le librerie native .NET non fornite dalla base, prese da Ubuntu 26.04; il pacchetto Flatpak usa quelle del runtime Freedesktop.
@@ -86,4 +86,4 @@ Generati `zg-console_10.0.9796.41133_amd64.snap` e `zg-console-10.0.9796.41133-x
 
 Entrambi installati ed eseguiti su WSL Ubuntu 26.04. Superati startup/versione, help incorporato, aggiunta, elenco, integrità, informazioni, estrazione, creazione di SFX terminale Linux, blocco ZipBomb senza creare la destinazione e rifiuto di -install/-uninstall anche con maiuscole. Le installazioni di prova sono state rimosse. Nessun alias o profilo della shell modificato; gli strumenti di build e i runtime di supporto restano disponibili nell'ambiente WSL.
 
-Le prove non equivalgono a un collaudo di tutte le distribuzioni Linux, dei gestori grafici, delle policy AppArmor su un sistema nativo o alla revisione degli store. I pacchetti sono locali, senza pubblicazione su Snap Store o Flathub. I log ignorati `packaging-snap-*` e `packaging-flatpak-*` sono nella cartella zgshell.
+Le prove non equivalgono a un collaudo di tutte le distribuzioni Linux, dei gestori grafici, delle policy AppArmor su un sistema nativo o alla revisione degli store. I pacchetti sono locali, senza pubblicazione su Snap Store o Flathub. I log ignorati `packaging-snap-*` e `packaging-flatpak-*` sono nella cartella zgx.

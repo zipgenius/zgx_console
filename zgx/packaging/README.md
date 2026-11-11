@@ -70,7 +70,7 @@ Verification scripts:
 
 ```powershell
 ./Verify-Msi.ps1
-wsl -d Ubuntu -u root --exec python3 /mnt/c/path/to/zgshell/packaging/verify-linux.py /mnt/c/path/to/zgshell/packaging/dist
+wsl -d Ubuntu -u root --exec python3 /mnt/c/path/to/zgx/packaging/verify-linux.py /mnt/c/path/to/zgx/packaging/dist
 ```
 
 `Verify-Msi.ps1` inspects actual MSI database actions, arguments and ordering,
