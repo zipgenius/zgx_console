@@ -18,7 +18,7 @@ APP = pathlib.Path(os.environ.get('ZG_TEST_APP', str(ROOT/'bin/Debug/net10.0/zg.
 
 
 def run(code, *args):
-    launch = [str(APP)] if APP.suffix.lower() == '.exe' else ['dotnet', str(APP)]
+    launch = ['dotnet', str(APP)] if APP.suffix.lower() == '.dll' else [str(APP)]
     result = subprocess.run([*launch, *map(str, args), '--silent'], cwd=work,
                             capture_output=True, timeout=40)
     assert result.returncode == code, (args, result.returncode, result.stdout, result.stderr)

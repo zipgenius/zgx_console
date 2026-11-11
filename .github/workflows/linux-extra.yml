@@ -41,7 +41,7 @@ jobs:
       - name: Build Snap on Ubuntu 26.04
         if: matrix.format == 'snap'
         run: |
-          docker run --rm -v "$PWD:/src" -w /src ubuntu:26.04 bash -c 'set -eu; apt-get update; apt-get install -y python3 snapd squashfs-tools libicu-dev libssl-dev zlib1g-dev; python3 zgx/packaging/build-sandbox.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version 10.0.1.${{ inputs.build_number }} --format snap'
+          docker run --rm --network host -v "$PWD:/src" -w /src ubuntu:26.04 bash -c 'set -eu; export DEBIAN_FRONTEND=noninteractive; apt-get -o Acquire::Retries=3 -o APT::Update::Error-Mode=any update; apt-get -o Acquire::Retries=3 install -y python3 snapd squashfs-tools libicu-dev libssl-dev zlib1g-dev; python3 zgx/packaging/build-sandbox.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version 10.0.1.${{ inputs.build_number }} --format snap'
       - uses: actions/upload-artifact@v4
         with:
           name: packages-extra-${{ matrix.format }}
