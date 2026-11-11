@@ -21,6 +21,14 @@ options=(
   -o 'Acquire::https::Timeout=15'
   -o 'APT::Update::Error-Mode=any'
 )
+# Minimal containers can bootstrap HTTPS using the trusted CA bundle of the runner.
+if [ -n "${ZG_APT_CA_BUNDLE:-}" ]; then
+  if [ ! -r "$ZG_APT_CA_BUNDLE" ]; then
+    echo "Cannot read CA bundle: $ZG_APT_CA_BUNDLE" >&2
+    exit 2
+  fi
+  options+=(-o "Acquire::https::CaInfo=$ZG_APT_CA_BUNDLE")
+fi
 # Allow a local mirror list for infrastructure configuration and validation.
 mirrors=${ZG_UBUNTU_MIRRORS:-'https://mirrors.mit.edu/ubuntu
 https://mirrors.edge.kernel.org/ubuntu

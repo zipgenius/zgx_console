@@ -42,3 +42,8 @@ release indexes before package installation starts. APT verifies the normal Ubun
 archive signatures. The helper uses temporary source/list files and leaves the
 runner's existing APT sources unchanged. It is also used inside the Snap container.
 `ZG_UBUNTU_MIRRORS` can override the mirror list with one HTTPS URL per line.
+
+The Arch builder explicitly installs `libarchive-tools` for `bsdtar`. The minimal
+Snap container mounts the runner's trusted CA bundle read-only and passes it to
+APT through `ZG_APT_CA_BUNDLE` while installing `ca-certificates` and other tools.
+HTTPS certificate validation remains enabled.
