@@ -1,0 +1,44 @@
+#pragma code_page(65001)
+#include <windows.h>
+#include <commctrl.h>
+201 RCDATA "@USER_MSI@"
+202 RCDATA "@MACHINE_MSI@"
+1 RT_MANIFEST "@MANIFEST@"
+1 VERSIONINFO
+FILEVERSION @NUMERIC_VERSION@
+PRODUCTVERSION @NUMERIC_VERSION@
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+BEGIN
+ BLOCK "StringFileInfo"
+ BEGIN
+  BLOCK "040904b0"
+  BEGIN
+   VALUE "CompanyName", "The ZipGenius Team\0"
+   VALUE "FileDescription", "ZipGenius X Console Setup\0"
+   VALUE "FileVersion", "@VERSION@\0"
+   VALUE "ProductName", "ZipGenius X Console\0"
+   VALUE "ProductVersion", "@VERSION@\0"
+  END
+ END
+ BLOCK "VarFileInfo"
+ BEGIN
+  VALUE "Translation", 0x0409, 1200
+ END
+END
+100 DIALOGEX 0, 0, 340, 232
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ZipGenius X Console"
+FONT 9, "Segoe UI"
+BEGIN
+ LTEXT "ZipGenius X Console", 106, 16, 15, 308, 18
+ LTEXT "Choose the installation scope.", 103, 16, 43, 308, 30
+ AUTORADIOBUTTON "Only for me (recommended)", 101, 18, 86, 308, 16, WS_GROUP | WS_TABSTOP
+ LTEXT "User folder - no administrator privileges", 107, 31, 105, 292, 24
+ AUTORADIOBUTTON "For everyone using this computer", 102, 18, 136, 308, 16
+ LTEXT "Program Files - requires administrator authorization", 108, 31, 155, 292, 24
+ CONTROL "", 105, PROGRESS_CLASS, PBS_MARQUEE | WS_CHILD, 16, 185, 308, 7
+ PUSHBUTTON "Uninstall", 104, 16, 205, 85, 15
+ DEFPUSHBUTTON "Install", IDOK, 184, 205, 78, 15
+ PUSHBUTTON "Cancel", IDCANCEL, 270, 205, 54, 15
+END

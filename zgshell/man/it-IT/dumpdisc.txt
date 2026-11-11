@@ -1,0 +1,41 @@
+﻿^Sintassi:
+^-dumpdisc file {parametri} 
+
+Panoramica:
+Questo comando stampa il contenuto di immagini di dischi simili a ISO e di file di dischi rigidi virtuali come .VHD, .VDMK o .VMI.
+Usa i parametri per arricchire l'output con informazioni aggiuntive.
+
+[Parametri:
+[-st OPPURE --show-title
+Un blocco di intestazione viene stampato prima dell'elenco di file e directory. Il blocco di intestazione riporta informazioni sull'immagine del disco virtuale, come la dimensione del file, la data di creazione, il descrittore del volume.
+
+[-sd OPPURE --show-date
+Quando un file viene stampato nell'output, la sua data di ultima modifica apparirà dopo il suo percorso.
+
+[-od OPPURE --only-dirs
+Il comando elenca solo le directory.
+
+[-of OPPURE --only-files
+Il comando elenca solo i file.
+
+%Nota: se -od e -of sono entrambi specificati, verranno ignorati e il comando agirà come se nessuno di essi fosse presente come parametro.
+>>
+[-sz OPPURE --show-size
+Quando un file viene stampato nell'output, la sua dimensione in byte apparirà dopo il suo percorso.
+
+[-sm OPPURE --show-summary
+Alla fine dell'elenco viene stampato un blocco di riepilogo, che riporta il numero totale di file e directory.
+
+[-sh OPPURE --show-hash
+E' utilizzato SOLO insieme a -st (o --show-title): quando specificato, il blocco del titolo riporterà anche l'hash SHA-256 del file dell'immagine del disco virtuale.
+
+*Esempi:
+*1) zg -dumpdisc mydisc.iso -st -sd -sz -sm
+Questo comando stampa il contenuto dell'immagine del disco "mydisc.iso", mostrando un blocco di intestazione all'inizio, la data di ultima modifica e la dimensione di ogni file, e un blocco di riepilogo alla fine.
+
+*2) zg -dumpdisc mydisc.iso -of -st -sh
+Questo comando stampa il contenuto dell'immagine del disco "mydisc.iso", mostrando solo i file (nessuna directory), con un blocco di intestazione all'inizio che include l'hash SHA-256 dell'immagine del disco.
+
+*3) zg -dumpdisc mydisc.iso -od -of -st
+Questo comando stampa il contenuto dell'immagine del disco "mydisc.iso", mostrando un blocco di intestazione. Poiché sono specificati sia -od che -of, vengono ignorati e il comando elenca sia file che directory.
+>>

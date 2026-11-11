@@ -1,0 +1,58 @@
+^Syntax:
+^zg -sfx archive.zip output [--ui=gui|terminal] [--target=platform] [options]
+
+Creates a self-extracting package that unpacks files without installing ZipGenius X, .NET or 7-Zip on the recipient’s computer. Supports ZIP, 7Z and RAR sources. Choose the operating system and processor type of the computer that will open it.
+The original archive stays unchanged. This command creates the package without launching it or running any files inside.
+
+[Options:
+]--ui=gui                   Window with buttons, folder selection, password and progress (default). Requires a desktop session.
+]--ui=terminal              Questions and progress in a terminal window. Also works on Linux without a desktop.
+]--target=platform          win-x64, win-arm64, linux-x64, linux-arm64, osx-x64 or osx-arm64. Defaults to the operating system and processor of the computer creating the package.
+]--message="text"           Message shown to the recipient (1 to 319 characters).
+]--auto-start               Starts extraction when the recipient opens the package. Normally waits for the Extract button.
+]--file-list=hidden         Hides the file list (default).
+]--file-list=expanded       Shows the file list.
+]--file-list=collapsed      Starts with the file list collapsed; the recipient can expand it.
+]--no-readme                Does not automatically open a Readme after extraction. Normally opens it if present.
+]--keep-open                Keeps the window open after extraction. Normally closes after successful extraction.
+]--destination=folder       Extraction folder: editable, desktop, documents, downloads, pictures, music, videos or favorites.
+                           With editable (default), the recipient chooses the path. Other choices use folders on the recipient's computer and cannot be changed in the SFX window.
+]--subfolder="path"         Subfolder within the selected destination, such as Project/Documents. Requires a destination other than editable. Use a relative path without .., up to 127 characters.
+]--run-after="file"         Opens an archived file after extraction, such as folder/instructions.txt. Use its path inside the archive, not a command with arguments. No extra file is opened by default.
+]--icon="file.ico"          Uses a custom icon. Otherwise uses the standard icon.
+]--overwrite                Replaces an existing .exe only after the new package has been created successfully. Without it, existing files are not replaced.
+
+An archive password is not stored in the SFX: the recipient is prompted when needed to extract. For --run-after, the archive's file list must be readable without a password.
+
+[ZIP protection:
+The source ZIP is checked before packaging. A warning allows creation to continue; high risk (code 42) or an incomplete check (code 43) stops creation. Protection cannot be disabled, and warnings remain visible with --silent and --yes. This ZipBomb check covers ZIPs, not the other formats.
+
+[Examples:
+*zg -sfx documents.zip documents.exe
+*zg -sfx documents.7z documents.exe --message="Project documents" --file-list=expanded
+*zg -sfx pictures.zip pictures.exe --destination=pictures --subfolder=Holiday --overwrite
+*zg -sfx project.zip project.exe --run-after=instructions.txt --icon=project.ico
+
+Use zg -help -exitcodes to learn about final exit codes.
+
+Everything needed to create an SFX is built into zgshell. The command also works in the standalone console version: there is no need to install the main app or obtain sfx_stub.exe. The temporary copy used during creation is removed afterwards.
+
+[Platforms and output names:
+Windows produces an .exe. Linux produces an executable such as documents.run; if needed, run chmod +x documents.run before opening it. On macOS the GUI package is an .app, while the terminal package is an executable.
+Creating and locally signing a macOS package requires a Mac. This local signature does not replace signing and notarization for public distribution on macOS.
+Each zgshell distribution embeds the templates prepared during its build, without external stub files. If the requested template is missing, the command reports it instead of producing a package for another system.
+Custom icons require --ui=gui. Customizing the Windows x64 GUI icon requires creating that package on Windows.
+
+[Using a terminal package:
+Launch it and follow the questions. It shows the proposed folder, asks for confirmation and requests a password only when needed. Ctrl+C cancels; typed passwords are hidden.
+For automation use: ./documents.run --yes --destination=/path/to/extracted --no-open
+--overwrite allows replacing existing extracted files. --list shows file names. --no-open prevents opening Readme or other files afterwards. --password=value supplies a password without prompts; for interactive use, prefer typing it when prompted.
+A destination fixed by the author cannot be changed with --destination.
+
+[Examples for other platforms:
+*zg -sfx documents.zip documents.exe --ui=terminal --target=win-x64
+*zg -sfx documents.zip documents.run --ui=terminal --target=linux-x64
+*zg -sfx documents.zip documents.run --ui=gui --target=linux-x64
+*zg -sfx documents.zip Documents.app --ui=gui --target=osx-arm64
+
+To see the templates included in your copy of zgshell, use: zg -sfx --list-targets

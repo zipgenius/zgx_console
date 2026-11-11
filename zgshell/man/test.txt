@@ -1,0 +1,56 @@
+^Syntax:
+^zg -test archive [Ppassword] [--verbose] [--silent]
+^Alias: zg -t archive
+
+Checks whether an archive's files can be read and whether the available integrity checks pass. This is useful before keeping a backup or after downloading an archive.
+The command reads data without saving extracted files. It does not change the archive or ask for a destination folder. A valid empty archive also passes.
+
+[Options:
+]Ppassword           Archive password. You can also use --password=value.
+]--verbose           Shows checked entries and available details.
+]--silent            Hides the header, progress and success message. Errors and security warnings remain visible.
+]--noprogress        Hides the progress indicator.
+
+When a password is needed in an interactive session, it is requested without showing typed characters. You can retry up to three times; Esc cancels. With --silent or redirected input, no questions are asked: provide the password in the command.
+A wrong password and damaged encrypted data cannot always be distinguished. Neither is reported as a successful test.
+
+[Protection from dangerous archives:
+ZipBomb protection is always active for -test too: checking integrity requires decompressing data and can consume many resources. A warning allows the test to continue. High risk or an incomplete security check stops the test before decompression. --yes and --silent cannot override a block.
+
+[Final codes for scripts:
+]0   Test completed; no errors found by the available checks.
+]3   Archive not found.
+]6   Test failed: damaged or unreadable archive data or structure.
+]7   The format or test operation is not supported by the available engine.
+]8   Protected data not verified: missing or wrong password, or damaged encrypted data.
+]20  Cancelled.
+]30  Cannot access the archive or testing engine.
+]42  Blocked because of high ZipBomb risk.
+]43  Blocked because the security check is incomplete. Damaged ZIP headers can also cause this result.
+]99  Invalid syntax or option.
+
+A moderate-risk warning does not decide the final result: a successful subsequent test returns 0; a failure returns the relevant error code.
+In PowerShell read $LASTEXITCODE immediately afterwards. In a Linux or macOS terminal use $?.
+
+[Formats and limits:
+ZIPs use managed engines on every platform, including AES-protected ZIPs. On Windows, other formats read by the 7-Zip engine, including 7Z, RAR, CAB and TAR, use its internal test. Linux and macOS use the managed reader for formats it recognises, including 7Z, RAR, TAR and GZIP; some other formats may return 7.
+SQX testing is not yet available and returns 7. The command does not extract files as a fallback.
+Checks depend on the format. For example, TAR has no check value for individual file data, so not every change to its contents can be detected. This is not a virus scan and does not recursively test archives stored as ordinary files inside another archive.
+
+[Examples:
+*zg -test documents.zip
+*zg -t backup.7z --verbose
+*zg -test protected.zip Psecret --silent
+*zg -test protected.zip --password=secret --noprogress
+
+[Automatic check in PowerShell:
+zg -test "backup.zip" --silent
+$testResult = $LASTEXITCODE
+if ($testResult -eq 0) { "Archive verified" } else { "Check did not succeed: code $testResult" }
+
+[Linux or macOS terminal example:
+zg -test backup.zip --silent
+test_result=$?
+if [ "$test_result" -eq 0 ]; then echo "Archive verified"; else echo "Check did not succeed: code $test_result"; fi
+
+A nonzero code needs attention, but does not always mean damaged files. A password may be missing, the format may be unsupported, or security protection may have stopped the check.

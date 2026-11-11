@@ -1,0 +1,58 @@
+^Sintassi:
+^zg -sfx archivio.zip destinazione [--ui=gui|terminal] [--target=piattaforma] [opzioni]
+
+Crea un pacchetto autoestraente che permette di estrarre i file senza installare ZipGenius X, .NET o 7-Zip sul computer del destinatario. Puoi partire da ZIP, 7Z o RAR. Il pacchetto deve corrispondere al sistema operativo e al tipo di processore di chi lo apre.
+L'archivio originale resta invariato. Il comando crea il pacchetto, senza aprirlo né eseguire i file al suo interno.
+
+[Opzioni:
+]--ui=gui                   Finestra con pulsanti, scelta della cartella, password e avanzamento (impostazione iniziale). Richiede un ambiente desktop.
+]--ui=terminal              Domande e avanzamento nella finestra del terminale. Adatto anche a Linux senza desktop.
+]--target=piattaforma        win-x64, win-arm64, linux-x64, linux-arm64, osx-x64 oppure osx-arm64. Se manca, usa il sistema e il processore del computer che crea il pacchetto.
+]--message="testo"          Messaggio mostrato a chi apre il pacchetto (da 1 a 319 caratteri).
+]--auto-start               Inizia l'estrazione quando il destinatario apre il pacchetto. Normalmente attende il pulsante Estrai.
+]--file-list=hidden         Nasconde l'elenco dei file (impostazione iniziale).
+]--file-list=expanded       Mostra l'elenco dei file.
+]--file-list=collapsed      Mostra l'elenco inizialmente chiuso, che si può aprire.
+]--no-readme                Non apre automaticamente il file Leggimi dopo l'estrazione. Normalmente lo apre, se presente.
+]--keep-open                Lascia aperta la finestra dopo l'estrazione. Normalmente si chiude al termine di un'estrazione riuscita.
+]--destination=cartella     Sceglie la cartella di estrazione: editable, desktop, documents, downloads, pictures, music, videos o favorites.
+                           Con editable (impostazione iniziale) il destinatario sceglie il percorso. Le altre cartelle sono quelle del suo computer e non possono essere cambiate nella finestra SFX.
+]--subfolder="percorso"     Sottocartella nella destinazione scelta, per esempio Progetto/Documenti. Richiede una destinazione diversa da editable. Usa un percorso relativo, senza .., fino a 127 caratteri.
+]--run-after="file"         Apre un file dell'archivio dopo l'estrazione, per esempio cartella/istruzioni.txt. Indica il percorso nell'archivio, non un comando con argomenti. Normalmente non viene aperto alcun file aggiuntivo.
+]--icon="file.ico"          Usa un'icona personalizzata. Senza questa opzione usa l'icona standard.
+]--overwrite                Sostituisce un .exe esistente soltanto dopo la creazione riuscita del nuovo pacchetto. Senza questa opzione un file esistente non viene sostituito.
+
+La password di un archivio protetto non viene memorizzata nello SFX: viene richiesta al destinatario quando serve per estrarre. Per --run-after, l'elenco dell'archivio deve essere leggibile senza password.
+
+[Protezione ZIP:
+La sorgente ZIP viene controllata prima di creare il pacchetto. Un avviso consente di continuare; rischio alto (codice 42) o controllo incompleto (codice 43) bloccano la creazione. La protezione non si può disattivare e gli avvisi restano visibili anche con --silent e --yes. Il controllo ZipBomb descritto qui riguarda gli ZIP, non gli altri formati.
+
+[Esempi:
+*zg -sfx documenti.zip documenti.exe
+*zg -sfx documenti.7z documenti.exe --message="Documenti del progetto" --file-list=expanded
+*zg -sfx foto.zip foto.exe --destination=pictures --subfolder=Vacanze --overwrite
+*zg -sfx progetto.zip progetto.exe --run-after=istruzioni.txt --icon=progetto.ico
+
+Per conoscere i codici finali usa zg -help -exitcodes.
+
+Il necessario per creare lo SFX è già incluso in zgshell. Il comando funziona anche nella versione console standalone: non serve installare l’app principale o procurarsi sfx_stub.exe. La copia temporanea usata durante la creazione viene rimossa al termine.
+
+[Piattaforme e nomi dei file:
+Su Windows il risultato è un file .exe. Su Linux è un eseguibile, per esempio documenti.run; se necessario, prima di aprirlo usa chmod +x documenti.run. Su macOS la variante grafica è un’app .app, mentre quella terminale è un eseguibile.
+Per creare e firmare localmente un pacchetto macOS occorre un Mac. Questa firma locale non sostituisce la firma e la notarizzazione richieste per una distribuzione pubblica su macOS.
+Ogni distribuzione di zgshell include i modelli preparati in fase di compilazione, senza file stub esterni. Se il modello scelto non è incluso, il comando lo segnala: non genera un pacchetto per un altro sistema al suo posto.
+L’icona personalizzata è disponibile solo con --ui=gui. Per personalizzare l’icona della GUI Windows x64 occorre creare il pacchetto su Windows.
+
+[Usare il pacchetto terminale:
+Avvialo e segui le domande. Il pacchetto mostra la cartella proposta, chiede conferma e richiede la password solo quando serve. Ctrl+C annulla; la password digitata non viene mostrata.
+Per un’operazione automatica puoi usare: ./documenti.run --yes --destination=/percorso/estratti --no-open
+--overwrite consente di sostituire i file estratti già esistenti. --list mostra l’elenco. --no-open evita di aprire Leggimi o altri file al termine. --password=valore fornisce una password senza domande; negli usi interattivi è preferibile digitarla quando richiesta.
+Una destinazione fissata dall’autore non può essere cambiata con --destination.
+
+[Esempi per altre piattaforme:
+*zg -sfx documenti.zip documenti.exe --ui=terminal --target=win-x64
+*zg -sfx documenti.zip documenti.run --ui=terminal --target=linux-x64
+*zg -sfx documenti.zip documenti.run --ui=gui --target=linux-x64
+*zg -sfx documenti.zip Documenti.app --ui=gui --target=osx-arm64
+
+Per vedere i modelli inclusi nella tua copia di zgshell usa: zg -sfx --list-targets

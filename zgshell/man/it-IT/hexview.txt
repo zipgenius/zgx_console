@@ -1,0 +1,26 @@
+^Sintassi:
+zg -hexview nomefile [P] [M] [D] [S=offset] [L=righe] [FB=byte | FT=testo] [BL=righe]
+
+Mostra il contenuto di un file in esadecimale e ASCII, senza modificarlo.
+Nel dump normale ogni riga contiene 16 byte; senza P o L= non ci sono pause.
+I parametri seguenti devono essere scritti in MAIUSCOLO, senza trattini:
+[P          Pausa ogni 20 righe; premi un tasto per continuare.
+[L=n        Attiva le pause ogni n righe (1-500; predefinito 20).
+[M          Disattiva l'alternanza dei colori nel dump normale.
+[D          Mostra gli indirizzi del dump normale in decimale, anziché esadecimale.
+[S=n        Offset iniziale in byte, espresso come numero decimale (predefinito 0).
+[FB=byte    Cerca una sequenza esadecimale, per esempio FB=50-4B-03-04.
+[FT=testo   Cerca testo codificato in UTF-8, distinguendo maiuscole e minuscole.
+[BL=n       Righe di contesto per risultato di ricerca (1-10; predefinito 1).
+
+FB= e FT= avviano la ricerca nell'intero file e mostrano i blocchi trovati,
+anziché il dump normale. Usa una sola ricerca per comando; BL= vale per la ricerca.
+Le ricerche con più di cinque risultati possono richiedere un tasto per continuare.
+Usa virgolette per percorsi o testo con spazi; CTRL+C interrompe la visualizzazione.
+
+*zg -hexview "C:\Dati\file.bin" P L=30
+*zg -hexview file.zip FB=50-4B-03-04 BL=2
+*zg -hexview file.bin "FT=Hello world" BL=2
+
+Codici d'uscita: 0 completato; 3 file non trovato; 10 sequenza di byte non trovata;
+11 testo non trovato; 99 nomefile mancante.

@@ -1,0 +1,89 @@
+#pragma code_page(65001)
+#include <windows.h>
+#include "resource.h"
+// The compiled icon and 7-Zip payloads are part of the SFX template.
+1 ICON "default.ico"
+101 RCDATA "third_party\\7z.exe"
+102 RCDATA "third_party\\7z.dll"
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+IDD_PASSWORD DIALOGEX 0, 0, 280, 108
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Archive password"
+FONT 9, "Segoe UI"
+BEGIN
+ LTEXT "Enter the password to open the archive:", -1, 14, 14, 252, 20
+ EDITTEXT IDC_PASSWORD_INPUT, 14, 38, 252, 16, ES_PASSWORD | ES_AUTOHSCROLL | WS_TABSTOP
+ DEFPUSHBUTTON "OK", IDOK, 130, 74, 64, 22
+ PUSHBUTTON "Cancel", IDCANCEL, 202, 74, 64, 22
+END
+
+STRINGTABLE
+BEGIN
+ IDS_PASSWORD "Archive password"
+ IDS_MORE_PASSWORDS "Some files could not be decrypted with this password. Enter another password for the remaining files, or cancel. Files already extracted will be kept until the operation completes."
+ IDS_WRONG_PASSWORD "The password is incorrect. Please try again."
+ IDS_PASSWORD_PROMPT "Unable to read the archive. If it is encrypted, enter the password."
+ IDS_CHOOSE_DESTINATION "Choose or create the destination folder"
+ IDS_FILES_EXPANDED "▾ Files in the archive"
+ IDS_FILES_COLLAPSED "▸ Files in the archive"
+ IDS_EXTRACTED "Extraction complete."
+ IDS_INVALID_PACKAGE "Invalid SFX package."
+ IDS_OPEN_FAILED "Unable to open the SFX package."
+ IDS_FOLDER_UNAVAILABLE "Unable to find the system folder configured for extraction."
+ IDS_TITLE "Self-extracting archive"
+ IDS_DESTINATION "Destination:"
+ IDS_BROWSE "Browse..."
+ IDS_EXTRACT "Extract"
+ IDS_README "Readme"
+ IDS_COPY_FAILED "Unable to copy files to the destination."
+ IDS_EMPTY_DESTINATION "The destination is empty."
+ IDS_EXTRACTION_FAILED "Extraction failed. Check the archive and password."
+ IDS_UNSAFE_LINKS "The archive contains unsafe links."
+ IDS_RUN_MISSING "The file to run is missing from the archive."
+ IDS_RUN_INVALID "The path of the file to run is invalid."
+ IDS_RUN_NOT_FOUND "The file to run was not found."
+ IDS_RUN_FAILED "Unable to run the extracted file."
+ IDS_UNSAFE_PATH "The archive contains an unsafe path or file names that collide after Windows name normalization."
+END
+
+LANGUAGE LANG_ITALIAN, SUBLANG_ITALIAN
+IDD_PASSWORD DIALOGEX 0, 0, 280, 108
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Password archivio"
+FONT 9, "Segoe UI"
+BEGIN
+ LTEXT "Inserire la password per aprire l'archivio:", -1, 14, 14, 252, 20
+ EDITTEXT IDC_PASSWORD_INPUT, 14, 38, 252, 16, ES_PASSWORD | ES_AUTOHSCROLL | WS_TABSTOP
+ DEFPUSHBUTTON "OK", IDOK, 130, 74, 64, 22
+ PUSHBUTTON "Annulla", IDCANCEL, 202, 74, 64, 22
+END
+
+STRINGTABLE
+BEGIN
+ IDS_PASSWORD "Password archivio"
+ IDS_MORE_PASSWORDS "Alcuni file non possono essere decifrati con questa password. Inserire un'altra password per i file rimanenti, oppure annullare. I file gia estratti vengono conservati fino al completamento dell'operazione."
+ IDS_WRONG_PASSWORD "La password non è corretta. Riprovare."
+ IDS_PASSWORD_PROMPT "Impossibile leggere l'archivio. Se è cifrato, inserire la password."
+ IDS_CHOOSE_DESTINATION "Scegliere o creare la cartella di destinazione"
+ IDS_FILES_EXPANDED "▾ File nell'archivio"
+ IDS_FILES_COLLAPSED "▸ File nell'archivio"
+ IDS_EXTRACTED "Estrazione completata."
+ IDS_INVALID_PACKAGE "Pacchetto SFX non valido."
+ IDS_OPEN_FAILED "Impossibile aprire il pacchetto SFX."
+ IDS_FOLDER_UNAVAILABLE "Impossibile trovare la cartella di sistema configurata per l'estrazione."
+ IDS_TITLE "Archivio autoestraente"
+ IDS_DESTINATION "Destinazione:"
+ IDS_BROWSE "Sfoglia..."
+ IDS_EXTRACT "Estrai"
+ IDS_README "Leggimi"
+ IDS_COPY_FAILED "Impossibile copiare i file nella destinazione."
+ IDS_EMPTY_DESTINATION "Destinazione vuota."
+ IDS_EXTRACTION_FAILED "Estrazione non riuscita. Verificare archivio e password."
+ IDS_UNSAFE_LINKS "Archivio con collegamenti non sicuri."
+ IDS_RUN_MISSING "File da avviare assente nell'archivio."
+ IDS_RUN_INVALID "Percorso di avvio non valido."
+ IDS_RUN_NOT_FOUND "File da avviare non trovato."
+ IDS_RUN_FAILED "Impossibile avviare il file estratto."
+ IDS_UNSAFE_PATH "L'archivio contiene un percorso non sicuro o nomi che coincidono dopo la normalizzazione per Windows."
+END

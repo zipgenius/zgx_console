@@ -1,0 +1,50 @@
+name: Optional Linux packages
+on:
+  workflow_call:
+    inputs:
+      build_number:
+        type: number
+        required: true
+permissions:
+  contents: read
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        format: [arch, snap, flatpak]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build payload
+        run: python build/package.py --rid linux-x64 --build-number ${{ inputs.build_number }}
+      - name: Build Arch package
+        if: matrix.format == 'arch'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pacman-package-manager makepkg zstd fakeroot
+          python zgshell/packaging/build-arch.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '10.0.1.${{ inputs.build_number }}'
+      - name: Build Flatpak
+        if: matrix.format == 'flatpak'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak ostree
+          flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak --user install -y flathub org.freedesktop.Platform//25.08
+          python zgshell/packaging/build-sandbox.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '10.0.1.${{ inputs.build_number }}' --format flatpak
+      - name: Build Snap on Ubuntu 26.04
+        if: matrix.format == 'snap'
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src ubuntu:26.04 bash -c 'set -eu; apt-get update; apt-get install -y python3 snapd squashfs-tools libicu-dev libssl-dev zlib1g-dev; python3 zgshell/packaging/build-sandbox.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version 10.0.1.${{ inputs.build_number }} --format snap'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-extra-${{ matrix.format }}
+          path: artifacts/dist/*
+          if-no-files-found: error
+          retention-days: 14

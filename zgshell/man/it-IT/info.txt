@@ -1,0 +1,40 @@
+Informazioni sui file: -info
+Sintassi: zg -info file [--verbose] [--silent]
+
+Mostra in tabella le informazioni lette dal file. Apre il file in sola lettura: non monta le immagini, non estrae file e non modifica l'originale.
+
+Il rapporto normale mostra il percorso completo, la dimensione esatta in byte, l'ultima modifica in UTC e il lettore del formato. Dove possibile il riconoscimento usa il contenuto; l'estensione può scegliere il lettore, ma non dimostra che il file sia valido.
+
+Per le immagini ISO e UDF mostra filesystem, etichetta del volume, dimensione e numero dei settori e, per ISO 9660, le informazioni principali del volume e la presenza di un'immagine di avvio.
+Per VHDX, VHD, VMDK, VDI, DMG e immagini RAW/IMG/IMA mostra capacità virtuale, tipo di disco, partizioni, volumi e filesystem riconosciuti. Dimensione del file e capacità virtuale sono valori diversi: un disco dinamico può occupare molto meno della sua capacità. La geometria è un valore di compatibilità, non una seconda misura della capacità.
+Per gli archivi supportati dal lettore disponibile mostra numero di file e cartelle, dimensioni dichiarate e informazioni sulla cifratura. Su Windows può usare anche il lettore 7-Zip incluso per altri formati di archivio.
+
+--verbose aggiunge tutti i metadati semplici esposti dai lettori: livelli del disco, spazio dinamico, necessità di dischi padre, identificativi, geometria, dettagli del filesystem e informazioni specifiche del formato. Per VHDX comprende dimensione dei blocchi, settori logici e fisici, programma creatore e identificativi delle intestazioni. Per VMDK comprende tipo di creazione, adattatore e percorsi delle parti, quando disponibili. Per ISO aggiunge editore, preparatore, applicazione, insieme di volumi, date e dettagli di avvio. Per gli archivi aggiunge una tabella delle voci con dimensioni, cifratura, codice di controllo e data di modifica, dove disponibili.
+Non tutti i formati o lettori forniscono ogni dato. I valori mancanti o non supportati sono indicati come non disponibili. I codici di controllo mostrati sono quelli salvati nel file, non una nuova verifica: per controllare l'integrità degli archivi usa -test. Il comando non esamina tutti i file di un disco e non calcola un'impronta dell'intero file. Non è una scansione antivirus.
+
+Per dischi divisi in più parti o dipendenti da un disco padre conserva tutti i file nelle posizioni previste. Parti mancanti, funzioni non supportate o metadati non leggibili possono impedire un rapporto completo. Un filesystem non riconosciuto può essere vuoto, cifrato o non supportato: non è una prova di danneggiamento. Linux e macOS usano i lettori gestiti; i formati leggibili possono differire da Windows.
+
+Le tabelle usano nomi di campo inglesi stabili, conteggi esatti in byte e numeri nello stesso formato su ogni sistema. Tabulazioni e caratteri di controllo nei nomi sono sostituiti con spazi. --silent nasconde l'intestazione del programma ma conserva il rapporto; --verbose funziona anche con --silent. I problemi vengono scritti su stderr e le tabelle su stdout: puoi quindi salvare il rapporto in un file di testo.
+
+Il controllo di sicurezza ZIP resta attivo. Come -list, -info può mostrare i metadati di un archivio sospetto e restituisce il relativo codice di rischio. Non ne estrae i contenuti.
+
+Codici finali:
+0: rapporto completato con i metadati disponibili.
+3: file o componente necessario non trovato.
+7: formato o funzione non supportati.
+9: rapporto incompleto o metadati illeggibili/danneggiati. Le tabelle già stampate restano utili, ma non costituiscono un risultato completo.
+30: accesso negato.
+41: avviso di rischio ZIP.
+42: rischio ZIP alto.
+43: controllo di sicurezza ZIP incompleto.
+99: argomenti non validi.
+Un errore nella lettura dei metadati ha precedenza sui codici di rischio ZIP; gli avvisi di sicurezza restano su stderr. Un rapporto ZIP completato restituisce il codice di rischio se diverso da zero.
+
+Esempi:
+zg -info installazione.iso
+zg -info macchina.vhdx --verbose
+zg -info macchina.vmdk --verbose --silent > rapporto.txt
+zg -info backup.zip --verbose
+Guida: zg -help -info
+
+Le intestazioni cifrate degli archivi possono impedire la lettura: questo comando non richiede una password. Il motore SQX non fornisce i metadati e restituisce 7. Gli identificativi aggiuntivi VDI sono letti per la versione 1.1; per altre versioni vengono mostrati i dati disponibili dal lettore.

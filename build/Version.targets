@@ -1,0 +1,24 @@
+<Project>
+  <Target Name="AllocateConsoleBuildNumber" BeforeTargets="GetAssemblyVersion" Condition="'$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <_CounterFile>$(MSBuildThisFileDirectory)../.build/build-number.txt</_CounterFile>
+      <_PreviousBuild>0</_PreviousBuild>
+    </PropertyGroup>
+    <ReadLinesFromFile File="$(_CounterFile)" Condition="'$(BuildNumber)' == '' and Exists('$(_CounterFile)')">
+      <Output TaskParameter="Lines" PropertyName="_PreviousBuild" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <BuildNumber Condition="'$(BuildNumber)' == ''">$([MSBuild]::Add($(_PreviousBuild), 1))</BuildNumber>
+    </PropertyGroup>
+    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(BuildNumber)', '^[0-9]+$'))" Text="BuildNumber must be numeric." />
+    <Error Condition="$(BuildNumber) &gt; 65534 or $(BuildNumber) &lt; 1" Text="BuildNumber must be between 1 and 65534 (assembly revision limit)." />
+    <MakeDir Directories="$(MSBuildThisFileDirectory)../.build" />
+    <WriteLinesToFile File="$(_CounterFile)" Lines="$(BuildNumber)" Overwrite="true" />
+    <PropertyGroup>
+      <Version>$(VersionPrefix).$(BuildNumber)</Version>
+      <AssemblyVersion>$(Version)</AssemblyVersion>
+      <FileVersion>$(Version)</FileVersion>
+      <InformationalVersion>$(Version)</InformationalVersion>
+    </PropertyGroup>
+  </Target>
+</Project>

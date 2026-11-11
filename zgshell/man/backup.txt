@@ -1,0 +1,21 @@
+^Syntax:
+^zg -backup archive source [source ...] [C0|C1|C5|C9|CB] [U] [T] [R0|R1] [global options]
+
+Creates a ZIP backup of files or folders. A folder is backed up recursively by default.
+
+[Options:
+]C0 stores files without compression. C1, C5, C9 and CB select the normal compression levels; C5 is the default.
+]U or --update updates files already present in an existing backup archive.
+]T or --timestamp adds _YYYYMMDD_HHmm to the archive name.
+]R0 backs up only the first folder level; R1 is the default and includes subfolders.
+]--documents, --music, --pictures, --videos and --favorites add the corresponding user folder as a source.
+
+%Without U, zg refuses to reuse an existing archive so a backup is never silently merged with an old snapshot.
+
+*zg -backup "D:\Backups\Documents.zip" "C:\Users\John\Documents" T
+*zg -backup pictures.zip --pictures U
+
+Backup uses the same checks as -add: it checks the existing backup ZIP and the ZIPs selected for saving. A warning allows it to continue; high risk or an incomplete check stops the backup before changes are made.
+Protection is always on, and warnings remain visible with --silent and --yes. High risk: code 42; incomplete check: code 43. A warning alone does not change the success code.
+
+*zg -backup "D:\Backups\Documents.zip" --documents T

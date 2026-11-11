@@ -1,0 +1,30 @@
+Il codice finale indica a uno script come è terminato il comando. In PowerShell, leggi $LASTEXITCODE subito dopo zg. Nel Prompt dei comandi usa %ERRORLEVEL%.
+
+0: operazione riuscita.
+1: errore di compressione.
+2: errore di estrazione.
+3: file non trovato.
+4: nessun file corrispondente o archivio vuoto.
+5: comando non più disponibile.
+6: test di integrità fallito.
+7: formato o test non supportato.
+8: dati protetti non verificati (password o dati cifrati danneggiati).
+10: sequenza di byte non trovata.
+11: testo non trovato.
+20: annullato dall’utente.
+30: errore del disco o di accesso ai file.
+99: comando non riconosciuto o altro errore.
+
+Codici per chi usa script o operazioni automatiche
+Con -list, il codice finale permette di decidere cosa fare senza leggere il messaggio:
+0: nessun rischio significativo rilevato (score sotto 40), se l'elenco è stato letto correttamente.
+41: avviso, score da 40 a 59.
+42: rischio alto, score da 60 a 99.
+43: controllo incompleto, salvo un rischio alto già rilevato.
+I normali errori, come un file inesistente, mantengono i propri codici.
+Con -add, -extract, -backup, -convert, -sfx e -test, 42 e 43 indicano un blocco di sicurezza. Un semplice avviso lascia proseguire: se l'operazione riesce, il codice finale è 0.
+L'elenco e gli avvisi usano due uscite separate (stdout e stderr). Salvare l'elenco in un file non nasconde gli avvisi. Nei messaggi, risk-code descrive il rischio; non è sempre il codice finale dell'operazione.
+
+Con -test, anche un archivio vuoto valido restituisce 0. Il codice 8 non distingue sempre una password errata da dati cifrati danneggiati. Per esempi e dettagli usa zg -help -test.
+
+9: rapporto delle informazioni sul file incompleto (-info).

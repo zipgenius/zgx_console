@@ -1,0 +1,23 @@
+# Repackage a self-contained Linux x64 publish. Not an AUR source release.
+pkgname=zg-console
+pkgver=${ZG_CONSOLE_VERSION:?Set ZG_CONSOLE_VERSION to the assembly version}
+pkgrel=${ZG_CONSOLE_RELEASE:-1}
+pkgdesc='Create and extract archives, inspect disk images and create SFX, with always-on ZipBomb protection'
+arch=('x86_64')
+url='https://www.zipgenius.it'
+license=('GPL-3.0-only')
+depends=('glibc>=2.34' 'gcc-libs' 'icu' 'openssl' 'zlib' 'libarchive')
+provides=('zgshell')
+conflicts=('zgshell')
+replaces=('zgshell')
+options=('!strip' '!debug' '!lto')
+install=zg-console.install
+
+package() {
+    local payload="${ZG_CONSOLE_PAYLOAD:?Set ZG_CONSOLE_PAYLOAD to the publish folder}"
+    local metadata="${ZG_CONSOLE_METAINFO:?Set ZG_CONSOLE_METAINFO to the prepared AppStream file}"
+    install -d "$pkgdir/opt/zipgenius/zgshell" "$pkgdir/usr/bin" "$pkgdir/usr/share/metainfo"
+    cp -a "$payload/." "$pkgdir/opt/zipgenius/zgshell/"
+    ln -s /opt/zipgenius/zgshell/zg "$pkgdir/usr/bin/zg"
+    install -m644 "$metadata" "$pkgdir/usr/share/metainfo/it.zipgenius.Console.metainfo.xml"
+}

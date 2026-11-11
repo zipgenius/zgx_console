@@ -1,0 +1,21 @@
+^Sintassi:
+^zg -backup archivio sorgente [sorgente ...] [C0|C1|C5|C9|CB] [U] [T] [R0|R1] [opzioni globali]
+
+Crea un backup ZIP di file o cartelle. Una cartella viene salvata ricorsivamente per impostazione predefinita.
+
+[Opzioni:
+]C0 memorizza i file senza comprimerli. C1, C5, C9 e CB selezionano i normali livelli di compressione; C5 è il valore predefinito.
+]U o --update aggiorna i file già presenti in un archivio di backup esistente.
+]T o --timestamp aggiunge _YYYYMMDD_HHmm al nome dell'archivio.
+]R0 salva solo il primo livello della cartella; R1 è il valore predefinito e include le sottocartelle.
+]--documents, --music, --pictures, --videos e --favorites aggiungono la cartella utente corrispondente come sorgente.
+
+%Senza U, zg rifiuta di riutilizzare un archivio esistente: un backup non viene mai unito silenziosamente a una vecchia istantanea.
+
+*zg -backup "D:\Backup\Documenti.zip" "C:\Users\John\Documents" T
+*zg -backup immagini.zip --pictures U
+
+Il backup usa gli stessi controlli di -add: verifica il backup ZIP già esistente e gli ZIP scelti da salvare. Un avviso consente di continuare; rischio alto o controllo incompleto fermano il backup prima delle modifiche.
+La protezione è sempre attiva e gli avvisi restano visibili anche con --silent e --yes. Rischio alto: codice 42; controllo incompleto: codice 43. Un avviso da solo non cambia il codice di successo.
+
+*zg -backup "D:\Backup\Documenti.zip" --documents T

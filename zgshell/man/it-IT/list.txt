@@ -1,0 +1,21 @@
+^Sintassi:
+^zg -list archivio [--verbose] [--silent]
+
+Elenca i file presenti nell'archivio, senza estrarli o modificare l'archivio.
+
+[Visualizzazione:
+]Senza --verbose: elenco dei nomi dei file, preceduto dal percorso dell'archivio.
+]--verbose / --v: dettagli dell'archivio e tabella con data, dimensioni, rapporto di compressione e CRC-32 memorizzato.
+]--silent / --s: nasconde il banner; l'elenco rimane visibile.
+
+I valori mostrati provengono dai metadati: -list non verifica l'integrità dei dati.
+Per verificare l'archivio usa: zg -test archivio
+
+Il controllo ZipBomb può segnalare un rischio, ma non blocca la consultazione
+quando l'elenco è leggibile. Gli avvisi sono scritti su stderr; il risultato su stdout.
+Codici di rischio: 41 avviso, 42 rischio alto, 43 controllo incompleto.
+Per gli altri codici: zg -help -exitcodes
+
+[Esempi:
+*zg -list "C:\Archivi\Documenti.zip"
+*zg -list "C:\Archivi\Documenti.zip" --verbose

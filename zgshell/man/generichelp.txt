@@ -1,0 +1,54 @@
+Welcome to the ZipGenius X Command Line Module.
+You can use this console app with the following syntax:
+
+zg (-command) filename {command parameters} [options]
+
+To get help type: zg -help
+To get info about the exit codes of this app type: zg -help -exitcodes
+
+Available commands:
+-add       -extract   -list      -test (-t)
+-backup    -convert   -delete    -destroy
+-export    -hash      -hexview   -optim (-optimize)
+-sfx       -dumpdisc  -install   -uninstall
+-yourpath  -info      -help
+
+
+Use "zg -help -optim" for document and skin optimization help.
+Use "zg -help -backup" for backup help.
+Use "zg -help -convert" for archive conversion help.
+
+Each command has its own parameters: you can get help for 
+every command by typing, as example: zg -help -add.
+
+Global options are:
+--silent		--verbose
+--yes			--noprogress
+
+These options can be appended to every command;
+they will be ignored automatically if a command
+doesn't benefit from their use.
+Type "zg -help -options" to get help about them.
+
+Protection from dangerous archives
+A ZIP can be small but need an enormous amount of space when unpacked. This kind of archive is called a "ZipBomb" and can fill the disk or make the computer stop responding.
+zg checks ZIPs automatically. Protection is always on: there is nothing to enable, and it cannot be turned off. --silent and --yes also leave security checks and warnings active.
+A warning means the archive looks suspicious: the operation may continue. High risk stops the operation. If a check cannot be completed, zg stops as a precaution; this does not necessarily mean the file is dangerous.
+If an operation is blocked, avoid repeatedly trying the same file: ask the sender for a new copy or use a trusted copy. Some password-protected ZIPs containing other ZIPs cannot be fully checked.
+The check covers ZIPs and files based on the ZIP format, including renamed ZIPs. It is not a virus scan, and a low score does not guarantee that every file inside is harmless.
+
+Codes for scripts and automatic tasks
+With -list, the final code lets a script decide what to do without reading the message:
+0: no significant risk found (score below 40), if the list was read successfully.
+41: warning, score from 40 to 59.
+42: high risk, score from 60 to 99.
+43: incomplete check, unless high risk has already been found.
+Normal errors, such as a missing file, keep their own codes.
+With -add, -extract, -backup and -convert, 42 and 43 mean a security block. A warning allows the task to continue: if it succeeds, the final code is 0.
+The list and warnings use separate outputs (stdout and stderr). Saving the list to a file does not hide warnings. In messages, risk-code describes the risk; it is not always the task's final exit code.
+
+If a command name is not recognised, zg displays a message and exits with code 99. Use zg -help to see the available commands. Global options with two dashes, such as --p to hide progress, remain available.
+
+To check an archive without extracting files, use zg -test archive. Help: zg -help -test.
+
+The -split command is not available in zgshell. If you use it, zg reports an unrecognised command and exits with code 99.

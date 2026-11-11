@@ -1,0 +1,17 @@
+^Syntax:
+^zg -optim file-or-folder [file-or-folder ...] [R0|R1] [--force] [global options]
+
+Optimizes LibreOffice/OpenOffice documents and legacy WinAmp/WMP skins by rebuilding their ZIP container with maximum ZIP compression.
+
+[Supported files:
+]ODT, ODS, ODP, ODG, OTG, OTP, ODM, ODF, ODB, OTS, OTT, OXT, WSZ, WMZ, MSKIN, WAL and DSFZ.
+
+[Options:
+]R0 scans folders only at the first level (default).
+]R1 or --recursive scans folders and subfolders.
+]--force optimizes a file even when it is already marked as optimized.
+
+%For every optimized file, zg creates or updates a <file>.BAK backup before replacing the original. Encrypted containers are refused because optimization can otherwise lose data.
+
+*zg -optim report.odt
+*zg -optim "C:\Documents" R1

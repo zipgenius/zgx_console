@@ -1,0 +1,26 @@
+^Syntax:
+zg -hexview filename [P] [M] [D] [S=offset] [L=lines] [FB=bytes | FT=text] [BL=lines]
+
+Displays a file as hexadecimal bytes and ASCII without modifying it.
+Normal dump rows contain 16 bytes; without P or L= there are no pauses.
+Write the following parameters in UPPERCASE, without dashes:
+[P          Pause every 20 lines; press a key to continue.
+[L=n        Enable pauses every n lines (1-500; default 20).
+[M          Disable alternating colours in the normal dump.
+[D          Display normal dump addresses in decimal instead of hexadecimal.
+[S=n        Starting byte offset as a decimal number (default 0).
+[FB=bytes   Search for hexadecimal bytes, for example FB=50-4B-03-04.
+[FT=text    Search for case-sensitive UTF-8 text.
+[BL=n       Context lines per search result (1-10; default 1).
+
+FB= and FT= search the entire file and display matching blocks instead of the
+normal dump. Use one search per command; BL= applies to search results.
+Searches with more than five results may pause for a key press.
+Quote paths or text containing spaces; CTRL+C stops the display.
+
+*zg -hexview "C:\Data\file.bin" P L=30
+*zg -hexview file.zip FB=50-4B-03-04 BL=2
+*zg -hexview file.bin "FT=Hello world" BL=2
+
+Exit codes: 0 completed; 3 file not found; 10 byte sequence not found;
+11 text not found; 99 missing filename.

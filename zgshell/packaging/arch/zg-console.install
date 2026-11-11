@@ -1,0 +1,11 @@
+post_install() {
+    /opt/zipgenius/zgshell/zg -install --system-wide --silent
+}
+
+post_upgrade() {
+    /opt/zipgenius/zgshell/zg -install --system-wide --silent
+}
+
+pre_remove() {
+    /opt/zipgenius/zgshell/zg -uninstall --system-wide --silent
+}

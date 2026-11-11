@@ -1,0 +1,138 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VersionPrefix>10.0.1</VersionPrefix>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <Nullable>enable</Nullable>
+    <SfxTemplateRids Condition="'$(SfxTemplateRids)' == '' and '$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</SfxTemplateRids>
+    <SfxHostFamily Condition="$([MSBuild]::IsOSPlatform('Windows'))">win</SfxHostFamily>
+    <SfxHostFamily Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux</SfxHostFamily>
+    <SfxHostFamily Condition="$([MSBuild]::IsOSPlatform('OSX'))">osx</SfxHostFamily>
+    <SfxHostArch>x64</SfxHostArch>
+    <SfxHostArch Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(NETCoreSdkRuntimeIdentifier)', 'arm64$'))">arm64</SfxHostArch>
+    <SfxTemplateRids Condition="'$(SfxTemplateRids)' == ''">$(SfxHostFamily)-$(SfxHostArch)</SfxTemplateRids>
+    <SfxTemplatesDir Condition="'$(SfxTemplatesDir)' == ''">$(MSBuildProjectDirectory)/../SfxPortable/templates</SfxTemplatesDir>
+    <SfxBuildArtifactsPath Condition="'$(SfxBuildArtifactsPath)' == '' and !$([MSBuild]::IsOSPlatform('Windows'))">$([System.Environment]::GetEnvironmentVariable('HOME'))/.cache/zg-sfx-tools</SfxBuildArtifactsPath>
+    <SfxBuildArtifactsPath Condition="'$(SfxBuildArtifactsPath)' == ''">$([System.IO.Path]::GetTempPath())zg-sfx-tools</SfxBuildArtifactsPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ConsoleTables" Version="2.7.0" />
+    <PackageReference Include="DotNetZip" Version="1.16.0" />
+    <PackageReference Include="LTRData.DiscUtils" Version="1.0.67" />
+    <PackageReference Include="LTRData.DiscUtils.Containers" Version="1.0.67" />
+    <PackageReference Include="LTRData.DiscUtils.Core" Version="1.0.67" />
+    <PackageReference Include="LTRData.DiscUtils.Dmg" Version="1.0.67" />
+    <PackageReference Include="LTRData.DiscUtils.FileSystems" Version="1.0.67" />
+    <PackageReference Include="LTRData.DiscUtils.Transports" Version="1.0.67" />
+    <PackageReference Include="LTRData.DiscUtils.VirtualFileSystem" Version="1.0.67" />
+    <PackageReference Include="LTRData.DiscUtils.Wim" Version="1.0.67" />
+    <PackageReference Include="LTRData.ExFat.DiscUtils" Version="1.0.17" />
+    <PackageReference Include="Microsoft.CST.RecursiveExtractor" Version="1.2.45" />
+    <PackageReference Include="MSFTCompression.Core.Cab" Version="1.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+    <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="SevenZipExtractor" Version="1.0.19" />
+    <PackageReference Include="SevenZipSharp.Interop" Version="19.1.0" />
+    <PackageReference Include="SharpCompress" Version="0.41.0" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <PackageReference Include="ShellProgressBar" Version="5.2.0" />
+    <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.2.24" />
+    <PackageReference Include="Uno.UI" Version="5.6.99" />
+    <PackageReference Include="HexDumper" Version="1.0.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <SevenZipSharpInteropFiles Remove="Libs\32bit\7z.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <SevenZipSharpInteropFiles Remove="Libs\32bit\7z.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <SevenZipSharpInteropFiles Remove="Libs\64bit\7z.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <SevenZipSharpInteropFiles Remove="Libs\64bit\7z.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <SevenZipSharpInteropFiles Remove="Libs\7z.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Libs\32bit\7z.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\32bit\7z.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\64bit\7z.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\64bit\7z.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\linux\7z.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\x64\sqx20u.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\x64\SqxBridge.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\x86\sqx20.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\x86\sqx20u.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\x86\SqxBridge.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <SourceGeneratorInput Remove="Resources\hash_rowtemplate.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Docs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="ZIP-SECURITY.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="help\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Compile Include="..\shared\SfxPackageWriter.cs" Link="SfxPackageWriter.cs" />
+    <Compile Include="..\SfxPortable\Core\Package.cs" Link="PortableSfxPackage.cs" />
+    <EmbeddedResource Include="..\native\sfx_stub\template\sfx_stub.exe" LogicalName="zg.SfxStub.exe" />
+    <None Include="..\native\sfx_stub\third_party\License.txt" Link="sfx-license.txt" TargetPath="sfx-license.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="man\**\*.txt" WithCulture="false"
+                      LogicalName="zg.Manuals.%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Update="man\**\*.txt" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-arm64'">
+    <None Update="Libs/x64/sqx20u.dll;Libs/x64/SqxBridge.dll;Libs/x86/sqx20.dll;Libs/x86/sqx20u.dll;Libs/x86/SqxBridge.dll" CopyToPublishDirectory="Never" />
+    <None Include="Libs/arm64/7z.dll" Link="Libs/64bit/7z.dll" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="Libs/64bit/7z.dll" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+  <Target Name="PreparePortableSfxTemplates" BeforeTargets="PrepareForBuild">
+    <Exec Condition="'$(BuildSfxTemplates)' != 'false'" Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../tools/BuildSfxTemplates/BuildSfxTemplates.csproj&quot; --artifacts-path &quot;$(SfxBuildArtifactsPath)&quot; -c Release -- --root &quot;$(MSBuildProjectDirectory)/..&quot; --rids &quot;$(SfxTemplateRids)&quot; --output &quot;$(SfxTemplatesDir)&quot;" />
+    <ItemGroup>
+      <_PortableSfxTemplate Include="$(SfxTemplatesDir)/*.gz" />
+      <EmbeddedResource Include="@(_PortableSfxTemplate)" LogicalName="zg.SfxTemplates.%(_PortableSfxTemplate.Filename)%(_PortableSfxTemplate.Extension)" />
+    </ItemGroup>
+  </Target>
+  <Import Project="../build/Version.targets" />
+</Project>

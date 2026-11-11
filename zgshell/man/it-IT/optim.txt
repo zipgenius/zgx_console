@@ -1,0 +1,17 @@
+^Sintassi:
+^zg -optim file-o-cartella [file-o-cartella ...] [R0|R1] [--force] [opzioni globali]
+
+Ottimizza documenti LibreOffice/OpenOffice e le vecchie skin WinAmp/WMP ricreando il contenitore ZIP con la massima compressione ZIP.
+
+[File supportati:
+]ODT, ODS, ODP, ODG, OTG, OTP, ODM, ODF, ODB, OTS, OTT, OXT, WSZ, WMZ, MSKIN, WAL e DSFZ.
+
+[Opzioni:
+]R0 analizza le cartelle solo al primo livello (predefinito).
+]R1 o --recursive analizza cartelle e sottocartelle.
+]--force ottimizza anche un file già marcato come ottimizzato.
+
+%Per ogni file ottimizzato, zg crea o aggiorna una copia di sicurezza <file>.BAK prima di sostituire l'originale. I contenitori cifrati vengono rifiutati per evitare perdite di dati.
+
+*zg -optim relazione.odt
+*zg -optim "C:\Documenti" R1

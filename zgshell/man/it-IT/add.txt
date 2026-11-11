@@ -1,0 +1,175 @@
+^Sintassi:
+^zg -add archivio +[file] {parametri}
+
+Descrizione:
+Questo comando comprime file e cartelle in un archivio. Se l'archivio specificato esiste già, vi aggiunge i file e le cartelle selezionati.
+Non tutti i formati consentono di comprimere più file: è possibile creare archivi ZIP, basati su ZIP, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.Z/TAZ, BZ2, Z, SQX e CAB. BZ2 e Z sono flussi a file singolo; per più file usare TAR.BZ2 o TAR.Z. Il formato viene determinato dall'estensione del nome dell'archivio: "test.zip" crea un archivio ZIP, mentre "test.cab" crea un archivio CAB.
+
+[Parametri:
+[+ (file/cartella)
+Aggiunge un file o una cartella all'archivio. È necessario specificare almeno un file o una cartella da comprimere.
+Puoi usare i caratteri jolly (* e ?) per selezionare gruppi di file con nomi o estensioni simili.
+La stessa riga di comando può contenere più parametri "+", per aggiungere più file e cartelle contemporaneamente.
+
+*Esempi:
+*+*.* (aggiunge tutti i file)
+*+file1.txt (aggiunge soltanto file1.txt)
+*+"C:\My Documents\*.doc" (aggiunge tutti i file .DOC nella cartella indicata)
+
+[- (file/cartella)
+Esclude file e cartelle dalla compressione.
+Quando comprimi gruppi di file e cartelle, il parametro "-" consente di escludere gli elementi che non desideri inserire nell'archivio.
+Puoi usare i caratteri jolly (* e ?) per indicare i file e le cartelle da escludere. La stessa riga di comando può contenere più esclusioni, ma deve includere almeno un parametro "+".
+
+*Esempi:
+*-*.* (tutti i file)
+*-file1.txt (soltanto il file specificato)
+*-"C:\My Documents\*.doc" (tutti i file .DOC nella cartella indicata)
+>>
+[@ (elenco di file)
+Permette di specificare i file e le cartelle da comprimere tramite un elenco salvato in un file di testo.
+Il parametro "@" indica il percorso e il nome del file da leggere. L'elenco può contenere inclusioni "+" ed esclusioni "-", come descritto sopra.
+
+*Esempio:
+*@"c:\My Documents\mylist.txt"
+dove "mylist.txt" contiene il seguente elenco:
+*+"C:\Test\*.*"
+*-"*.txt"
+*-"*.tmp"
+*-"*.jpg"
+>>
+[C [0 | 1 | 5 | 9 | B ]
+Imposta il livello di compressione.
+Il valore predefinito è C0 e viene usato quando l'opzione "C" non è specificata.
+Associa "C" a uno dei seguenti valori:
+
+]Valori:
+C0 - nessuna compressione
+C1 - compressione bassa, velocità massima
+C5 - compressione e velocità medie
+C9 - compressione massima, velocità ridotta
+CB - compressione "brutale", velocità minima
+
+*Esempio:
+*zg -add test.zip C9 +*.doc (applica il livello massimo di compressione)
+>>
+[A [ A | M | U ]
+Imposta la modalità di compressione.
+
+]Valori:
+AA - aggiunge i file all'archivio
+AM - sposta i file nell'archivio: i file originali vengono eliminati dopo la compressione
+AU - aggiorna i file già presenti nell'archivio
+
+Il valore predefinito è AA e viene usato quando il parametro "A" non è specificato.
+>>
+[P [ Password ]
+Protegge i file con una password.
+Per impostazione predefinita non viene usata alcuna password. Per impostarla, scrivila subito dopo la lettera "P", senza spazi.
+
+*Esempio:
+*Pthisismypassword
+La password "thisismypassword" proteggerà i file aggiunti tramite la riga di comando.
+
+%Note:
+%Per proteggere un archivio ZIP con una password usa Ppassword. Con Q2 scegli AES-128; con Q3 scegli AES-256. Puoi quindi proteggere i file direttamente mentre crei l'archivio con -add.
+>>
+[Q [ 1 | 2 | 3]
+Imposta l'algoritmo di cifratura. Se usi "P" per indicare una password senza specificare "Q", viene usata la cifratura PkZip predefinita, anche se obsoleta.
+
+]Valori:
+Q1 - algoritmo di cifratura PkZipWeak
+Q2 - algoritmo di cifratura WinZip AES-128
+Q3 - algoritmo di cifratura WinZip AES-256
+
+*Esempi:
+*1) zg -add test.zip C9 +"C:\Users\John\Desktop\Test Folder\*.*" PMyOwnPassword
+I file vengono cifrati con la password "MyOwnPassword" e l'algoritmo PkZip predefinito.
+
+*2) zg -add test.zip C9 +"C:\Users\John\Desktop\Test Folder\*.*" PMyOwnPassword Q3
+Come nell'esempio precedente, ma con cifratura AES-256.
+
+%Nota: questo parametro viene ignorato quando il formato di destinazione non è ZIP o un formato basato su ZIP.
+>>
+[R [ 0 | 1 ]
+Controlla l'inclusione dei file nelle sottocartelle.
+
+]Valori:
+R0 - non cerca file nelle sottocartelle; è il valore predefinito
+R1 - cerca file ricorsivamente nelle sottocartelle
+
+*Esempi:
+*1) zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R0
+Vengono considerati soltanto i file al primo livello della cartella selezionata.
+
+*2) zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1
+Vengono considerati anche i file contenuti nelle sottocartelle.
+>>
+[V {valore}
+Crea un archivio multivolume, se il formato selezionato supporta questa funzione.
+Specifica la dimensione dei singoli volumi con uno dei seguenti valori.
+
+]Valori:
+Vvm720 - 720 kilobyte
+Vvm880 - 880 kilobyte
+Vvm1440 - 1,44 megabyte
+Vvm2880 - 2,88 megabyte
+VvmEmail - 250 kilobyte
+VvmWeb - 750 kilobyte
+VvmCDR650 - CD-ROM (650 MB)
+VvmCDR700 - CD-ROM (700 MB)
+VvmCDR800 - CD-ROM (800 MB)
+
+*Esempio:
+*zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1 Vvm1440
+Crea un archivio multivolume con volumi della dimensione massima di 1,44 MB.
+>>
+[F [ 0 | 1 | 2 | 3 ]
+Imposta come memorizzare i percorsi dei file nell'archivio.
+
+]Valori:
+F0 - non memorizza il percorso
+F1 - memorizza il percorso relativo
+F2 - memorizza il percorso completo, senza la lettera dell'unità
+F3 - memorizza il percorso completo, compresa la lettera dell'unità
+
+Il valore predefinito è F1, per compatibilità con le versioni precedenti di zg.exe.
+*Esempio:
+*zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1 F2
+Aggiunge i file con il percorso completo, escludendo la lettera dell'unità.
+
+%Nota: F3 è mantenuto per compatibilità con le versioni precedenti. Usalo soltanto con archivi attendibili, perché i percorsi assoluti possono essere pericolosi durante l'estrazione.
+>>
+[D [ A | H | R | S | F ]
+Seleziona per la compressione soltanto i file con gli attributi specificati.
+
+]Valori:
+A - archivio
+H - nascosto
+R - sola lettura
+S - sistema
+F - cartella
+
+Se il parametro non è specificato, non viene applicato alcun filtro sugli attributi.
+
+*Esempi:
+*1) zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1 F1 DA
+Considera soltanto i file con l'attributo "Archivio". Le cartelle vuote vengono ignorate.
+
+*2) zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1 F1 DHR
+Considera soltanto i file con gli attributi "Nascosto" e "Sola lettura". I file con il solo attributo "Archivio" e le cartelle vuote vengono ignorati.
+
+%Nota: il parametro opera soltanto su Windows. Negli altri sistemi operativi gli attributi dei file vengono ignorati.
+>>
+[H
+Calcola l'hash di tutti i file compressi e aggiunge all'archivio un file di testo
+con i risultati, chiamato "zg-Hash.txt". Se questo file esiste già, ne aggiorna i valori.
+L'algoritmo usato è SHA-256.
+
+%Attenzione: questa opzione può ridurre la velocità di compressione.
+>>
+[K [ 0 | 1 ]
+Controlla l'indicatore di avanzamento. K0 lo nasconde; K1 lo mostra. È supportata anche l'opzione globale --noprogress.
+
+Prima di creare o aggiornare l'archivio, zg controlla lo ZIP già esistente e gli ZIP scelti da aggiungere, anche nelle sottocartelle incluse. Con un avviso può continuare; con rischio alto o controllo incompleto si ferma prima di modificare l'archivio o spostare i file originali.
+La protezione è sempre attiva e gli avvisi restano visibili anche con --silent. Rischio alto: codice 42; controllo incompleto: codice 43. Un avviso da solo non cambia il codice di successo.

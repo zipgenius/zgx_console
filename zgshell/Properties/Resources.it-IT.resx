@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeprecatedCommand" xml:space="preserve"><value>Il comando {0} è deprecato e non è più disponibile.</value></data>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="HashMissingFile" xml:space="preserve">
+    <value>Non è stato specificato alcun file.</value>
+  </data>
+  <data name="HashFileNotFound" xml:space="preserve">
+    <value>File non trovato: {0}</value>
+  </data>
+  <data name="HashUnknownAlgorithm" xml:space="preserve">
+    <value>Algoritmo di hashing sconosciuto: {0}</value>
+  </data>
+  <data name="HashAlgorithmRequired" xml:space="preserve">
+    <value>Specifica almeno un algoritmo di hashing. Usa 'zg -help -hash' per visualizzare la guida.</value>
+  </data>
+  <data name="HashResult" xml:space="preserve">
+    <value>Hash {0} di {1}:</value>
+  </data>
+  <data name="HashCalculating" xml:space="preserve">
+    <value>Calcolo hash {0} di {1}</value>
+  </data>
+  <data name="HashAccessDenied" xml:space="preserve">
+    <value>Impossibile leggere il file: {0}</value>
+  </data>
+  <data name="HashReadError" xml:space="preserve">
+    <value>Errore durante la lettura del file: {0}</value>
+  </data>
+  <data name="ExtractArchiveNotFound" xml:space="preserve"><value>Archivio non trovato: {0}</value></data>
+  <data name="ExtractNoMatchingFiles" xml:space="preserve"><value>Nessun elemento dell'archivio corrisponde ai filtri richiesti.</value></data>
+  <data name="ExtractCompleted" xml:space="preserve"><value>Estratti {0} file in {1}</value></data>
+  <data name="ExtractInvalidArguments" xml:space="preserve"><value>Argomenti di estrazione non validi: {0}</value></data>
+  <data name="ExtractAccessDenied" xml:space="preserve"><value>Accesso negato durante l'estrazione: {0}</value></data>
+  <data name="ExtractIoError" xml:space="preserve"><value>Errore di I/O durante l'estrazione: {0}</value></data>
+  <data name="ExtractFailed" xml:space="preserve"><value>Estrazione non riuscita: {0}</value></data>
+  <data name="ExtractCanceled" xml:space="preserve"><value>Estrazione annullata dall'utente.</value></data>
+  <data name="ExtractPasswordPrompt" xml:space="preserve"><value>Password richiesta per {0} (tentativo {1}/3, Esc per annullare): </value></data>
+  <data name="ExtractPasswordAttemptsExceeded" xml:space="preserve"><value>È stato superato il numero massimo di tentativi per la password.</value></data>
+  <data name="OptimizeMissingTarget" xml:space="preserve"><value>Specifica almeno un documento LibreOffice/OpenOffice o una skin WinAmp/WMP.</value></data>
+  <data name="OptimizeTargetNotFound" xml:space="preserve"><value>File o cartella non trovati: {0}</value></data>
+  <data name="OptimizeNoSupportedFiles" xml:space="preserve"><value>Non sono stati trovati documenti o skin supportati.</value></data>
+  <data name="OptimizeUnsupportedFile" xml:space="preserve"><value>File non supportato per l'ottimizzazione: {0}</value></data>
+  <data name="OptimizeEncrypted" xml:space="preserve"><value>Il file cifrato non può essere ottimizzato: {0}</value></data>
+  <data name="OptimizeAlreadyDone" xml:space="preserve"><value>Già ottimizzato: {0}</value></data>
+  <data name="OptimizeCompleted" xml:space="preserve"><value>Ottimizzato {0}; copia di sicurezza salvata in {1}</value></data>
+  <data name="OptimizeFailed" xml:space="preserve"><value>Impossibile ottimizzare {0}: {1}</value></data>
+  <data name="BackupMissingArguments" xml:space="preserve"><value>Sintassi: zg -backup archivio sorgente [sorgente ...] [opzioni]</value></data>
+  <data name="BackupZipRequired" xml:space="preserve"><value>Gli archivi di backup devono usare l'estensione .zip: {0}</value></data>
+  <data name="BackupArchiveExists" xml:space="preserve"><value>L'archivio di backup esiste già. Usa --update per aggiornarlo oppure --timestamp per crearne uno datato: {0}</value></data>
+  <data name="BackupSourceNotFound" xml:space="preserve"><value>Sorgente del backup non trovata: {0}</value></data>
+  <data name="BackupNoSources" xml:space="preserve"><value>Non è stata specificata alcuna sorgente per il backup.</value></data>
+  <data name="BackupCompleted" xml:space="preserve"><value>Backup completato: {0}</value></data>
+  <data name="ConvertMissingArguments" xml:space="preserve"><value>Sintassi: zg -convert archivio-sorgente archivio-destinazione [opzioni]</value></data>
+  <data name="ConvertSourceNotFound" xml:space="preserve"><value>Archivio sorgente non trovato: {0}</value></data>
+  <data name="ConvertSamePath" xml:space="preserve"><value>Gli archivi sorgente e di destinazione devono essere diversi.</value></data>
+  <data name="ConvertUnsupportedDestination" xml:space="preserve"><value>Formato dell'archivio di destinazione non supportato: {0}</value></data>
+  <data name="ConvertDestinationExists" xml:space="preserve"><value>L'archivio di destinazione esiste già. Usa --overwrite per sostituirlo: {0}</value></data>
+  <data name="ConvertCompleted" xml:space="preserve"><value>Convertito {0} in {1}</value></data>
+  <data name="ConvertFailed" xml:space="preserve"><value>Impossibile convertire {0}: {1}</value></data>
+  <data name="ExportMissingArguments" xml:space="preserve"><value>Sintassi: zg -export archivio HTML|CSV|XML|TXT cartella-destinazione [--overwrite]</value></data>
+  <data name="ExportSourceNotFound" xml:space="preserve"><value>Archivio non trovato: {0}</value></data>
+  <data name="ExportUnsupportedFormat" xml:space="preserve"><value>Formato di esportazione non supportato: {0}</value></data>
+  <data name="ExportDestinationExists" xml:space="preserve"><value>Il file esportato esiste già. Usa --overwrite per sostituirlo: {0}</value></data>
+  <data name="ExportEmptyArchive" xml:space="preserve"><value>L'archivio non contiene file da esportare: {0}</value></data>
+  <data name="ExportCompleted" xml:space="preserve"><value>Esportate {0} voci in {1}</value></data>
+  <data name="ExportFailed" xml:space="preserve"><value>Impossibile esportare {0}: {1}</value></data>
+  <data name="DeleteMissingArguments" xml:space="preserve"><value>Sintassi: zg -delete archivio +voce [+[voce] ...]</value></data>
+  <data name="DeleteArchiveNotFound" xml:space="preserve"><value>Archivio non trovato: {0}</value></data>
+  <data name="DeleteUnsupportedFormat" xml:space="preserve"><value>L'eliminazione di voci non è supportata per questo formato di archivio: {0}</value></data>
+  <data name="DeleteNoMatches" xml:space="preserve"><value>Nessuna voce dell'archivio corrisponde ai modelli di eliminazione specificati: {0}</value></data>
+  <data name="DeleteCompleted" xml:space="preserve"><value>Eliminate {0} voci da {1}</value></data>
+  <data name="DeleteFailed" xml:space="preserve"><value>Impossibile eliminare voci da {0}: {1}</value></data>
+  <data name="ZipBombWarning" xml:space="preserve"><value>ATTENZIONE: archivio sospetto.</value></data>
+  <data name="ZipBombDanger" xml:space="preserve"><value>RISCHIO ALTO.</value></data>
+  <data name="ZipBombUnverified" xml:space="preserve"><value>Controllo incompleto.</value></data>
+  <data name="ZipBombBlocked" xml:space="preserve"><value>Operazione bloccata dalla protezione ZIP obbligatoria.</value></data>
+  <data name="ZipBombStatus" xml:space="preserve"><value>Sicurezza ZIP: {0}; score={1}%; risk-code={2}; {3}</value></data>
+  <data name="UnknownCommand" xml:space="preserve"><value>Comando non riconosciuto: {0}. Usa zg -help per vedere i comandi disponibili.</value></data>
+  <data name="SfxWindowsOnly" xml:space="preserve"><value>La creazione SFX richiede Windows; il file EXE prodotto funziona su Windows x64.</value></data>
+  <data name="SfxFormats" xml:space="preserve"><value>SFX supporta archivi ZIP, 7Z e RAR.</value></data>
+  <data name="SfxSourceMissing" xml:space="preserve"><value>Archivio sorgente non trovato: {0}</value></data>
+  <data name="SfxOutput" xml:space="preserve"><value>Scegli un file di destinazione diverso dalla sorgente, con estensione .exe.</value></data>
+  <data name="SfxDefaultMessage" xml:space="preserve"><value>Questo è un archivio autoestraente creato con ZipGenius X.</value></data>
+  <data name="SfxMissingValue" xml:space="preserve"><value>Specifica un valore per l’opzione {0}.</value></data>
+  <data name="SfxFileList" xml:space="preserve"><value>Usa hidden, expanded o collapsed per --file-list.</value></data>
+  <data name="SfxDestination" xml:space="preserve"><value>Cartella di destinazione non riconosciuta: {0}</value></data>
+  <data name="SfxUnknownOption" xml:space="preserve"><value>Opzione SFX non riconosciuta: {0}</value></data>
+  <data name="SfxExists" xml:space="preserve"><value>Il file di destinazione esiste già. Usa --overwrite per sostituirlo.</value></data>
+  <data name="SfxRunMissing" xml:space="preserve"><value>Il file da aprire dopo l’estrazione non è presente nell’archivio: {0}</value></data>
+  <data name="SfxCreated" xml:space="preserve"><value>Archivio autoestraente creato: {0}</value></data>
+  <data name="SfxFailed" xml:space="preserve"><value>Impossibile creare l’archivio autoestraente: {0}</value></data>
+  <data name="SfxEmbeddedMissing" xml:space="preserve"><value>Il modello SFX incorporato non è disponibile. Reinstalla zgshell.</value></data>
+  <data name="TestSyntax" xml:space="preserve"><value>Sintassi: zg -test archivio [Ppassword] [--verbose] [--silent]</value></data>
+  <data name="TestUnknownOption" xml:space="preserve"><value>Opzione di test non riconosciuta. Usa zg -help -test.</value></data>
+  <data name="TestMissing" xml:space="preserve"><value>Archivio non trovato: {0}</value></data>
+  <data name="TestSqxUnsupported" xml:space="preserve"><value>Il test di integrità SQX non è disponibile. Non è stato estratto alcun file.</value></data>
+  <data name="TestSuccess" xml:space="preserve"><value>Test completato: {0} elementi controllati. Nessun errore rilevato.</value></data>
+  <data name="TestPassword" xml:space="preserve"><value>Dati protetti non verificati: fornisci la password corretta. Anche dati cifrati danneggiati possono causare questo errore.</value></data>
+  <data name="TestUnsupported" xml:space="preserve"><value>Il motore disponibile non può verificare questo archivio: {0}</value></data>
+  <data name="TestAccess" xml:space="preserve"><value>Impossibile accedere all’archivio o al motore di controllo: {0}</value></data>
+  <data name="TestFailed" xml:space="preserve"><value>Test di integrità fallito: {0}</value></data>
+  <data name="TestRunning" xml:space="preserve"><value>Controllo dell’archivio...</value></data>
+  <data name="TestDataError" xml:space="preserve"><value>Intestazioni o dati dell’archivio danneggiati.</value></data>
+  <data name="TestNotArchive" xml:space="preserve"><value>Il file non è un archivio riconosciuto.</value></data>
+  <data name="TestManagedFormat" xml:space="preserve"><value>Il motore di controllo non supporta questo formato su questa piattaforma.</value></data>
+  <data name="ApplicationLocation" xml:space="preserve"><value>L’applicazione è installata nel seguente percorso:</value></data>
+  <data name="HexMissingFile" xml:space="preserve"><value>ERRORE &gt; Il file non esiste. Operazione interrotta.</value></data>
+  <data name="HexMaxLines" xml:space="preserve"><value>Sono consentite al massimo 500 righe. Ripristinato il valore predefinito.</value></data>
+  <data name="HexMinLines" xml:space="preserve"><value>È richiesta almeno una riga. Ripristinato il valore predefinito.</value></data>
+  <data name="HexSearchBytes" xml:space="preserve"><value>Ricerca della sequenza di byte </value></data>
+  <data name="HexNoBytes" xml:space="preserve"><value>Sequenza di byte non trovata. Operazione terminata.</value></data>
+  <data name="HexMatches" xml:space="preserve"><value> occorrenze trovate!</value></data>
+  <data name="HexResult" xml:space="preserve"><value>Risultato n. </value></data>
+  <data name="PauseContinue" xml:space="preserve"><value>Premi un tasto per continuare (oppure CTRL+C per uscire)...</value></data>
+  <data name="HexSearchText" xml:space="preserve"><value>Ricerca del testo "</value></data>
+  <data name="HexByteLabel" xml:space="preserve"><value>" (byte: </value></data>
+  <data name="HexNoText" xml:space="preserve"><value>Testo non trovato. La ricerca distingue maiuscole e minuscole.</value></data>
+  <data name="HexDumping" xml:space="preserve"><value>Visualizzazione del file: </value></data>
+  <data name="PauseNextPage" xml:space="preserve"><value>Premi un tasto per continuare (oppure CTRL+C per uscire)...</value></data>
+  <data name="HexPosition" xml:space="preserve"><value>Visualizzazione alla posizione: </value></data>
+  <data name="HexOddDigits" xml:space="preserve"><value>La sequenza esadecimale deve contenere un numero pari di cifre</value></data>
+  <data name="Cancelled" xml:space="preserve"><value>Premuto CTRL+C. Operazione annullata.</value></data>
+  <data name="InstallPathAdd" xml:space="preserve"><value>Percorso dell’applicazione da aggiungere: </value></data>
+  <data name="InstallAlready" xml:space="preserve"><value>L’applicazione è già installata.</value></data>
+  <data name="InstallPriority" xml:space="preserve"><value>L’applicazione è installata con precedenza nel PATH. Chiudi e riapri completamente il terminale per aggiornare il PATH.</value></data>
+  <data name="ErrorPrefix" xml:space="preserve"><value>Errore: </value></data>
+  <data name="ErrorMarker" xml:space="preserve"><value>ERRORE &gt; </value></data>
+  <data name="InstallAdmin" xml:space="preserve"><value>Per l’installazione di sistema, esegui PowerShell/Prompt dei comandi/Windows Terminal come amministratore.</value></data>
+  <data name="InstallLogin" xml:space="preserve"><value>L’applicazione è installata. Apri una nuova shell di login per aggiornare il PATH.</value></data>
+  <data name="InstallHome" xml:space="preserve"><value>Impossibile determinare la cartella personale dell’utente corrente.</value></data>
+  <data name="InstallUpdate" xml:space="preserve"><value>Impossibile aggiornare </value></data>
+  <data name="InstallPrivileges" xml:space="preserve"><value>L’installazione di sistema richiede privilegi di amministratore.</value></data>
+  <data name="UninstallPath" xml:space="preserve"><value>Percorso dell’applicazione da rimuovere: </value></data>
+  <data name="UninstallDone" xml:space="preserve"><value>L’applicazione è disinstallata. Chiudi e riapri completamente il terminale per aggiornare il PATH.</value></data>
+  <data name="UninstallAlready" xml:space="preserve"><value>L’applicazione è già disinstallata.</value></data>
+  <data name="UninstallAdmin" xml:space="preserve"><value>Per la disinstallazione di sistema, esegui PowerShell/Prompt dei comandi/Windows Terminal come amministratore.</value></data>
+  <data name="UninstallShell" xml:space="preserve"><value>L’applicazione è disinstallata. Apri una nuova sessione della shell per aggiornare il PATH.</value></data>
+  <data name="UninstallPrivileges" xml:space="preserve"><value>La disinstallazione di sistema richiede privilegi di amministratore.</value></data>
+  <data name="HelpMore" xml:space="preserve"><value>Premi un tasto per leggere il seguito (oppure CTRL+C per uscire)...</value></data>
+  <data name="AddMediaCapacity" xml:space="preserve"><value>Impossibile determinare la capacità del supporto di destinazione.</value></data>
+  <data name="AddMissingInclusion" xml:space="preserve"><value>Il file o la cartella da includere non esiste.</value></data>
+  <data name="CabPassword" xml:space="preserve"><value>Gli archivi CAB non supportano la protezione con password.</value></data>
+  <data name="TarPassword" xml:space="preserve"><value>Gli archivi basati su TAR non supportano la protezione con password.</value></data>
+  <data name="TarUnreadable" xml:space="preserve"><value>Impossibile leggere l’archivio TAR esistente.</value></data>
+  <data name="SqxWindows" xml:space="preserve"><value>La creazione di archivi SQX è disponibile solo su Windows.</value></data>
+  <data name="SqxNoOutput" xml:space="preserve"><value>Il motore di compressione SQX non ha creato un archivio.</value></data>
+  <data name="CompressFiles" xml:space="preserve"><value>Compressione dei file...</value></data>
+  <data name="Compressing" xml:space="preserve"><value>Compressione...</value></data>
+  <data name="Done" xml:space="preserve"><value>Completato</value></data>
+  <data name="DoneLower" xml:space="preserve"><value>completato</value></data>
+  <data name="CannotContinue" xml:space="preserve"><value>Impossibile continuare. Operazione interrotta.</value></data>
+  <data name="DestroyMissingPrefix" xml:space="preserve"><value>ERRORE! Il file </value></data>
+  <data name="MissingSuffix" xml:space="preserve"><value> non esiste.</value></data>
+  <data name="DestroyMaxPasses" xml:space="preserve"><value>ATTENZIONE! Sono consentiti al massimo 10 passaggi. Impostato un solo passaggio.</value></data>
+  <data name="DestroyIntro" xml:space="preserve"><value>Verrà distrutto l’archivio </value></data>
+  <data name="DestroyRandom" xml:space="preserve"><value>Il file verrà sovrascritto con byte casuali per </value></data>
+  <data name="DestroyTimes" xml:space="preserve"><value> passaggi.</value></data>
+  <data name="DestroyIrreversible" xml:space="preserve"><value>Questa operazione è IRREVERSIBILE e renderà l’archivio NON RECUPERABILE!</value></data>
+  <data name="DestroyConfirm" xml:space="preserve"><value>Ultima possibilità: vuoi continuare? (Y = sì / N = no): </value></data>
+  <data name="DestroyProgress" xml:space="preserve"><value>Distruzione dell’archivio </value></data>
+  <data name="ArchivePrefix" xml:space="preserve"><value>L’archivio </value></data>
+  <data name="DestroyDone" xml:space="preserve"><value> è stato distrutto.</value></data>
+  <data name="ExtractSyntax" xml:space="preserve"><value>Sintassi: zg -extract archivio destinazione [opzioni]</value></data>
+  <data name="ExtractNestedList" xml:space="preserve"><value>Gli elenchi @ annidati non sono supportati.</value></data>
+  <data name="ExtractEmptyPattern" xml:space="preserve"><value>Un criterio di inclusione o esclusione è vuoto.</value></data>
+  <data name="ExtractNeedAttribute" xml:space="preserve"><value>L’opzione D richiede almeno un attributo.</value></data>
+  <data name="TestEntryTooLarge" xml:space="preserve"><value>Un elemento supera la dimensione dichiarata.</value></data>
+  <data name="TestTruncatedEntry" xml:space="preserve"><value>Elemento dell’archivio troncato: </value></data>
+  <data name="TestCrcMismatch" xml:space="preserve"><value>CRC non corrispondente: </value></data>
+  <data name="SfxOutputNames" xml:space="preserve"><value>Windows: output.exe; GUI macOS: output.app; terminale Linux/macOS: file eseguibile.</value></data>
+  <data name="SfxIconWindows" xml:space="preserve"><value>La personalizzazione dell’icona della GUI Windows richiede Windows.</value></data>
+  <data name="SfxMacSigning" xml:space="preserve"><value>La finalizzazione di uno SFX macOS richiede macOS per la firma locale dell’eseguibile.</value></data>
+  <data name="SfxGuiIcon" xml:space="preserve"><value>--icon richiede --ui=gui.</value></data>
+  <data name="SfxInvalidIcon" xml:space="preserve"><value>Icona ICO non valida.</value></data>
+  <data name="SfxOutputExists" xml:space="preserve"><value>La destinazione esiste già.</value></data>
+  <data name="SfxCodesignStart" xml:space="preserve"><value>Impossibile avviare codesign.</value></data>
+  <data name="SfxUnsafeDirectory" xml:space="preserve"><value>Impossibile rimuovere una cartella esterna all’area di lavoro SFX.</value></data>
+  <data name="PauseQuit" xml:space="preserve"><value>Premi un tasto per uscire dall’applicazione.</value></data>
+  <data name="InfoUsage" xml:space="preserve"><value>Uso: zg -info file [--verbose] [--silent]</value></data>
+  <data name="InfoMissing" xml:space="preserve"><value>File non trovato: {0}</value></data>
+  <data name="SfxTemplateMissing" xml:space="preserve"><value>Il template {0}/{1} non è incluso in questa distribuzione. Disponibili: {2}. Ricompila con SfxTemplateRids={0}.</value></data>
+  <data name="ListStats" xml:space="preserve"><value>File: {0:N0}    Cartelle: {1:N0}    Dimensione archivio: {2:N0} byte ({3})</value></data>
+  <data name="ListSizes" xml:space="preserve"><value>Dimensione originale: {0:N0} byte    Compressa: {1:N0} byte    Compressione: {2:P1}</value></data>
+  <data name="ListModified" xml:space="preserve"><value>Ultima modifica: {0:yyyy-MM-dd HH:mm:ss}</value></data>
+  <data name="AddNeedInclusion" xml:space="preserve"><value>Specifica almeno un’inclusione +file o @elenco.</value></data>
+
+  <data name="sfxWriterError01" xml:space="preserve"><value>Il nome dell'archivio non è valido per lo SFX.</value></data>
+  <data name="sfxWriterError02" xml:space="preserve"><value>Stub SFX non trovato.</value></data>
+  <data name="sfxWriterError03" xml:space="preserve"><value>Archivio non trovato.</value></data>
+  <data name="sfxWriterError04" xml:space="preserve"><value>L'output deve essere diverso dagli input.</value></data>
+  <data name="sfxWriterError05" xml:space="preserve"><value>Sono supportati solo archivi ZIP, 7z e RAR.</value></data>
+  <data name="sfxWriterError06" xml:space="preserve"><value>Il file da avviare deve avere un percorso relativo valido.</value></data>
+  <data name="sfxWriterError07" xml:space="preserve"><value>Cartella di sistema SFX non valida.</value></data>
+  <data name="sfxWriterError08" xml:space="preserve"><value>Modalità elenco file SFX non valida.</value></data>
+  <data name="sfxWriterError09" xml:space="preserve"><value>Il sottopercorso richiede una cartella di sistema fissa.</value></data>
+  <data name="sfxWriterError10" xml:space="preserve"><value>Il sottopercorso deve essere relativo e non può contenere segmenti non sicuri.</value></data>
+  <data name="sfxWriterError11" xml:space="preserve"><value>Il messaggio deve contenere da 1 a 319 caratteri.</value></data>
+  <data name="sfxWriterError12" xml:space="preserve"><value>Icona SFX non trovata.</value></data>
+  <data name="sfxWriterError13" xml:space="preserve"><value>L'archivio è vuoto.</value></data>
+  <data name="sfxWriterError14" xml:space="preserve"><value>Scrittura SFX incompleta.</value></data>
+  <data name="sfxWriterError15" xml:space="preserve"><value>Icona ICO non valida.</value></data>
+  <data name="sfxWriterError16" xml:space="preserve"><value>Icona ICO incompleta.</value></data>
+</root>

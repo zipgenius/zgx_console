@@ -1,0 +1,16 @@
+^Sintassi:
+^zg -export archivio HTML|CSV|XML|TXT cartella-destinazione [--overwrite] [opzioni globali]
+
+[Scopo:
+]Esportare la lista dei file dell'archivio nel formato richiesto.
+
+[Formati:
+]HTML / CSV / XML / TXT
+
+[Opzioni:
+]--overwrite   Sostituisce un file esportato già esistente.
+
+%Il file esportato prende il nome dell'archivio e viene creato nella cartella-destinazione.
+
+[Esempio:
+*zg -export "C:\Archivi\Documenti.zip" HTML "D:\Report"

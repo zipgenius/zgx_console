@@ -1,0 +1,20 @@
+^Syntax:
+^zg -convert source-archive destination-archive [C0|C1|C5|C9|CB] [Ppassword] [Q1|Q2|Q3] [--overwrite] [global options]
+
+Converts an archive by extracting it to a private temporary folder and recreating it in the requested destination format. The source archive is never modified.
+
+[Destination formats:
+]ZIP, 7Z, CAB, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.XZ/TXZ, SQX, BZ2 and Z.
+
+[Options:
+]C0, C1, C5, C9 or CB set destination compression; C5 is the default.
+]Ppassword supplies the source password and, when Q is used, protects the destination ZIP archive.
+]Q1, Q2 and Q3 choose ZipCrypto, AES-128 or AES-256 for a ZIP destination.
+]--overwrite replaces an existing destination archive. Without it, zg refuses to overwrite a file.
+
+*zg -convert archive.zip archive.7z C9
+*zg -convert image.iso image.tar.gz
+*zg -convert secure.7z output.zip Psecret Q3 --overwrite
+
+Conversion first needs to extract the contents. If the source ZIP is high risk or cannot be fully checked, zg stops without replacing the destination file. A warning allows it to continue. Any extracted ZIPs added to the new archive are checked too. The source archive stays unchanged.
+Protection is always on, and warnings remain visible with --silent and --yes. High risk: code 42; incomplete check: code 43. A warning alone does not change the success code.

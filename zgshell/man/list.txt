@@ -1,0 +1,21 @@
+^Syntax:
+^zg -list archive [--verbose] [--silent]
+
+Lists the files in an archive without extracting them or modifying the archive.
+
+[Display:
+]Without --verbose: file names, preceded by the archive path.
+]--verbose / --v: archive details and a table with date, sizes, compression ratio and stored CRC-32.
+]--silent / --s: hides the banner; the list remains visible.
+
+Values come from metadata: -list does not verify the integrity of file data.
+To verify the archive, use: zg -test archive
+
+The ZipBomb check can report a risk, but does not block a readable file list.
+Warnings go to stderr; results go to stdout.
+Risk codes: 41 warning, 42 high risk, 43 incomplete inspection.
+For other codes: zg -help -exitcodes
+
+[Examples:
+*zg -list "C:\Archives\Documents.zip"
+*zg -list "C:\Archives\Documents.zip" --verbose

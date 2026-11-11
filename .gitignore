@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+.build/
+artifacts/
+**/work/
+**/dist/
+**/.tools/
+SfxPortable/templates/
+native/sfx_stub/build/
+*.log
+.vs/
+.vscode/
+__pycache__/

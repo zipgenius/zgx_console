@@ -1,0 +1,56 @@
+^Sintassi:
+^zg -test archivio [Ppassword] [--verbose] [--silent]
+^Alias: zg -t archivio
+
+Controlla se i file di un archivio possono essere letti e se i controlli di integrità disponibili risultano corretti. È utile, per esempio, prima di conservare un backup o dopo aver scaricato un archivio.
+Il comando legge i dati senza salvarli come file estratti. Non modifica l'archivio e non chiede una cartella di destinazione. Anche un archivio vuoto valido supera il test.
+
+[Opzioni:
+]Ppassword           Password dell'archivio. Puoi usare anche --password=valore.
+]--verbose           Mostra gli elementi controllati e i dettagli disponibili.
+]--silent            Non mostra intestazione, avanzamento o messaggio di riuscita. Gli errori e gli avvisi di sicurezza restano visibili.
+]--noprogress        Nasconde l'indicatore di avanzamento.
+
+Se serve una password, nell'uso interattivo viene richiesta senza mostrare i caratteri digitati. Puoi riprovare fino a tre volte; Esc annulla. Con --silent o con l'input proveniente da uno script non vengono fatte domande: fornisci la password nel comando.
+Una password errata e dati cifrati danneggiati non sono sempre distinguibili: in entrambi i casi il test non viene dichiarato riuscito.
+
+[Protezione dagli archivi pericolosi:
+Il controllo ZipBomb è sempre attivo, anche per -test: verificare l'integrità richiede di decomprimere i dati e potrebbe consumare molte risorse. Un semplice avviso consente di continuare. Un rischio alto o un controllo incompleto fermano il test prima della decompressione. --yes e --silent non permettono di superare un blocco.
+
+[Codici finali per gli script:
+]0   Test completato, nessun errore rilevato dai controlli disponibili.
+]3   Archivio non trovato.
+]6   Test fallito: dati o struttura dell'archivio danneggiati o non leggibili.
+]7   Formato o funzione di controllo non supportati dal motore disponibile.
+]8   Dati protetti non verificati: password mancante o errata, oppure dati cifrati danneggiati.
+]20  Operazione annullata.
+]30  Problema di accesso al file o al motore di controllo.
+]42  Test bloccato per rischio ZipBomb alto.
+]43  Test bloccato perché il controllo di sicurezza non è completo. Può succedere anche quando le intestazioni ZIP sono danneggiate.
+]99  Sintassi o opzione non valida.
+
+Un avviso di rischio moderato non decide il risultato finale: se il successivo test riesce, il codice è 0; se trova un problema, restituisce il relativo codice di errore.
+In PowerShell leggi $LASTEXITCODE subito dopo il comando. Nel terminale Linux o macOS usa $?.
+
+[Formati e limiti:
+Gli ZIP vengono controllati con motori gestiti su tutte le piattaforme, anche quando sono protetti con AES. Su Windows gli altri formati leggibili dal motore 7-Zip, tra cui 7Z, RAR, CAB e TAR, usano il suo test interno. Su Linux e macOS viene usato il lettore gestito per i formati che riconosce, tra cui 7Z, RAR, TAR e GZIP; alcuni altri formati possono restituire 7.
+Il test SQX non è ancora disponibile e restituisce 7: il comando non estrae i file come ripiego.
+I controlli dipendono dal formato. Per esempio, TAR non contiene un codice di controllo dei dati dei singoli file: non tutti i cambiamenti al contenuto possono essere rilevati. Il test non è un antivirus e non controlla ricorsivamente gli archivi contenuti come normali file dentro un altro archivio.
+
+[Esempi:
+*zg -test documenti.zip
+*zg -t backup.7z --verbose
+*zg -test protetto.zip Psegreta --silent
+*zg -test protetto.zip --password=segreta --noprogress
+
+[Esempio di controllo automatico in PowerShell:
+zg -test "backup.zip" --silent
+$esitoTest = $LASTEXITCODE
+if ($esitoTest -eq 0) { "Archivio verificato" } else { "Controllo non riuscito: codice $esitoTest" }
+
+[Esempio nel terminale Linux o macOS:
+zg -test backup.zip --silent
+esito_test=$?
+if [ "$esito_test" -eq 0 ]; then echo "Archivio verificato"; else echo "Controllo non riuscito: codice $esito_test"; fi
+
+Un codice diverso da 0 richiede attenzione: non significa sempre che i file siano danneggiati. Potrebbe mancare la password, il formato potrebbe non essere supportato oppure la protezione di sicurezza potrebbe aver fermato il controllo.

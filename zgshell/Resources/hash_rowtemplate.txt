@@ -1,0 +1,16 @@
+<div class="tr">
+    <div class="td" style="vertical-align: middle">
+        <p style="word-break: break-all">
+        <span class="rowHeader">{0}</span><br />
+        <span class="rowHash" id="rowHash">{1}</span>
+        </p>
+    </div>
+    <div class="td" style="vertical-align: middle">
+        <img
+        title="Copy hash to clipboard"
+        class="btnCopy"
+        onclick="copyToClipboard(elID)"
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAABZElEQVRoge2XvU7DMBSFj6GlItkQ7CwVQ8XYoeJHqA8QCYmtL8GW8gbN1pfohsQbVEjdyIg6sPESBYUKmSlLWxdfJzexlPuNieP4y9GJZUAQCqFMN4azlS5h+mQ+CsbF5zFzwDXxaaAA6Hg4+5pwvQNgFHi67uAs5JdgEzgJFMZX/BJsAkA1EqwCAL8EuwDAK1GJAMAnUco+EHVbZawkeex3yHtGZQnsIzhSgEY8TTNyKl4I3J4fInSU8ELguK1w4yjhhQDgLkFq3/truvN61B1QpjGSSyw+f7H60fE0zfBfsb1JIIeahBe/0ftee+va91rnSez9xXqXQM5mEqZxXnTgZbl2ftbbBGwhJXB51+dahzPNSoDSgeT5w21FAOKHC+uxzUqA0gHKVyxCsxLg6kCRtJqVgHSAgRJO47uRfcAStgSkA5YYE5iPQuNpbZPoLds6vck+YIl0oG5EoG5EQBCEevkDz1OBRafg0jQAAAAASUVORK5CYII="
+        />
+    </div>
+</div>

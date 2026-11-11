@@ -1,0 +1,129 @@
+name: Build packages and release
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  version:
+    runs-on: ubuntu-24.04
+    outputs:
+      build: ${{ steps.version.outputs.build }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - id: version
+        shell: bash
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          build=$((RUN_NUMBER * 10 + RUN_ATTEMPT))
+          test "$RUN_ATTEMPT" -le 9
+          test "$build" -le 65534
+          version="10.0.1.$build"
+          if [ "$REF_TYPE" = tag ]; then
+            case "$REF_NAME" in
+              v10.0.1|"v$version") ;;
+              *) echo "Tag must be v10.0.1 or v$version" >&2; exit 1 ;;
+            esac
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+  packages:
+    needs: version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: windows-2022, rid: win-x64}
+          - {os: windows-2022, rid: win-arm64}
+          - {os: ubuntu-24.04, rid: linux-x64}
+          - {os: ubuntu-24.04-arm, rid: linux-arm64}
+          - {os: macos-15-intel, rid: osx-x64}
+          - {os: macos-15, rid: osx-arm64}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild native Windows SFX
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cmake -S native/sfx_stub -B native/sfx_stub/build -A x64 -DBUILD_TESTING=ON
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          cmake --build native/sfx_stub/build --config Release
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          ctest --test-dir native/sfx_stub/build -C Release --output-on-failure
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Copy-Item native/sfx_stub/build/Release/sfx_stub.exe native/sfx_stub/template/sfx_stub.exe -Force
+      - name: Publish portable package
+        run: python build/package.py --rid ${{ matrix.rid }} --build-number ${{ needs.version.outputs.build }}
+      - name: Verify embedded manuals
+        if: matrix.rid != 'win-arm64'
+        env:
+          ZG_MANUAL_APP: ${{ github.workspace }}/artifacts/publish/${{ matrix.rid }}/zg${{ runner.os == 'Windows' && '.exe' || '' }}
+        run: python zgshell/tests/embedded_manuals_smoke.py
+      - name: Verify archive integrity commands
+        if: matrix.rid != 'win-arm64'
+        env:
+          ZG_TEST_APP: ${{ github.workspace }}/artifacts/publish/${{ matrix.rid }}/zg${{ runner.os == 'Windows' && '.exe' || '' }}
+        run: python zgshell/tests/archive_test_smoke.py
+      - name: Build Windows MSI and setup
+        if: matrix.rid == 'win-x64'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force zgshell/packaging/work/win-x64 | Out-Null
+          Copy-Item artifacts/publish/win-x64/* zgshell/packaging/work/win-x64 -Recurse -Force
+          ./zgshell/packaging/Build-Packages.ps1 -WindowsOnly -SkipPublish -Version '${{ needs.version.outputs.version }}'
+          Copy-Item zgshell/packaging/dist/*.exe artifacts/dist
+          Copy-Item zgshell/packaging/work/windows-msi/*.msi artifacts/dist
+      - name: Build Linux DEB and RPM
+        if: matrix.rid == 'linux-x64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+          python zgshell/packaging/build-linux.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '${{ needs.version.outputs.version }}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.rid }}
+          path: artifacts/dist/*
+          if-no-files-found: error
+          retention-days: 14
+  linux-extra:
+    needs: version
+    uses: ./.github/workflows/linux-extra.yml
+    with:
+      build_number: ${{ fromJSON(needs.version.outputs.build) }}
+  release:
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    needs: [version, packages, linux-extra]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: packages-*
+          path: dist
+          merge-multiple: true
+      - name: Checksums and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          cd dist
+          rm -f SHA256SUMS
+          sha256sum * > SHA256SUMS
+          gh release create "$RELEASE_TAG" ./* --verify-tag --title "ZipGenius X Console $RELEASE_VERSION" --generate-notes

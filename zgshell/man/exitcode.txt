@@ -1,0 +1,30 @@
+Exit codes tell a script how the command ended. In PowerShell, read $LASTEXITCODE immediately after running zg. In Command Prompt, use %ERRORLEVEL%.
+
+0: completed successfully.
+1: compression error.
+2: extraction error.
+3: file not found.
+4: no matching files or empty archive.
+5: retired command.
+6: integrity test failed.
+7: unsupported format or test.
+8: protected data not verified (password or damaged encrypted data).
+10: byte pattern not found.
+11: text pattern not found.
+20: cancelled by the user.
+30: storage or file access error.
+99: unknown command or other error.
+
+Codes for scripts and automatic tasks
+With -list, the final code lets a script decide what to do without reading the message:
+0: no significant risk found (score below 40), if the list was read successfully.
+41: warning, score from 40 to 59.
+42: high risk, score from 60 to 99.
+43: incomplete check, unless high risk has already been found.
+Normal errors, such as a missing file, keep their own codes.
+With -add, -extract, -backup, -convert, -sfx and -test, 42 and 43 mean a security block. A warning allows the task to continue: if it succeeds, the final code is 0.
+The list and warnings use separate outputs (stdout and stderr). Saving the list to a file does not hide warnings. In messages, risk-code describes the risk; it is not always the task's final exit code.
+
+With -test, a valid empty archive also returns 0. Code 8 cannot always distinguish a wrong password from damaged encrypted data. Use zg -help -test for examples and details.
+
+9: incomplete file information report (-info).

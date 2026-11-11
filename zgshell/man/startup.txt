@@ -1,0 +1,18 @@
+To use this console application, follow this syntax:
+
+zg (-command) filename {command parameters} [options]
+
+For help, type: zg -help
+For this application's exit codes, type: zg -help -exitcodes
+
+Available commands:
+-add       -extract   -list      -test (-t)
+-backup    -convert   -delete    -destroy
+-export    -hash      -hexview   -optim (-optimize)
+-sfx       -dumpdisc  -install   -uninstall
+-yourpath  -info      -help
+
+
+Example: type zg -help -add for help with the "-add" command.
+
+ZipBomb protection is always active.

@@ -1,0 +1,18 @@
+Per usare quest'applicazione console, segui la seguente sintassi:
+
+zg (-comando) nomefile {parametri comando} [opzioni]
+
+Per ottenere aiuto digita: zg -help
+Per conoscere i codici d'uscita di quest'applicazione, digita: zg -help -exitcodes
+
+I comandi disponibili sono:
+-add       -extract   -list      -test (-t)
+-backup    -convert   -delete    -destroy
+-export    -hash      -hexview   -optim (-optimize)
+-sfx       -dumpdisc  -install   -uninstall
+-yourpath  -info      -help
+
+
+Esempio: digita zg -help -add per ottenere aiuto per il comando "-add".
+
+La protezione contro le ZipBomb è sempre attiva.

@@ -1,0 +1,25 @@
+^Sintassi:
+^zg -extract archivio destinazione [opzioni]
+
+Estrae i file da un archivio. La destinazione è obbligatoria. Usa -curr per estrarre nella cartella corrente.
+
+[Opzioni:
+]R0 | R1    Estrae solo gli elementi nella radice oppure include le sottocartelle. Predefinito: R1.
+]F0 | F1    Ignora i percorsi memorizzati oppure li ricrea nella destinazione. Predefinito: F1.
+]N0 | N1    Estrae direttamente oppure crea una sottocartella con il nome dell'archivio. Predefinito: N0.
+]O0 | O1 | O2
+             Sovrascrive sempre, salta sempre oppure chiede conferma. Predefinito: O2.
+]Ppassword   Password usata per decifrare gli elementi protetti. P0 indica nessuna password. Le sessioni interattive richiedono in modo nascosto una password mancante o errata fino a tre volte. Con --silent o input reindirizzato non viene mostrata alcuna richiesta.
+]K0 | K1    Nasconde o mostra l'indicatore di avanzamento. Predefinito: K1.
+]Dattributi  Estrae file con attributi A, H, R, S o Z. X accetta qualsiasi attributo.
+] +[file]    Include il percorso di un file o di una cartella, eventualmente con caratteri jolly. Ripetibile.
+] -[file]    Esclude il percorso di un file o di una cartella, eventualmente con caratteri jolly. Ripetibile.
+] @lista.txt Legge inclusioni ed esclusioni da un file di testo.
+
+Segnaposto per la destinazione: [DOCS], [MUSIC], [PICS], [VIDEO], [FAV], [SYS], [WIN], [TEMP], [CURR], [DESKTOP].
+
+*zg -extract "C:\Archivi\foto.zip" "C:\Estratti" R1 F1 O0
+*zg -extract backup.7z -curr R1 Psegreta +"*.txt" -"bozza*"
+
+Prima di estrarre, zg controlla lo ZIP. Un avviso consente di continuare; un rischio alto o un controllo incompleto bloccano l'estrazione prima di creare la cartella di destinazione. Il controllo riguarda l'intero ZIP, anche quando scegli di estrarre soltanto alcuni file.
+La protezione è sempre attiva e gli avvisi restano visibili anche con --silent. Rischio alto: codice 42; controllo incompleto: codice 43. Un avviso da solo non cambia il codice di successo.

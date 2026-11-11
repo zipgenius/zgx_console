@@ -1,0 +1,176 @@
+^Syntax:
+^-add archive +[file] {parameters}
+
+Overview:
+This command lets you compress files and folders in an archive; if the specified archive already exists, files and folders will be added to that.
+Not all archive formats allow files compression: you can create ZIP, ZIP-based, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.Z/TAZ, BZ2, Z, SQX and CAB archives. BZ2 and Z are single-file streams; use TAR.BZ2 or TAR.Z for multiple files. You can tell the program which format you want to compress to by specifying the filename extension of the archive, so "test.zip" will create a ZIP archive, while "test.cab" will create a .CAB one.
+
+[Parameters:
+[+ (file/folder)
+Adds file/folder to archive: you must specify at least one file/folder to compress.
+You can use wildcards ( * or ? ) to add a group of files that are of the same file type or that have similar file extensions.
+A command line with the "-add" command can have multiple "+" parameters so you can add multilple files and folders at once.
+
+*Examples:
+*+*.* (adds all files)
+*+file1.txt (adds only file1.txt)
+*+"C:\My Documents\*.doc" (adds all .DOC files in My Documents folder)
+
+[- (file/folder)
+Ignore files and/or folders.
+When you use the "-add" command to perform a massive compression operation that involves groups of files and/or folders, you may want to exclude some file or folder from being compressed by using the "-" parameter.
+You can use wildcards ( * or ? ) to specify which file(s) and folder(s) should be ignored by ZipGenius while compressing. A command line with the "-add" command may have multiple "-" parameters in order to exclude multiple files/folders, but you must use at least one "+" parameter in the same command line.
+
+*Examples:
+*-*.* (all files)
+*-file1.txt (only the specified file)
+*-"C:\My Documents\*.doc" (all .DOC files in My Documents folder)
+>>
+[@ (file list)
+This option lets you specify which files and/or folders should be compressed through a list stored in a text file.
+The "@" parameter is used to indicate the full path and name of the file that must be read by ZipGenius; the text file that will hold the list uses the "+" and "-" parameters as described above.
+
+*Examples:
+*@"c:\My Documents\mylist.txt"
+where "mylist.txt" holds the following list:
+*+"C:\Test\*.*"
+*-"*.txt"
+*-"*.tmp"
+*-"*.jpg"
+>>
+[C [0 | 1 | 5 | 9 | B ]
+Sets the compression level.
+Default value is C0, which will automatically be selected if "C" option is not specified in the command line.
+"C" must be associated to one of the following values:
+
+]Values:
+C0 - no compression
+C1 - low compression, max speed
+C5 - medium compression and speed
+C9 - max compression, low speed
+CB - "brutal" compression, lowest speed
+
+*Example:
+*zg -add test.zip C9 +*.doc (Max compression level will be applied.)
+>>
+[A [ A | M | U ]
+Sets compression mode.
+
+]Values:
+AA - adds files to archive
+AM - moves files to archive (original files will be deleted after compression)
+AU - updates existing files in the archive.
+
+The default value is AA, which will be used if the "A" parameter won't be specified in the command line.
+>>
+[P [ Password ]
+Protects files with a password.
+No password is used by default: if you specify a password beside the "P" parameter, that will be used while adding files.
+
+*Example:
+*Pthisismypassword
+"thisismypassword" will be used to protect the files you are going to add through the command line.
+
+%Remarks:
+%To protect a ZIP archive with a password, use Ppassword. Choose Q2 for AES-128 or Q3 for AES-256. This lets you protect files while creating the archive with -add.
+>>
+[Q [ 1 | 2 | 3]
+Sets encryption algorithm while compressing files; if not specified when "P" is used to set a password, the default PkZip encryption algorithm will be used (even if it is deprecated).
+
+]Values:
+Q1 - PkZipWeak encryption algorithm
+Q2 - WinZip AES-128 encryption algorithm
+Q3 - WinZip AES-256 encryption algorithm
+
+*Examples:
+*1) zg -add test.zip C9 +"C:\Users\John\Desktop\Test Folder\*.*" PMyOwnPassword
+The password "MyOwnPassword" will be used to encrypt files by using the default PkZip encryption.
+
+*2) zg -add test.zip C9 +"C:\Users\John\Desktop\Test Folder\*.*" PMyOwnPassword Q3
+As in previous example but AES-256 encryption will be used.
+
+%Remarks: this parameter is ignored when you create archives in other formats than ZIP (or ZIP-like)!
+>>
+[R [ 0 | 1 ]
+If set, this parameter will force to compress files in subfolders recursively.
+
+]Values:
+R0 - subfolders will not be scanned for files; this is the default value and it is applied if not specified.
+R1 - subfolders will be scanned recursively
+
+*Example:
+*1) zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R0
+Only files in the first level of the selected folder will be considered for compression.
+
+*2) zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1
+Every file in subfolders will be considered for compression.
+>>
+[V {value}
+This parameter creates a multivolume archive (if selected format supports this feature). You must specify
+the size of single volumes by indicating one of the following value.
+
+]Values:
+Vvm720 - 720 Kilobytes
+Vvm880 - 880 Kilobytes
+Vvm1440 - 1.44 Megabytes
+Vvm2880 - 2.88 Megabytes
+VvmEmail - 250 Kilobytes
+VvmWeb - 750 Kilobytes
+VvmCDR650 - CD-ROM (650 MB)
+VvmCDR700 - CD-ROM (700 MB)
+VvmCDR800 - CD-ROM (800 MB)
+
+*Example:
+*zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1 Vvm1440
+A multivolume archive will be created; each volume will be sized up to 1.44 MB.
+>>
+[F [ 0 | 1 | 2 | 3 ]
+This parameter sets how file paths must be stored in the archive.
+
+]Values:
+F0 - No path will be stored
+F1 - Relative path will be stored
+F2 - Full path will be stored (but without drive letter)
+F3 - Full path will be stored, including the drive letter
+
+Default value is F1, if not specified, for compatibility with previous versions of zg.exe.
+*Example
+*zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1 F2
+The files will be added together with their full paths, excluding the drive letter.
+
+%Remarks: F3 is retained for compatibility with previous versions. Use it only with trusted archives because absolute paths may be unsafe when extracting.
+>>
+[D [ A | H | R | S | F ]
+This parameter will tell the program to compress only those files that have the specified attributes.
+
+]Vaues
+A - archive file
+H - hidden file
+R - read-only file
+S - system file
+F - folder
+
+If this parameter is not specified, no file attributes check will be performed.
+
+*Example
+*1) zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1 F1 DA
+This command will consider just files that have the "Archive" attribute set. Empty folders will be ignored.
+
+*2) zg -add test.zip +"C:\Users\John\Desktop\Test Folder\*.*" R1 F1 DHR
+This command will consider just files that have the "Hidden" and "Read Only" attributes set. Files with "Archive attribute" and empty folders will be ignored.
+
+%REMARKS: this parameter works in Windows, only. In other operating systems the file attrbutes will be ignored.
+>>
+[H
+If set, this parameter will hash all files being compressed and it will create a text file with those
+hash sums to the archive - the file will be named "zg-Hash.txt". If such file already exists, it will
+be updated with the new values.
+The algorithm used is SHA-256.
+
+%WARNING! This parameter could negatively impact con compression speed.
+>>
+[K [ 0 | 1 ]
+Controls the progress indicator. K0 hides it; K1 shows it. The --noprogress global option is also supported.
+
+Before creating or updating the archive, zg checks the existing ZIP and the ZIPs selected for addition, including those in included subfolders. A warning allows it to continue; high risk or an incomplete check stops it before changing the archive or moving the original files.
+Protection is always on, and warnings remain visible with --silent. High risk: code 42; incomplete check: code 43. A warning alone does not change the success code.

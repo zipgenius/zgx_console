@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="console-application">
+  <id>it.zipgenius.Console</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <name>ZipGenius X Console</name>
+  <summary>Manage, inspect and test archives from the command line</summary>
+  <summary xml:lang="it">Gestisci, esamina e verifica archivi dalla riga di comando</summary>
+  <description>
+    <p>ZipGenius X Console creates and extracts archives, verifies their integrity,
+    shows detailed information about archives and disk images, and creates self-extracting packages. Built-in ZipBomb protection is always active.</p>
+    <p xml:lang="it">ZipGenius X Console crea ed estrae archivi, ne verifica
+    l’integrità, mostra informazioni dettagliate su archivi e immagini disco e crea pacchetti autoestraenti. Include una protezione sempre attiva contro le ZipBomb.</p>
+  </description>
+  <developer id="it.zipgenius">
+    <name>The ZipGenius Team</name>
+  </developer>
+  <url type="homepage">https://www.zipgenius.it</url>
+  <pkgname>zg-console</pkgname>
+  <icon type="stock">utilities-terminal</icon>
+  <provides>
+    <binary>zg</binary>
+  </provides>
+  <releases>
+    <release version="@VERSION@" date="@DATE@" />
+  </releases>
+</component>

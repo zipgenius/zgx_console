@@ -1,0 +1,41 @@
+^Syntax:
+^-dumpdisc file {parameters} 
+
+Overview:
+This command prints the contents of ISO-like disc images and virtual hard disk files like .VHD, .VDMK or .VMI.
+Use the parameters to enrich the output with additional information.
+
+[Parameters:
+[-st OR --show-title
+A title block is printed before the list of files and directories. The title block reports info about the virtual disc image, like the file size, the creation date, the volume descriptor.
+
+[-sd or --show-date
+When a file is printed to the output, its last modified date will appear after its path.
+
+[-od OR --only-dirs
+The command lists just the directories.
+
+[-of OR --only-files
+The command lists just the file entries.
+
+%Remarks: if -od and -of are both specified they will be ignored and the command will act as if none of them is present as parameters.
+>>
+[-sz OR --show-size
+When a file is printed to the output, its size in bytes will appear after its path.
+
+[-sm OR --show-summary
+At the end of the listing a summary block is printed, reporting the total number of files and directories.
+
+[-sh OR --show-hash
+It is used ONLY together with -st (or --show-title): when specified, the title block will also report the SHA-256 hash of the virtual disc image file.
+
+*Examples:
+*1) zg -dumpdisc mydisc.iso -st -sd -sz -sm
+This command prints the contents of the disc image "mydisc.iso", showing a title block at the beginning, the last modified date and size of each file, and a summary block at the end.
+
+*2) zg -dumpdisc mydisc.iso -of -st -sh
+This command prints the contents of the disc image "mydisc.iso", showing only the files (no directories), with a title block at the beginning that includes the SHA-256 hash of the disc image.
+
+*3) zg -dumpdisc mydisc.iso -od -of -st
+This command prints the contents of the disc image "mydisc.iso", showing a title block. Since both -od and -of are specified, they are ignored and the command lists both files and directories.
+>>

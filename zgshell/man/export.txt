@@ -1,0 +1,16 @@
+^Syntax:
+^zg -export archive HTML|CSV|XML|TXT output-folder [--overwrite] [global options]
+
+[Purpose:
+]Export the archive file list in the requested format.
+
+[Formats:
+]HTML / CSV / XML / TXT
+
+[Options:
+]--overwrite   Replace an existing exported file.
+
+%The exported file is named after the archive and is created in output-folder.
+
+[Example:
+*zg -export "C:\Archives\Documents.zip" HTML "D:\Reports"

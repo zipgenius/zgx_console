@@ -1,0 +1,20 @@
+^Sintassi:
+^zg -convert archivio-sorgente archivio-destinazione [C0|C1|C5|C9|CB] [Ppassword] [Q1|Q2|Q3] [--overwrite] [opzioni globali]
+
+Converte un archivio estraendolo in una cartella temporanea privata e ricreandolo nel formato di destinazione richiesto. L'archivio sorgente non viene mai modificato.
+
+[Formati di destinazione:
+]ZIP, 7Z, CAB, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.XZ/TXZ, SQX, BZ2 e Z.
+
+[Opzioni:
+]C0, C1, C5, C9 o CB impostano la compressione di destinazione; C5 è il valore predefinito.
+]Ppassword fornisce la password sorgente e, quando si usa Q, protegge l'archivio ZIP di destinazione.
+]Q1, Q2 e Q3 scelgono ZipCrypto, AES-128 o AES-256 per una destinazione ZIP.
+]--overwrite sostituisce un archivio di destinazione esistente. Senza di esso, zg rifiuta di sovrascrivere un file.
+
+*zg -convert archivio.zip archivio.7z C9
+*zg -convert immagine.iso immagine.tar.gz
+*zg -convert protetto.7z output.zip Psegreta Q3 --overwrite
+
+La conversione deve prima estrarre il contenuto. Se lo ZIP sorgente presenta un rischio alto o non può essere controllato completamente, zg si ferma senza sostituire il file di destinazione. Un semplice avviso consente di continuare. Anche gli ZIP estratti che vengono aggiunti al nuovo archivio sono controllati. L'archivio sorgente resta invariato.
+La protezione è sempre attiva e gli avvisi restano visibili anche con --silent e --yes. Rischio alto: codice 42; controllo incompleto: codice 43. Un avviso da solo non cambia il codice di successo.

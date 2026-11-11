@@ -1,0 +1,40 @@
+File information: -info
+Syntax: zg -info file [--verbose] [--silent]
+
+Shows a table of information read from the file. It opens the file read-only: it does not mount images, extract files or change the original.
+
+The standard report shows the full path, exact file length in bytes, last change in UTC and the format reader. Identification uses file contents where possible; the extension may select a reader, but does not prove that the file is valid.
+
+For ISO and UDF images it shows the filesystem, volume label, sector size, sector count and, for ISO 9660, the primary volume information and whether a boot image is present.
+For VHDX, VHD, VMDK, VDI, DMG and RAW/IMG/IMA images it shows virtual capacity, disk type, partitions, volumes and recognised filesystems. The file length and virtual capacity are different values: a dynamic disk can have a much smaller file than its capacity. Geometry is a compatibility value, not a second measurement of capacity.
+For archives supported by the available reader it shows the number of files and folders, declared sizes and encryption information. Windows can also use the bundled 7-Zip reader for other archive formats.
+
+--verbose adds all scalar metadata exposed by these readers: disk layers, sparse storage, parent requirements, identifiers, geometry, filesystem details and format-specific information. For VHDX this includes block size, logical/physical sectors, creator and header identifiers. For VMDK it includes creation type, adapter and extent paths when available. For ISO it adds publisher, preparer, application, volume set, timestamps and boot details. For archives it adds an entry table with sizes, encryption, checksum and modification time where available.
+Not every format or reader provides every field. Missing or unsupported values are marked as not available. A reported checksum is stored metadata, not a new verification: use -test to check archive integrity. The command does not scan every file inside a disk or compute a full-file hash. It is not a virus scan.
+
+For split or differencing disks keep the extent files and parent images in their expected locations. Missing parts, unsupported features or unreadable metadata may prevent a complete report. Unknown filesystems can be blank, encrypted or unsupported; this is not proof of damage. macOS and Linux use the managed readers; reader support can differ from Windows.
+
+The report uses stable English field names, exact byte counts and invariant numbers on every system. Tabs and control characters in file names are replaced with spaces. --silent hides the banner but keeps the report; --verbose still applies with --silent. Diagnostics go to stderr and tables go to stdout, so the report can be redirected to a text file.
+
+ZIP security checks stay active. Like -list, -info may show metadata for a suspicious archive and returns the associated risk code. It does not extract its contents.
+
+Exit codes:
+0: report completed with the available metadata.
+3: file or required component not found.
+7: unsupported format or operation.
+9: incomplete report or unreadable/damaged metadata. Any tables already printed remain useful, but are not a complete result.
+30: access denied.
+41: ZIP risk warning.
+42: high ZIP risk.
+43: ZIP safety check incomplete.
+99: invalid arguments.
+A metadata reading error takes precedence over ZIP risk codes; security warnings remain on stderr. A completed ZIP report returns its risk code when nonzero.
+
+Examples:
+zg -info installation.iso
+zg -info machine.vhdx --verbose
+zg -info machine.vmdk --verbose --silent > report.txt
+zg -info backup.zip --verbose
+Help: zg -help -info
+
+Encrypted archive headers may prevent reading the report: this command does not request a password. SQX metadata is not exposed by its engine and returns 7. Extra VDI identifiers are read for VDI 1.1; other versions show the metadata available from the reader.

@@ -1,0 +1,26 @@
+^Syntax:
+^zg -extract archive destination [options]
+
+Extracts files from an archive. The destination is mandatory. Use -curr to extract into the current folder.
+
+[Options:
+]R0 | R1    Extract only root entries, or include archive subfolders. Default: R1.
+]F0 | F1    Ignore stored paths, or rebuild them in the destination. Default: F1.
+]N0 | N1    Extract directly, or create a subfolder named after the archive. Default: N0.
+]O0 | O1 | O2
+             Always overwrite, always skip, or ask when a file exists. Default: O2.
+]Ppassword   Password used to decrypt protected entries. P0 means no password. Interactive sessions securely request a missing or incorrect password up to three times. No prompt is shown with --silent or redirected input.
+]K0 | K1    Hide or show the progress indicator. Default: K1.
+]Dattributes
+             Extract files having A, H, R, S or Z attributes. X accepts any attribute.
+] +[file]    Include the path of a file or folder, optionally with wildcards. Repeatable.
+] -[file]    Exclude the path of a file or folder, optionally with wildcards. Repeatable.
+] @list.txt  Read inclusion and exclusion patterns from a text file.
+
+Destination placeholders: [DOCS], [MUSIC], [PICS], [VIDEO], [FAV], [SYS], [WIN], [TEMP], [CURR], [DESKTOP].
+
+*zg -extract "C:\Archives\photos.zip" "C:\Extracted" R1 F1 O0
+*zg -extract backup.7z -curr R1 Psecret +"*.txt" -"draft*"
+
+Before extracting, zg checks the ZIP. A warning allows extraction to continue; high risk or an incomplete check stops it before the destination folder is created. The whole ZIP is checked, even when you select only a few files to extract.
+Protection is always on, and warnings remain visible with --silent. High risk: code 42; incomplete check: code 43. A warning alone does not change the success code.

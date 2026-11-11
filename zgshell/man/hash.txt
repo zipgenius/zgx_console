@@ -1,0 +1,35 @@
+^Syntax:
+^zg -hash file --algorithm [--algorithm ...] [global options]
+
+Overview:
+Calculates one or more hashes of a file. More than one algorithm can be specified in the same command. Use --all to calculate every hash supported by ZipGenius X.
+
+[Algorithms:
+[--md5
+[--sha1
+[--sha224
+[--sha256
+[--sha384
+[--sha512
+[--sha3-224
+[--sha3-256
+[--sha3-512
+[--ripemd128
+[--ripemd160
+[--ripemd256
+[--ripemd320
+[--tiger
+[--whirlpool
+[--all
+
+*Examples:
+*zg -hash document.pdf --sha256
+Calculates the SHA-256 hash of document.pdf.
+
+*zg -hash archive.zip --md5 --sha1 --sha256
+Calculates three hashes of archive.zip.
+
+*zg -hash image.iso --all
+Calculates all supported hashes of image.iso.
+
+%When --silent is used, only the hash values are printed, one per line and in the order requested.

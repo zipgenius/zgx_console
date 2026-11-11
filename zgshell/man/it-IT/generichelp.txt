@@ -1,0 +1,40 @@
+ZipGenius X - Modulo da linea di comando
+Per usare quest'applicazione console, segui la seguente sintassi:
+
+zg (-comando) nomefile {parametri comando} [opzioni]
+
+Per ottenere aiuto digita: zg -help
+Per conoscere i codici d'uscita di quest'applicazione, digita: zg -help -exitcodes
+
+I comandi disponibili sono:
+-add       -extract   -list      -test (-t)
+-backup    -convert   -delete    -destroy
+-export    -hash      -hexview   -optim (-optimize)
+-sfx       -dumpdisc  -install   -uninstall
+-yourpath  -info      -help
+
+
+Esempio: digita zg -help -add per ottenere aiuto per il comando "-add".
+
+Protezione dagli archivi pericolosi
+Uno ZIP può essere molto piccolo ma richiedere uno spazio enorme quando viene aperto: questo tipo di archivio viene chiamato "ZipBomb" e può riempire il disco o bloccare il computer.
+zg controlla gli ZIP automaticamente. La protezione è sempre attiva: non occorre impostarla e non può essere disattivata. Anche --silent e --yes lasciano attivi i controlli e gli avvisi di sicurezza.
+Un avviso indica un sospetto: l'operazione può continuare. Un rischio alto blocca l'operazione. Se il controllo non può essere completato, zg si ferma per prudenza; questo non significa necessariamente che il file sia pericoloso.
+Se compare un blocco, evita di riprovare alla cieca: chiedi una nuova copia del file a chi te lo ha fornito o usa una copia attendibile. Alcuni ZIP protetti che contengono altri ZIP possono non essere controllabili.
+Il controllo riguarda gli ZIP e i file basati sul formato ZIP, anche se rinominati. Non è una verifica antivirus e un punteggio basso non garantisce che qualsiasi contenuto sia innocuo.
+
+Codici per chi usa script o operazioni automatiche
+Con -list, il codice finale permette di decidere cosa fare senza leggere il messaggio:
+0: nessun rischio significativo rilevato (score sotto 40), se l'elenco è stato letto correttamente.
+41: avviso, score da 40 a 59.
+42: rischio alto, score da 60 a 99.
+43: controllo incompleto, salvo un rischio alto già rilevato.
+I normali errori, come un file inesistente, mantengono i propri codici.
+Con -add, -extract, -backup e -convert, 42 e 43 indicano un blocco di sicurezza. Un semplice avviso lascia proseguire: se l'operazione riesce, il codice finale è 0.
+L'elenco e gli avvisi usano due uscite separate (stdout e stderr). Salvare l'elenco in un file non nasconde gli avvisi. Nei messaggi, risk-code descrive il rischio; non è sempre il codice finale dell'operazione.
+
+Se il nome del comando non è riconosciuto, zg mostra un messaggio e termina con codice 99. Usa zg -help per consultare i comandi disponibili. Le opzioni globali con due trattini, come --p per nascondere l’avanzamento, restano disponibili.
+
+Per controllare un archivio senza estrarre file usa zg -test archivio. Guida: zg -help -test.
+
+Il comando -split non è disponibile in zgshell. Se lo usi, zg segnala un comando non riconosciuto e termina con codice 99.
