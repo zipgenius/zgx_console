@@ -1,0 +1,41 @@
+<linker>
+  <!-- The verbose information command discovers properties at runtime. -->
+  <assembly fullname="SharpCompress" preserve="all" />
+  <assembly fullname="SevenZipSharp" preserve="all" />
+  <assembly fullname="SevenZipExtractor" preserve="all" />
+  <!-- Disk and filesystem implementations expose optional verbose metadata through reflection. -->
+  <assembly fullname="DiscUtils" preserve="all" />
+  <assembly fullname="DiscUtils.BootConfig" preserve="all" />
+  <assembly fullname="DiscUtils.Btrfs" preserve="all" />
+  <assembly fullname="DiscUtils.Containers" preserve="all" />
+  <assembly fullname="DiscUtils.Core" preserve="all" />
+  <assembly fullname="DiscUtils.Dmg" preserve="all" />
+  <assembly fullname="DiscUtils.ExFat" preserve="all" />
+  <assembly fullname="DiscUtils.Ext" preserve="all" />
+  <assembly fullname="DiscUtils.Fat" preserve="all" />
+  <assembly fullname="DiscUtils.FileSystems" preserve="all" />
+  <assembly fullname="DiscUtils.HfsPlus" preserve="all" />
+  <assembly fullname="DiscUtils.Iscsi" preserve="all" />
+  <assembly fullname="DiscUtils.Iso9660" preserve="all" />
+  <assembly fullname="DiscUtils.Lvm" preserve="all" />
+  <assembly fullname="DiscUtils.Net" preserve="all" />
+  <assembly fullname="DiscUtils.Nfs" preserve="all" />
+  <assembly fullname="DiscUtils.Ntfs" preserve="all" />
+  <assembly fullname="DiscUtils.OpticalDiscSharing" preserve="all" />
+  <assembly fullname="DiscUtils.OpticalDisk" preserve="all" />
+  <assembly fullname="DiscUtils.Registry" preserve="all" />
+  <assembly fullname="DiscUtils.Sdi" preserve="all" />
+  <assembly fullname="DiscUtils.SquashFs" preserve="all" />
+  <assembly fullname="DiscUtils.Streams" preserve="all" />
+  <assembly fullname="DiscUtils.Swap" preserve="all" />
+  <assembly fullname="DiscUtils.Transports" preserve="all" />
+  <assembly fullname="DiscUtils.Udf" preserve="all" />
+  <assembly fullname="DiscUtils.Vdi" preserve="all" />
+  <assembly fullname="DiscUtils.Vhd" preserve="all" />
+  <assembly fullname="DiscUtils.Vhdx" preserve="all" />
+  <assembly fullname="DiscUtils.VirtualFileSystem" preserve="all" />
+  <assembly fullname="DiscUtils.Vmdk" preserve="all" />
+  <assembly fullname="DiscUtils.Wim" preserve="all" />
+  <assembly fullname="DiscUtils.Xfs" preserve="all" />
+  <assembly fullname="DiscUtils.Xva" preserve="all" />
+</linker>

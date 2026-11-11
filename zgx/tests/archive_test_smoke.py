@@ -74,6 +74,56 @@ with tempfile.TemporaryDirectory(prefix='zg-test-command-') as folder:
         info = tarfile.TarInfo('file.txt'); info.size = 12
         t.addfile(info, io.BytesIO(b'tar contents'))
     run(0, '-test', tar)
+    # The compressor wraps a TAR: extract its entries, not the compressed stream.
+    for name, mode in (('data.tar.gz', 'w:gz'), ('data.tgz', 'w:gz'),
+                       ('data.tar.bz2', 'w:bz2'), ('data.tbz2', 'w:bz2'),
+                       ('data.tar.xz', 'w:xz'), ('data.txz', 'w:xz')):
+        packed = work/name
+        with tarfile.open(packed, mode) as t:
+            for entry, content in (('root.txt', b'root'), ('dir/nested.txt', b'nested')):
+                info = tarfile.TarInfo(entry); info.size = len(content)
+                t.addfile(info, io.BytesIO(content))
+        destination = work/(name+'-output')
+        run(0, '-extract', packed, destination, 'O0')
+        assert (destination/'root.txt').read_bytes() == b'root'
+        assert (destination/'dir'/'nested.txt').read_bytes() == b'nested'
+        assert not (destination/'[no name]').exists()
+    filtered = work/'filtered'
+    run(0, '-extract', work/'data.tar.gz', filtered, 'O0', '+dir/nested.txt')
+    assert (filtered/'dir'/'nested.txt').read_bytes() == b'nested'
+    assert not (filtered/'root.txt').exists()
+    root_only = work/'root-only'
+    run(0, '-extract', work/'data.tgz', root_only, 'O0', 'R0')
+    assert (root_only/'root.txt').read_bytes() == b'root'
+    assert not (root_only/'dir').exists()
+    flattened = work/'flattened'
+    run(0, '-extract', work/'data.tbz2', flattened, 'O0', 'F0')
+    assert (flattened/'nested.txt').read_bytes() == b'nested'
+    (flattened/'root.txt').write_bytes(b'existing')
+    run(0, '-extract', work/'data.tbz2', flattened, 'O1', 'F0')
+    assert (flattened/'root.txt').read_bytes() == b'existing'
+    for name in ('created.tar.gz', 'created.tar.bz2'):
+        created = work/name
+        run(0, '-add', created, '+'+str(plain))
+        destination = work/(name+'-output')
+        run(0, '-extract', created, destination, 'O0')
+        assert (destination/plain.name).read_bytes() == plain.read_bytes()
+    invalid_tar = work/'invalid.tar.gz'
+    invalid_tar.write_bytes(gzip.compress(b'not a TAR'))
+    invalid_result = subprocess.run(
+        (['dotnet', str(APP)] if APP.suffix.lower() == '.dll' else [str(APP)]) +
+        ['-extract', str(invalid_tar), str(work/'invalid-output'), 'O0', '--silent'],
+        cwd=work, capture_output=True, timeout=40)
+    assert invalid_result.returncode != 0, invalid_result.stdout
+    malicious = work/'traversal.tar.gz'
+    with tarfile.open(malicious, 'w:gz') as t:
+        info = tarfile.TarInfo('../escaped.txt'); info.size = 3
+        t.addfile(info, io.BytesIO(b'bad'))
+    traversal = subprocess.run(
+        (['dotnet', str(APP)] if APP.suffix.lower() == '.dll' else [str(APP)]) +
+        ['-extract', str(malicious), str(work/'traversal-output'), 'O0', '--silent'],
+        cwd=work, capture_output=True, timeout=40)
+    assert traversal.returncode != 0 and not (work/'escaped.txt').exists()
     bad_tar_header = work/'bad-header.tar'
     damaged = bytearray(tar.read_bytes()); damaged[0] ^= 1
     bad_tar_header.write_bytes(damaged)
@@ -141,8 +191,9 @@ with tempfile.TemporaryDirectory(prefix='zg-test-command-') as folder:
     if bomb.exists(): run(42, '-test', bomb, '--yes')
     assert archive.read_bytes() == original
     before = {p.name: hashlib.sha256(p.read_bytes()).digest() for p in work.iterdir() if p.is_file()}
+    before_dirs = {p.name for p in work.iterdir() if p.is_dir()}
     run(0, '-test', archive)
     assert before == {p.name: hashlib.sha256(p.read_bytes()).digest() for p in work.iterdir() if p.is_file()}
-    assert not any(p.is_dir() for p in work.iterdir()), 'Test unexpectedly extracted files'
+    assert before_dirs == {p.name for p in work.iterdir() if p.is_dir()}, 'Test unexpectedly extracted files'
 
-print('PASS -test: ZIP headers/CRC, empty archives, gzip/TAR, password handling, unsupported inputs, safety and source preservation')
+print('PASS: archive integrity, compressed TAR extraction, password handling, safety and source preservation')

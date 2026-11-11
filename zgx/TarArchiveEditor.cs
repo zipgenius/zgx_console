@@ -87,7 +87,7 @@ namespace zg
                     inputStream = null;
                 }
 
-                IArchive archive = ArchiveFactory.Open(tarStream, new ReaderOptions());
+                IArchive archive = ArchiveFactory.OpenArchive(tarStream, new ReaderOptions());
                 inputStream = null;
                 return archive;
             }
@@ -164,7 +164,7 @@ namespace zg
                 using (TarOutputStream tar = new TarOutputStream(tarFile, System.Text.Encoding.UTF8))
                 {
                     tar.IsStreamOwner = false;
-                    using IArchive sourceArchive = ArchiveFactory.Open(File.OpenRead(sourceTarPath), new ReaderOptions());
+                    using IArchive sourceArchive = ArchiveFactory.OpenArchive(File.OpenRead(sourceTarPath), new ReaderOptions());
                     foreach (IArchiveEntry sourceEntry in sourceArchive.Entries)
                     {
                         string entryPath = NormalizeArchivePath(sourceEntry.Key);

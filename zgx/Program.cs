@@ -41,12 +41,6 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
-using Windows.Devices.Geolocation;
-using Windows.Graphics.Imaging;
-using Windows.Services.Maps.OfflineMaps;
-using Windows.Storage;
-using Windows.System;
-using Windows.UI.Xaml.Shapes;
 using zg.Properties;
 using static System.ConsoleColor;
 using static System.Net.Mime.MediaTypeNames;
@@ -1321,7 +1315,7 @@ namespace zg
         private static ExitCode DeleteFileFromTar(string arcFile, string[] args)
         {
             string[] selectedEntries;
-            using (IArchive archive = ArchiveFactory.Open(arcFile))
+            using (IArchive archive = ArchiveFactory.OpenArchive(arcFile))
             {
                 selectedEntries = archive.Entries.Select(entry => entry.Key ?? string.Empty)
                     .Where(entry => IsSelectedForDeletion(entry, args)).ToArray();
@@ -6064,7 +6058,7 @@ namespace zg
             // reader on other platforms so listing does not require a native handle.
             if (!OperatingSystem.IsWindows())
             {
-                using IArchive archive = ArchiveFactory.Open(archivePath);
+                using IArchive archive = ArchiveFactory.OpenArchive(archivePath);
                 var archiveEntries = archive.Entries.ToList();
                 entryCount = archiveEntries.Count;
                 foreach (var entry in archiveEntries.Where(entry => !entry.IsDirectory))
@@ -6281,7 +6275,7 @@ namespace zg
             else if (ExoticLike.Contains(Path.GetExtension(args[1]).ToLower()))
             {
                 Console.WriteLine("Reading " + args[1] + "...");
-                using var archive = ArchiveFactory.Open(args[1]);
+                using var archive = ArchiveFactory.OpenArchive(args[1]);
                 foreach (var entry in archive.Entries)
                 {
                     if (!entry.IsDirectory)
@@ -6545,7 +6539,7 @@ namespace zg
         private static int ListTar(string fName)
         {
             using (Stream stream = File.OpenRead(fName))
-            using (var reader = ReaderFactory.Open(stream))
+            using (var reader = ReaderFactory.OpenReader(stream))
             {
                 while (reader.MoveToNextEntry())
                 {
@@ -7725,7 +7719,7 @@ namespace zg
                 if (Path.GetExtension(options.ArchivePath).Equals(".sqx", StringComparison.OrdinalIgnoreCase))
                     return ExtractSqxFilesWithPasswordRetries(options);
 
-                return IsWindows()
+                return IsWindows() && !TarArchiveEditor.IsTarArchivePath(options.ArchivePath)
                     ? ExtractSevenZipFilesWithPasswordRetries(options)
                     : ExtractManagedFilesWithPasswordRetries(options);
             }
@@ -7768,7 +7762,8 @@ namespace zg
                     Directory.CreateDirectory(stagingRoot);
                     using IArchive archive = TarArchiveEditor.IsTarArchivePath(options.ArchivePath)
                         ? TarArchiveEditor.OpenTarArchive(options.ArchivePath)
-                        : ArchiveFactory.Open(options.ArchivePath, new ReaderOptions { Password = options.Password });
+                            ?? throw new InvalidDataException(GetLocalizedString("TarUnreadable", "The TAR archive cannot be read."))
+                        : ArchiveFactory.OpenArchive(options.ArchivePath, new ReaderOptions { Password = options.Password });
                     var entries = archive.Entries.Where(entry =>
                         ShouldExtractStagedFile(entry.Key ?? string.Empty,
                             entry.IsDirectory ? FileAttributes.Directory : FileAttributes.Normal, options) &&
@@ -7818,6 +7813,8 @@ namespace zg
                     int extractedFiles = CommitStagedExtraction(stagingRoot, options);
                     if (!IsSilent)
                         Console.WriteLine(GetLocalizedString("ExtractCompleted", "Extracted {0} file(s) to {1}", extractedFiles, options.DestinationPath));
+                    if (DoOpenFolder && IsWindows())
+                        Process.Start(new ProcessStartInfo(options.DestinationPath) { UseShellExecute = true });
                     return ExitCode.Success;
                 }
                 catch (Exception ex) when (IsLikelyPasswordFailure(ex, encryptedEntries) && CanPromptForExtractionPassword() && passwordAttempts < 3)

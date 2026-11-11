@@ -22,6 +22,22 @@ revisions can be replaced; MSI can also accept an older fourth-field revision.
 Always select the newest full four-field package version.
 Use `-WindowsOnly` to build the unified Windows setup, without WSL or Linux publish steps.
 
+Trimmed builds are experimental and are not used by the release packaging scripts.
+For a local Windows x64 comparison, publish from the repository root with:
+
+```powershell
+dotnet publish zgx/zg.csproj -c Release -r win-x64 --self-contained true -p:PublishTrimmed=true -o artifacts/trimmed/win-x64
+$env:ZG_TEST_APP = (Resolve-Path artifacts/trimmed/win-x64/zg.exe).Path
+python zgx/tests/archive_test_smoke.py
+python zgx/tests/trimmed_publish_smoke.py
+```
+
+Set `ZG_BASELINE_APP` to an untrimmed executable to compare verbose ZIP metadata;
+also set `ZG_TEST_DISK` to a disk image to compare its verbose metadata. The
+trimmed build retains COM support and reflection-dependent archive and disk
+assemblies, but linker warnings remain and additional platform and format
+testing is required before enabling trimming in distributed packages.
+
 Windows version 10.0.1 fixes coexistence with ZipGenius 6: `-install` places the
 console directory first in the selected PATH, moving an existing entry forward
 and removing duplicate forms. The system-wide MSI consequently takes priority

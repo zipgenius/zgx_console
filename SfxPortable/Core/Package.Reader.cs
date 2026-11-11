@@ -29,7 +29,7 @@ public static partial class Package
             file.Position = offset + length;
             byte[] json = new byte[(int)jsonLength];
             file.ReadExactly(json);
-            Options options = JsonSerializer.Deserialize<Options>(json) ?? throw new InvalidDataException("Invalid SFX options.");
+            Options options = JsonSerializer.Deserialize(json, SfxJsonContext.Default.SfxOptions) ?? throw new InvalidDataException("Invalid SFX options.");
             Validate(options);
             string work = Path.Combine(Path.GetTempPath(), "zgx-sfx-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(work);

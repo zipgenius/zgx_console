@@ -260,7 +260,7 @@ partial class Program
             throw new NotSupportedException("The SQX engine does not expose read-only metadata for -info.");
         try
         {
-            using var archive = SharpCompress.Archives.ArchiveFactory.Open(path);
+            using var archive = SharpCompress.Archives.ArchiveFactory.OpenArchive(path);
             long count = 0, folders = 0; decimal size = 0, packed = 0; bool encrypted = false;
             var table = verbose ? new ConsoleTable("Entry", "Bytes", "Packed bytes", "Encrypted", "CRC32", "Modified") : null;
             foreach (var e in archive.Entries)

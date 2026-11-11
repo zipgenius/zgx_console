@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Deterministic>true</Deterministic>
     <Nullable>enable</Nullable>
+    <!-- SevenZipSharp requires built-in COM marshalling on Windows, including trimmed publishes. -->
+    <BuiltInComInteropSupport Condition="'$(PublishTrimmed)' == 'true' and $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('win-'))">true</BuiltInComInteropSupport>
     <SfxTemplateRids Condition="'$(SfxTemplateRids)' == '' and '$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</SfxTemplateRids>
     <SfxHostFamily Condition="$([MSBuild]::IsOSPlatform('Windows'))">win</SfxHostFamily>
     <SfxHostFamily Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux</SfxHostFamily>
@@ -19,28 +21,27 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ConsoleTables" Version="2.7.0" />
-    <PackageReference Include="DotNetZip" Version="1.16.0" />
-    <PackageReference Include="LTRData.DiscUtils" Version="1.0.67" />
-    <PackageReference Include="LTRData.DiscUtils.Containers" Version="1.0.67" />
-    <PackageReference Include="LTRData.DiscUtils.Core" Version="1.0.67" />
-    <PackageReference Include="LTRData.DiscUtils.Dmg" Version="1.0.67" />
-    <PackageReference Include="LTRData.DiscUtils.FileSystems" Version="1.0.67" />
-    <PackageReference Include="LTRData.DiscUtils.Transports" Version="1.0.67" />
-    <PackageReference Include="LTRData.DiscUtils.VirtualFileSystem" Version="1.0.67" />
-    <PackageReference Include="LTRData.DiscUtils.Wim" Version="1.0.67" />
-    <PackageReference Include="LTRData.ExFat.DiscUtils" Version="1.0.17" />
-    <PackageReference Include="Microsoft.CST.RecursiveExtractor" Version="1.2.45" />
+    <PackageReference Include="ProDotNetZip" Version="1.20.0" />
+    <PackageReference Include="LTRData.DiscUtils" Version="1.0.90" />
+    <PackageReference Include="LTRData.DiscUtils.Containers" Version="1.0.90" />
+    <PackageReference Include="LTRData.DiscUtils.Core" Version="1.0.90" />
+    <PackageReference Include="LTRData.DiscUtils.Dmg" Version="1.0.90" />
+    <PackageReference Include="LTRData.DiscUtils.ExFat" Version="1.0.90" />
+    <PackageReference Include="LTRData.DiscUtils.FileSystems" Version="1.0.90" />
+    <PackageReference Include="LTRData.DiscUtils.Transports" Version="1.0.90" />
+    <PackageReference Include="LTRData.DiscUtils.VirtualFileSystem" Version="1.0.90" />
+    <PackageReference Include="LTRData.DiscUtils.Wim" Version="1.0.90" />
+    <PackageReference Include="Microsoft.CST.RecursiveExtractor" Version="1.2.61" />
     <PackageReference Include="MSFTCompression.Core.Cab" Version="1.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="Crc32.NET" Version="2.1.0" />
     <PackageReference Include="SevenZipExtractor" Version="1.0.19" />
     <PackageReference Include="SevenZipSharp.Interop" Version="19.1.0" />
-    <PackageReference Include="SharpCompress" Version="0.41.0" />
+    <PackageReference Include="SharpCompress" Version="0.50.8" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="ShellProgressBar" Version="5.2.0" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.2.24" />
-    <PackageReference Include="Uno.UI" Version="5.6.99" />
     <PackageReference Include="HexDumper" Version="1.0.8" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +107,9 @@
   <ItemGroup>
     <SourceGeneratorInput Remove="Resources\hash_rowtemplate.txt" />
   </ItemGroup>
+  <ItemGroup Condition="'$(PublishTrimmed)' == 'true'">
+    <TrimmerRootDescriptor Include="TrimmingRoots.xml" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Docs\" />
   </ItemGroup>
@@ -126,6 +130,9 @@
     <None Update="Libs/x64/sqx20u.dll;Libs/x64/SqxBridge.dll;Libs/x86/sqx20.dll;Libs/x86/sqx20u.dll;Libs/x86/SqxBridge.dll" CopyToPublishDirectory="Never" />
     <None Include="Libs/arm64/7z.dll" Link="Libs/64bit/7z.dll" CopyToPublishDirectory="PreserveNewest" />
     <None Update="Libs/64bit/7z.dll" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+  <ItemGroup Condition="$([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('win-'))">
+    <None Update="Libs/linux/7z.so" CopyToPublishDirectory="Never" />
   </ItemGroup>
   <ItemGroup Condition="'$(RuntimeIdentifier)' != '' and '$(RuntimeIdentifier)' != 'win-x64' and '$(RuntimeIdentifier)' != 'win-x86'">
     <None Update="Libs/x64/*.dll;Libs/x86/*.dll" CopyToPublishDirectory="Never" />

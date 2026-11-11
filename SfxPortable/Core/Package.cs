@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Zgx.Sfx;
 
@@ -20,6 +21,9 @@ public sealed class Options
     public string IconBase64 { get; set; } = "";
 }
 
+[JsonSerializable(typeof(Options), TypeInfoPropertyName = "SfxOptions")]
+internal partial class SfxJsonContext : JsonSerializerContext { }
+
 // A different versioned format from the existing Win32 stub. No wchar_t or native layout.
 public static partial class Package
 {
@@ -30,7 +34,7 @@ public static partial class Package
     {
         Validate(options);
         using (var input = File.OpenRead(archive)) options.Sha256 = Convert.ToHexString(SHA256.HashData(input));
-        byte[] metadata = JsonSerializer.SerializeToUtf8Bytes(options);
+        byte[] metadata = JsonSerializer.SerializeToUtf8Bytes(options, SfxJsonContext.Default.SfxOptions);
         using var result = new FileStream(output, FileMode.CreateNew, FileAccess.Write, FileShare.None);
         template.CopyTo(result);
         long offset = result.Position;

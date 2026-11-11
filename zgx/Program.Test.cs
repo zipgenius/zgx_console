@@ -138,19 +138,17 @@ partial class Program
             throw new NotSupportedException(GetLocalizedString("TestManagedFormat", "This format is not supported by the test engine on this platform."));
         using var managed = OpenManagedTestArchive(path, password);
         int totalEntries = managed.Entries.Count();
-        using var reader = managed.ExtractAllEntries();
         using var bar = CreateAddProgress(100, GetLocalizedString("TestRunning", "Testing archive..."));
         byte[] buffer = new byte[81920];
         int count = 0;
-        while (reader.MoveToNextEntry())
+        void TestEntry(IEntry entry, Func<Stream> openStream)
         {
-            var entry = reader.Entry;
             count++;
-            if (entry.IsDirectory) continue;
+            if (entry.IsDirectory) return;
             if (entry.IsEncrypted && password.Length == 0) throw new TestPasswordException();
             try
             {
-                using var stream = reader.OpenEntryStream();
+                using var stream = openStream();
                 var crc = new Crc32();
                 long length = 0;
                 int bytes;
@@ -174,6 +172,17 @@ partial class Program
             if (IsVerbose && !IsSilent) Console.WriteLine("OK: " + entry.Key);
             bar?.Tick(Math.Min(100, count * 100 / Math.Max(1, totalEntries)), entry.Key ?? "");
         }
+        if (managed.IsSolid || managed.Type == ArchiveType.SevenZip)
+        {
+            using var reader = managed.ExtractAllEntries();
+            while (reader.MoveToNextEntry())
+                TestEntry(reader.Entry, () => reader.OpenEntryStream());
+        }
+        else
+        {
+            foreach (var entry in managed.Entries)
+                TestEntry(entry, () => entry.OpenEntryStream());
+        }
         bar?.Tick(100);
         return count;
     }
@@ -183,7 +192,12 @@ partial class Program
         bool encryptedHeader = HasEncryptedSevenZipTestHeader(path);
         try
         {
-            var archive = ArchiveFactory.Open(path, new ReaderOptions { Password = password });
+            // The generic factory treats .tar.gz as a TAR hint in newer
+            // SharpCompress versions. Test the gzip stream itself instead.
+            string extension = Path.GetExtension(path).ToLowerInvariant();
+            IArchive archive = extension is ".gz" or ".gzip" or ".tgz"
+                ? SharpCompress.Archives.GZip.GZipArchive.OpenArchive(path, new ReaderOptions { Password = password })
+                : ArchiveFactory.OpenArchive(path, new ReaderOptions { Password = password });
             try { _ = archive.Entries.Count(); return archive; }
             catch { archive.Dispose(); throw; }
         }
