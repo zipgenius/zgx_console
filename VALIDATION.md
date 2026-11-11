@@ -13,3 +13,7 @@ Validated locally on Windows and Ubuntu 26.04 under WSL:
 * Parent repository shared SFX core build and Windows PATH registration tests pass after detachment.
 
 Hosted GitHub Actions, ARM64 and macOS execution have not run: this repository has no remote yet. Native binary licensing/provenance notes are in THIRD_PARTY_NOTICES.md. Existing compiler/NuGet warnings remain; compilation succeeds.
+
+## SQX inclusion
+
+Windows x64 package 10.0.1.6 includes all five original x86/x64 SQX runtime and bridge DLLs. A native SQX create/extract roundtrip passed and preserved file contents. The project maintainer confirmed inclusion and redistribution. SQX is excluded from ARM64 and non-Windows publish payloads.

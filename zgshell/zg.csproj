@@ -127,6 +127,9 @@
     <None Include="Libs/arm64/7z.dll" Link="Libs/64bit/7z.dll" CopyToPublishDirectory="PreserveNewest" />
     <None Update="Libs/64bit/7z.dll" CopyToPublishDirectory="Never" />
   </ItemGroup>
+  <ItemGroup Condition="'$(RuntimeIdentifier)' != '' and '$(RuntimeIdentifier)' != 'win-x64' and '$(RuntimeIdentifier)' != 'win-x86'">
+    <None Update="Libs/x64/*.dll;Libs/x86/*.dll" CopyToPublishDirectory="Never" />
+  </ItemGroup>
   <Target Name="PreparePortableSfxTemplates" BeforeTargets="PrepareForBuild">
     <Exec Condition="'$(BuildSfxTemplates)' != 'false'" Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../tools/BuildSfxTemplates/BuildSfxTemplates.csproj&quot; --artifacts-path &quot;$(SfxBuildArtifactsPath)&quot; -c Release -- --root &quot;$(MSBuildProjectDirectory)/..&quot; --rids &quot;$(SfxTemplateRids)&quot; --output &quot;$(SfxTemplatesDir)&quot;" />
     <ItemGroup>

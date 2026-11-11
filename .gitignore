@@ -11,3 +11,5 @@ native/sfx_stub/build/
 .vs/
 .vscode/
 __pycache__/
+
+native/sqx/build-*/

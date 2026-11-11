@@ -23,7 +23,7 @@ python build/package.py --rid linux-x64 --build-number 1
 python build/package.py --rid osx-arm64 --build-number 1
 ```
 
-Run on the matching operating system. Output: `artifacts/dist`. Portable Windows ZIP and Linux/macOS tar.gz distributions support x64 and arm64. The native archive backends are platform dependent: SQX is excluded, and the inherited 7-Zip shared libraries are Windows/Linux binaries. macOS builds do not imply full native format support; libarchive writing currently targets Linux. See `zgshell/LINUX.md` and embedded manuals for command behavior.
+Run on the matching operating system. Output: `artifacts/dist`. Portable Windows ZIP and Linux/macOS tar.gz distributions support x64 and arm64. The native archive backends are platform dependent: SQX runtime libraries and bridges are included for Windows x64 (including the required x86 helpers); SQX is unsupported on ARM64, Linux and macOS. The inherited 7-Zip shared libraries are Windows/Linux binaries. macOS builds do not imply full native format support; libarchive writing currently targets Linux. See `zgshell/LINUX.md` and embedded manuals for command behavior.
 
 Windows x64 MSI and unified setup (machine/user selection), Linux x64 DEB/RPM, Arch, Snap and Flatpak scripts are retained in `zgshell/packaging`. Windows setup requires Visual Studio C++ and Windows SDK. Linux DEB/RPM requires `dpkg-deb` and `rpmbuild`; Arch requires `makepkg`, `pacman` and `zstd`. Snap requires Ubuntu 26.04 and Flatpak requires the Freedesktop runtime noted in its script.
 
