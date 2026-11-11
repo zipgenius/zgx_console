@@ -27,10 +27,13 @@ Run on the matching operating system. Output: `artifacts/dist`. Portable Windows
 
 Windows x64 MSI and unified setup (machine/user selection), Linux x64 DEB/RPM, Arch, Snap and Flatpak scripts are retained in `zgx/packaging`. Windows setup requires Visual Studio C++ and Windows SDK. Linux DEB/RPM requires `dpkg-deb` and `rpmbuild`; Arch requires `makepkg`, `pacman` and `zstd`. Snap requires Ubuntu 26.04 and Flatpak requires the Freedesktop runtime noted in its script.
 
-## GitHub Actions and releases
+## Builds and releases
 
-`build-release.yml` runs on pushes to main, pull requests, version tags and manual dispatch. It builds six portable packages, Windows x64 MSI/setup, and Linux x64 DEB/RPM; smoke tests verify startup and embedded manuals. Artifacts are retained for 14 days. Tags must match `v10.0.1` or `v10.0.1.BUILD` (the latter must match the allocated CI build). A successful tag build creates a GitHub release with every package and SHA256SUMS. Manual runs create packages without publishing a release. Only the release job has write permission; pull requests cannot publish.
+GitHub Actions automatically builds packages for Windows, Linux and macOS.
+Build artifacts are available from the Actions tab for 14 days.
 
-The reusable `linux-extra.yml` workflow also builds Arch, Snap and Flatpak on every run using the same build number, without publishing to stores. All packages are included in tag releases.
+Pushing a supported version tag creates a GitHub release containing
+the distribution packages and SHA-256 checksums.
 
-Before publishing, review `THIRD_PARTY_NOTICES.md`, particularly the inherited 7-Zip binary source obligations. No remote or GitHub repository is configured by the extraction.
+See [Releasing](docs/RELEASING.md) for workflow and version-tag details.
+Third-party component information is available in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
