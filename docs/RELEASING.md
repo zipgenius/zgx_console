@@ -32,3 +32,13 @@ Only the release job has repository write permission; pull requests cannot publi
 
 Before publishing a release, review [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md),
 including the source obligations for the inherited 7-Zip binaries.
+
+## Ubuntu build dependencies
+
+Linux packaging jobs use `build/install-ubuntu-tools.sh` to install their tools.
+The helper tries HTTPS Ubuntu mirrors in order (MIT, kernel.org, then the Ubuntu
+archive), with bounded timeouts and retries. Each mirror must provide all required
+release indexes before package installation starts. APT verifies the normal Ubuntu
+archive signatures. The helper uses temporary source/list files and leaves the
+runner's existing APT sources unchanged. It is also used inside the Snap container.
+`ZG_UBUNTU_MIRRORS` can override the mirror list with one HTTPS URL per line.

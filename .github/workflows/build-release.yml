@@ -90,8 +90,7 @@ jobs:
       - name: Build Linux DEB and RPM
         if: matrix.rid == 'linux-x64'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y rpm
+          sudo bash build/install-ubuntu-tools.sh rpm
           python zgx/packaging/build-linux.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '${{ needs.version.outputs.version }}'
       - uses: actions/upload-artifact@v4
         with:
