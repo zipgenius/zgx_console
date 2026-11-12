@@ -13,3 +13,4 @@ native/sfx_stub/build/
 __pycache__/
 
 native/sqx/build-*/
+/tmp
