@@ -2,6 +2,28 @@
 
 Standalone command-line archive utility, extracted from ZipGenius X. Initial product version: **10.0.1**. License: **GPL-3.0-only**, with separately licensed dependencies.
 
+## Install and use
+
+Download a package matching your operating system and CPU from [Releases](https://github.com/zipgenius/zgx_console/releases). If no release is available, use a successful run in [Actions](https://github.com/zipgenius/zgx_console/actions); build artifacts expire after 14 days. Distributed packages include .NET; the SDK is only needed to build from source.
+
+- **Windows x64:** run the unified `-win-x64-setup.exe`. Choose current-user installation (default) or all users (administrator required). Fully close and reopen your terminal afterwards.
+- **Linux x64:** install the downloaded DEB with `sudo apt install ./package.deb`, RPM with `sudo dnf install ./package.rpm`, or Arch package with `sudo pacman -U ./package.pkg.tar.zst`. Replace `package` with the actual filename. The command is `zg`.
+- **Portable Windows/Linux/macOS, x64/ARM64:** extract the entire ZIP or tar.gz into a permanent folder. Run `zg.exe` on Windows or `./zg` on Unix from that folder. `-install` registers that folder in PATH; it does not copy files. Keep the whole distribution together.
+- **Snap/Flatpak:** use the local bundles; they are not published to Snap Store or Flathub. Commands and sandbox restrictions are described in the installation guide.
+
+See the **[Wiki](https://github.com/zipgenius/zgx_console/wiki)** for [installation and removal](https://github.com/zipgenius/zgx_console/wiki/Installation), [usage examples](https://github.com/zipgenius/zgx_console/wiki/Usage), and [platform support and troubleshooting](https://github.com/zipgenius/zgx_console/wiki/Platform-support). Guide in italiano: **[Installazione](https://github.com/zipgenius/zgx_console/wiki/Installazione)** e **[Esempi d'uso](https://github.com/zipgenius/zgx_console/wiki/Esempi)**. Wiki sources are versioned in [docs/wiki](docs/wiki).
+
+```sh
+zg -help
+zg -add documents.zip "+documents/*" R1 F1 C5
+zg -list documents.zip --verbose
+zg -test documents.zip
+zg -extract documents.zip extracted R1 F1 O1
+zg -hash documents.zip --sha256
+```
+
+Run these examples in a working folder containing `documents`. Quoting the entire `+pattern` prevents shell wildcard expansion. `O1` skips existing files during extraction; `O0` overwrites them. Use `zg -help -add` or `zg -help -extract` for details. ZIP safety checks are always active; `--silent` and `--yes` do not bypass them. Supported formats depend on the platform and command.
+
 ## Build
 
 Install .NET SDK 10, then run:
