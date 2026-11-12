@@ -6,13 +6,15 @@ ZipGenius X Console is a standalone command-line tool for creating, extracting, 
 
 1. [Installation](Installation): choose a package, install system-wide or for one user, register a portable copy, update and uninstall.
 2. [Usage](Usage): practical archive, backup, hash, conversion and SFX examples, including exit codes for scripts.
-3. [Platform support](Platform-support): native format limits, security checks and troubleshooting.
+3. [Complete command reference](Command-reference): all commands, options and examples from the English HTML guide.
+4. [Platform support](Platform-support): native format limits, security checks and troubleshooting.
 
 ## Italiano
 
 1. [Installazione](Installazione): pacchetti, installazione nel sistema o personale, copia portabile, aggiornamento e rimozione.
 2. [Esempi d'uso](Esempi): archivi, backup, hash, conversione, SFX e codici per gli script.
-3. [Piattaforme e problemi comuni](Platform-support#italiano): limiti dei formati e protezione ZipBomb.
+3. [Guida completa](Guida-completa): tutti i comandi, le opzioni e gli esempi della guida HTML italiana.
+4. [Piattaforme e problemi comuni](Platform-support#italiano): limiti dei formati e protezione ZipBomb.
 
 ## Downloads and source
 
