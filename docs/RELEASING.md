@@ -36,8 +36,8 @@ including the source obligations for the inherited 7-Zip binaries.
 ## Ubuntu build dependencies
 
 Linux packaging jobs use `build/install-ubuntu-tools.sh` to install their tools.
-The helper tries HTTPS Ubuntu mirrors in order (MIT, kernel.org, then the Ubuntu
-archive), with bounded timeouts and retries. Each mirror must provide all required
+For amd64 the helper tries HTTPS Ubuntu mirrors in order (MIT, kernel.org, then the Ubuntu
+archive); arm64 uses Ubuntu Ports. Both use bounded timeouts and retries. Each mirror must provide all required
 release indexes before package installation starts. APT verifies the normal Ubuntu
 archive signatures. The helper uses temporary source/list files and leaves the
 runner's existing APT sources unchanged. It is also used inside the Snap container.

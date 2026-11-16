@@ -30,9 +30,15 @@ if [ -n "${ZG_APT_CA_BUNDLE:-}" ]; then
   options+=(-o "Acquire::https::CaInfo=$ZG_APT_CA_BUNDLE")
 fi
 # Allow a local mirror list for infrastructure configuration and validation.
-mirrors=${ZG_UBUNTU_MIRRORS:-'https://mirrors.mit.edu/ubuntu
+architecture=$(dpkg --print-architecture)
+if [ "$architecture" = arm64 ]; then
+  default_mirrors='https://ports.ubuntu.com/ubuntu-ports'
+else
+  default_mirrors='https://mirrors.mit.edu/ubuntu
 https://mirrors.edge.kernel.org/ubuntu
-https://archive.ubuntu.com/ubuntu'}
+https://archive.ubuntu.com/ubuntu'
+fi
+mirrors=${ZG_UBUNTU_MIRRORS:-$default_mirrors}
 while IFS= read -r mirror; do
   [ -n "$mirror" ] || continue
   case "$mirror" in https://*) ;; *) echo "Expected an HTTPS mirror: $mirror" >&2; exit 2 ;; esac
