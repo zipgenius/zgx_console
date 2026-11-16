@@ -79,7 +79,7 @@ sudo pacman -U ./zg-console-VERSION-1-x86_64.pkg.tar.zst
 
 I pacchetti installano in `/opt/zipgenius/zgshell` e gestiscono il collegamento `/usr/bin/zg`. Gli script del pacchetto curano la registrazione: non serve eseguire manualmente `-install`. Verifica con `zg -help`.
 
-Il payload richiede glibc >= 2.34, ICU, OpenSSL 3, libgcc, libstdc++ e zlib. Non è un pacchetto per Alpine/musl. La conversione Linux verso 7Z e TAR.XZ richiede anche `libarchive.so.13` e il locale `C.UTF-8`. Il gestore risolve le dipendenze dichiarate usando i repository configurati.
+Il payload richiede glibc >= 2.34, ICU, OpenSSL 3, libgcc, libstdc++ e zlib. Non è un pacchetto per Alpine/musl. La scrittura 7Z/TAR.XZ e il test CAB richiedono `libarchive.so.13` e il locale `C.UTF-8`; le operazioni CAB richiedono anche `libgcab-1.0.so.0` e quelle WIM `libwim.so.15`. I gestori DEB/RPM/Arch risolvono le dipendenze dichiarate usando i repository configurati. Nella versione portabile vanno installate separatamente; Snap e Flatpak non includono ancora libgcab e wimlib.
 
 Per aggiornare, installa il nuovo file con lo stesso comando. Per rimuovere, usa il gestore corrispondente:
 

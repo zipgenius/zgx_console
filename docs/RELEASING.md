@@ -14,12 +14,12 @@ packages on every run, using the same build number. It does not publish to store
 
 ## Versions and tags
 
-The current product version is `10.0.1`. CI allocates a shared build revision as
-`github.run_number * 10 + github.run_attempt`, producing `10.0.1.BUILD`.
+The current product version is `10.0.2`. CI allocates a shared build revision as
+`github.run_number * 10 + github.run_attempt`, producing `10.0.2.BUILD`.
 The workflow accepts up to nine attempts per run and revisions up to 65534;
 it fails explicitly if either limit is exceeded.
 
-Release tags must be `v10.0.1` or `v10.0.1.BUILD`. In the four-field form,
+Release tags must be `v10.0.2` or `v10.0.2.BUILD`. In the four-field form,
 `BUILD` must equal the revision allocated to that tag's workflow run.
 An unsupported tag fails validation.
 

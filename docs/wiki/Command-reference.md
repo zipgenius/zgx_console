@@ -1,6 +1,6 @@
 # ZipGenius X console
 
-Version 1.0 - 12 November 2026
+Version 10.0.2 - 16 November 2026
 
 [Italiano](Guida-completa) | [English](Command-reference) | [PDF](https://github.com/zipgenius/zgx_console/wiki/downloads/ZipGenius-X-console-en.pdf)
 
@@ -91,7 +91,9 @@ The list and warnings use separate outputs (stdout and stderr). Saving the list 
 
 `zg -add archive {C...} {A...} {F...} {R...} {K...} +[file] -[file]`
 
-Creates or updates ZIP, 7Z, TAR and compressed TAR streams, CAB and SQX archives. Supported compressed TAR forms include `.tar.gz`/`.tgz`, `.tar.bz2`/`.tbz2` and `.tar.Z`/`.taz`. Plain `.bz2` and `.Z` streams contain one file.
+Creates or updates ZIP, 7Z, WIM, TAR and compressed TAR streams, CAB and SQX archives, subject to platform support. Supported compressed TAR forms include `.tar.gz`/`.tgz`, `.tar.bz2`/`.tbz2` and `.tar.Z`/`.taz`. Plain `.bz2` and `.Z` streams contain one file.
+
+On Linux, WIM requires wimlib and CAB requires libgcab. WIM creation and update use one image; passwords and split volumes are not supported. CAB uses stored or MSZIP compression and does not support split volumes. Portable installations require the libraries separately; Snap and Flatpak do not yet bundle them.
 
 | Parameter | Meaning |
 | --- | --- |
@@ -131,7 +133,7 @@ To protect a ZIP with a password, use `-add` with `Ppassword` and `Q3` (AES-256)
 
 `zg -list archive [--verbose]`
 
-Lists archive files. `--verbose` adds sizes, dates, compression ratio and CRC when available.
+Lists archive files. `--verbose` shows available sizes, compression ratio and CRC; a dash marks unavailable values. Compressed TAR lists its contained files. DEB lists its outer members, including `debian-binary`. Nameless BZ2, XZ and Z streams use the archive name without its extension.
 
 ### Examples
 
@@ -153,6 +155,8 @@ Shows file names without extracting them to disk and reports anything suspicious
 `zg -extract archive destination [options]`
 
 This command extracts one or more files from the specified archive. `archive` identifies the file to decompress; `destination` identifies the folder in which extracted files will be saved. Both parameters are required. Use `./` or `-curr` to extract into the current folder. When no `+[file]` parameter is supplied, all files allowed by the other options are considered.
+
+On Linux WIM extraction requires wimlib, supports one image and rejects symbolic links and reparse points. CAB extraction requires libgcab and does not support split cabinets.
 
 ### Options
 
@@ -378,7 +382,7 @@ Backup uses the same checks as -add: it checks the existing backup ZIP and the Z
 
 Conversion first needs to extract the contents. If the source ZIP is high risk or cannot be fully checked, zg stops without replacing the destination file. A warning allows it to continue. Any extracted ZIPs added to the new archive are checked too. The source archive stays unchanged.
 
-`zg -help -convert`: shows all command options.
+Linux CAB conversion requires libgcab; WIM conversion requires wimlib. CAB output uses stored or MSZIP compression. WIM input and output use one image. `zg -help -convert` shows all command options.
 
 [Protection from dangerous archives](#zip-security)
 
@@ -562,7 +566,7 @@ In PowerShell read $LASTEXITCODE immediately afterwards. In a Linux or macOS ter
 
 ### Formats and limits
 
-ZIPs use managed engines on every platform, including AES-protected ZIPs. On Windows, other formats read by the 7-Zip engine, including 7Z, RAR, CAB and TAR, use its internal test. Linux and macOS use the managed reader for formats it recognises, including 7Z, RAR, TAR and GZIP; some other formats may return 7.
+ZIPs use managed engines on every platform, including AES-protected ZIPs. On Windows, other formats read by the 7-Zip engine, including 7Z, RAR, CAB and TAR, use its internal test. On Linux, CAB uses libgcab and libarchive; WIM uses wimlib. DEB testing checks the outer ar structure and member lengths only: ar has no per-member checksum, and nested archives are not tested recursively. Other platform and format limits still apply.
 
 SQX testing is not yet available and returns 7. The command does not extract files as a fallback.
 

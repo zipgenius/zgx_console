@@ -28,18 +28,18 @@ jobs:
         if: matrix.format == 'arch'
         run: |
           sudo bash build/install-ubuntu-tools.sh pacman-package-manager makepkg zstd fakeroot libarchive-tools
-          python zgx/packaging/build-arch.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '10.0.1.${{ inputs.build_number }}'
+          python zgx/packaging/build-arch.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '10.0.2.${{ inputs.build_number }}'
       - name: Build Flatpak
         if: matrix.format == 'flatpak'
         run: |
           sudo bash build/install-ubuntu-tools.sh flatpak ostree
           flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           flatpak --user install -y flathub org.freedesktop.Platform//25.08
-          python zgx/packaging/build-sandbox.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '10.0.1.${{ inputs.build_number }}' --format flatpak
+          python zgx/packaging/build-sandbox.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version '10.0.2.${{ inputs.build_number }}' --format flatpak
       - name: Build Snap on Ubuntu 26.04
         if: matrix.format == 'snap'
         run: |
-          docker run --rm --network host -v "$PWD:/src" -v /etc/ssl/certs/ca-certificates.crt:/run/zgx-ca-bundle.crt:ro -e ZG_APT_CA_BUNDLE=/run/zgx-ca-bundle.crt -w /src ubuntu:26.04 bash -c 'set -eu; bash build/install-ubuntu-tools.sh ca-certificates python3 snapd squashfs-tools libicu-dev libssl-dev zlib1g-dev; python3 zgx/packaging/build-sandbox.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version 10.0.1.${{ inputs.build_number }} --format snap'
+          docker run --rm --network host -v "$PWD:/src" -v /etc/ssl/certs/ca-certificates.crt:/run/zgx-ca-bundle.crt:ro -e ZG_APT_CA_BUNDLE=/run/zgx-ca-bundle.crt -w /src ubuntu:26.04 bash -c 'set -eu; bash build/install-ubuntu-tools.sh ca-certificates python3 snapd squashfs-tools libicu-dev libssl-dev zlib1g-dev; python3 zgx/packaging/build-sandbox.py --payload artifacts/publish/linux-x64 --output artifacts/dist --version 10.0.2.${{ inputs.build_number }} --format snap'
       - uses: actions/upload-artifact@v4
         with:
           name: packages-extra-${{ matrix.format }}

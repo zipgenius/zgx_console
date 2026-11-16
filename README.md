@@ -1,6 +1,6 @@
 # ZipGenius X Console
 
-Standalone command-line archive utility, extracted from ZipGenius X. Initial product version: **10.0.1**. License: **GPL-3.0-only**, with separately licensed dependencies.
+Standalone command-line archive utility, extracted from ZipGenius X. Current product version: **10.0.2**. License: **GPL-3.0-only**, with separately licensed dependencies.
 
 ## Install and use
 
@@ -35,7 +35,7 @@ dotnet run --project zgx/zg.csproj -- -help
 
 SFX terminal and desktop templates are built automatically for the current runtime. The first build restores NuGet packages and publishes self-contained SFX templates; network access is required. Everything needed is inside this repository.
 
-Every local build allocates the next revision in `.build/build-number.txt`, starting at 1: `10.0.1.1`, `10.0.1.2`, etc. Run local builds serially. To assign a common number to multiple platforms, pass `-p:BuildNumber=N`. The counter is local, ignored by Git, and independent across clones. Revisions must be 1..65534; the target fails explicitly on overflow. CI uses `github.run_number * 10 + github.run_attempt`, shared across its platform jobs, so reruns get a new revision (up to nine attempts per run). The workflow rejects exhaustion instead of wrapping.
+Every local build allocates the next revision in `.build/build-number.txt`, starting at 1: `10.0.2.1`, `10.0.2.2`, etc. Run local builds serially. To assign a common number to multiple platforms, pass `-p:BuildNumber=N`. The counter is local, ignored by Git, and independent across clones. Revisions must be 1..65534; the target fails explicitly on overflow. CI uses `github.run_number * 10 + github.run_attempt`, shared across its platform jobs, so reruns get a new revision (up to nine attempts per run). The workflow rejects exhaustion instead of wrapping.
 
 ## Distributions
 
@@ -48,6 +48,10 @@ python build/package.py --rid osx-arm64 --build-number 1
 Run on the matching operating system. Output: `artifacts/dist`. Portable Windows ZIP and Linux/macOS tar.gz distributions support x64 and arm64. The native archive backends are platform dependent: SQX runtime libraries and bridges are included for Windows x64 (including the required x86 helpers); SQX is unsupported on ARM64, Linux and macOS. The inherited 7-Zip shared libraries are Windows/Linux binaries. macOS builds do not imply full native format support; libarchive writing currently targets Linux. See `zgx/LINUX.md` and embedded manuals for command behavior.
 
 Windows x64 MSI and unified setup (machine/user selection), Linux x64 DEB/RPM, Arch, Snap and Flatpak scripts are retained in `zgx/packaging`. Windows setup requires Visual Studio C++ and Windows SDK. Linux DEB/RPM requires `dpkg-deb` and `rpmbuild`; Arch requires `makepkg`, `pacman` and `zstd`. Snap requires Ubuntu 26.04 and Flatpak requires the Freedesktop runtime noted in its script.
+
+Linux WIM support uses the system wimlib shared library (`libwim.so.15`); DEB/RPM/Arch packages declare the dependency. Portable users must install wimlib separately. Snap and Flatpak do not yet bundle it. See `zgx/LINUX.md` for single-image and extraction limits.
+
+Linux CAB support uses the system GCab shared library (`libgcab-1.0.so.0`); DEB/RPM/Arch packages declare the dependency. Portable users must install it separately. Snap and Flatpak do not yet bundle it. Creation supports stored and MSZIP compression; split cabinets are not supported.
 
 ## Builds and releases
 

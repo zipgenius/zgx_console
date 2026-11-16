@@ -25,11 +25,11 @@ jobs:
           build=$((RUN_NUMBER * 10 + RUN_ATTEMPT))
           test "$RUN_ATTEMPT" -le 9
           test "$build" -le 65534
-          version="10.0.1.$build"
+          version="10.0.2.$build"
           if [ "$REF_TYPE" = tag ]; then
             case "$REF_NAME" in
-              v10.0.1|"v$version") ;;
-              *) echo "Tag must be v10.0.1 or v$version" >&2; exit 1 ;;
+              v10.0.2|"v$version") ;;
+              *) echo "Tag must be v10.0.2 or v$version" >&2; exit 1 ;;
             esac
           fi
           echo "build=$build" >> "$GITHUB_OUTPUT"
@@ -68,6 +68,9 @@ jobs:
           Copy-Item native/sfx_stub/build/Release/sfx_stub.exe native/sfx_stub/template/sfx_stub.exe -Force
       - name: Publish portable package
         run: python build/package.py --rid ${{ matrix.rid }} --build-number ${{ needs.version.outputs.build }}
+      - name: Install Linux archive test dependencies
+        if: runner.os == 'Linux'
+        run: sudo bash build/install-ubuntu-tools.sh libgcab-1.0-0 gcab libwim15t64 wimtools libarchive13t64
       - name: Verify embedded manuals
         if: matrix.rid != 'win-arm64'
         env:
@@ -78,6 +81,14 @@ jobs:
         env:
           ZG_TEST_APP: ${{ github.workspace }}/artifacts/publish/${{ matrix.rid }}/zg${{ runner.os == 'Windows' && '.exe' || '' }}
         run: python zgx/tests/archive_test_smoke.py
+      - name: Verify Linux CAB and WIM
+        if: runner.os == 'Linux'
+        env:
+          ZG_TEST_APP: ${{ github.workspace }}/artifacts/publish/${{ matrix.rid }}/zg
+        run: |
+          python zgx/tests/archive_format_regression.py
+          python zgx/tests/gcab_smoke.py
+          python zgx/tests/wimlib_smoke.py
       - name: Build Windows MSI and setup
         if: matrix.rid == 'win-x64'
         shell: pwsh
@@ -110,6 +121,7 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           pattern: packages-*
@@ -125,4 +137,4 @@ jobs:
           cd dist
           rm -f SHA256SUMS
           sha256sum * > SHA256SUMS
-          gh release create "$RELEASE_TAG" ./* --verify-tag --title "ZipGenius X Console $RELEASE_VERSION" --generate-notes
+          gh release create "$RELEASE_TAG" ./* --verify-tag --title "ZipGenius X Console $RELEASE_VERSION" --notes-file ../docs/RELEASE_NOTES.md --generate-notes

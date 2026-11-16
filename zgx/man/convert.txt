@@ -4,7 +4,8 @@
 Converts an archive by extracting it to a private temporary folder and recreating it in the requested destination format. The source archive is never modified.
 
 [Destination formats:
-]ZIP, 7Z, CAB, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.XZ/TXZ, SQX, BZ2 and Z.
+]ZIP, 7Z, WIM, CAB, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.XZ/TXZ, SQX, BZ2 and Z. Linux WIM requires wimlib (libwim.so.15).
+]On Linux, CAB requires libgcab; output uses stored or MSZIP compression.
 
 [Options:
 ]C0, C1, C5, C9 or CB set destination compression; C5 is the default.

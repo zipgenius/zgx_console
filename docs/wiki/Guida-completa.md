@@ -1,6 +1,6 @@
 # ZipGenius X console
 
-Versione 1.0 - 12 novembre 2026
+Versione 10.0.2 - 16 novembre 2026
 
 [Italiano](Guida-completa) | [English](Command-reference) | [PDF](https://github.com/zipgenius/zgx_console/wiki/downloads/ZipGenius-X-console-it.pdf)
 
@@ -91,7 +91,9 @@ L'elenco e gli avvisi usano due uscite separate (stdout e stderr). Salvare l'ele
 
 `zg -add archivio {C...} {A...} {F...} {R...} {K...} +[file] -[file]`
 
-Crea o aggiorna ZIP, 7Z, TAR e relativi flussi compressi, CAB e SQX. Sono supportati, tra gli altri, `.tar.gz`/`.tgz`, `.tar.bz2`/`.tbz2` e `.tar.Z`/`.taz`. I formati `.bz2` e `.Z` contengono un solo file.
+Crea o aggiorna ZIP, 7Z, WIM, TAR e relativi flussi compressi, CAB e SQX, secondo il supporto della piattaforma. Sono supportati, tra gli altri, `.tar.gz`/`.tgz`, `.tar.bz2`/`.tbz2` e `.tar.Z`/`.taz`. I formati `.bz2` e `.Z` contengono un solo file.
+
+Su Linux WIM richiede wimlib e CAB richiede libgcab. La creazione e l’aggiornamento WIM usano una sola immagine e non supportano password o volumi suddivisi. CAB usa file memorizzati o compressione MSZIP e non supporta volumi suddivisi. Nella versione portabile le librerie vanno installate separatamente; Snap e Flatpak non le includono ancora.
 
 | Parametro | Significato |
 | --- | --- |
@@ -131,7 +133,7 @@ Per proteggere uno ZIP con una password usa `-add` con `Ppassword` e `Q3` (AES-2
 
 `zg -list archivio [--verbose]`
 
-Elenca i file contenuti nell'archivio. Con `--verbose` aggiunge dimensioni, date, rapporto di compressione e CRC quando disponibili.
+Elenca i file contenuti nell'archivio. Con `--verbose` mostra dimensioni, rapporto di compressione e CRC quando disponibili; un trattino indica un valore mancante. Per un TAR compresso mostra i file contenuti; per un DEB mostra i membri esterni, incluso `debian-binary`. I flussi BZ2, XZ e Z senza nome usano il nome dell'archivio senza estensione.
 
 ### Esempi
 
@@ -153,6 +155,8 @@ Mostra i nomi dei file senza estrarli sul disco e segnala eventuali sospetti. Pu
 `zg -extract archivio destinazione [opzioni]`
 
 Questo comando estrae uno o più file dall'archivio specificato. `archivio` indica il file da decomprimere; `destinazione` indica la cartella nella quale salvare i file estratti. Entrambi i parametri sono obbligatori. Per estrarre nella cartella corrente usare `./` oppure `-curr`. Se non viene indicato alcun `+[file]`, vengono considerati tutti i file ammessi dalle altre opzioni.
+
+Su Linux l’estrazione WIM richiede wimlib, supporta una sola immagine e rifiuta collegamenti simbolici e reparse point. L’estrazione CAB richiede libgcab e non supporta archivi suddivisi in volumi.
 
 ### Opzioni
 
@@ -378,7 +382,7 @@ Il backup usa gli stessi controlli di -add: verifica il backup ZIP già esistent
 
 La conversione deve prima estrarre il contenuto. Se lo ZIP sorgente presenta un rischio alto o non può essere controllato completamente, zg si ferma senza sostituire il file di destinazione. Un semplice avviso consente di continuare. Anche gli ZIP estratti che vengono aggiunti al nuovo archivio sono controllati. L'archivio sorgente resta invariato.
 
-`zg -help -convert`: mostra tutte le opzioni del comando.
+Su Linux la conversione CAB richiede libgcab e quella WIM richiede wimlib. Il CAB usa file memorizzati o compressione MSZIP; il WIM usa una sola immagine. `zg -help -convert` mostra tutte le opzioni.
 
 [Protezione dagli archivi pericolosi](#zip-security)
 
@@ -562,7 +566,7 @@ In PowerShell leggi $LASTEXITCODE subito dopo il comando. Nel terminale Linux o 
 
 ### Formati e limiti
 
-Gli ZIP vengono controllati con motori gestiti su tutte le piattaforme, anche quando sono protetti con AES. Su Windows gli altri formati leggibili dal motore 7-Zip, tra cui 7Z, RAR, CAB e TAR, usano il suo test interno. Su Linux e macOS viene usato il lettore gestito per i formati che riconosce, tra cui 7Z, RAR, TAR e GZIP; alcuni altri formati possono restituire 7.
+Gli ZIP vengono controllati con motori gestiti su tutte le piattaforme, anche quando sono protetti con AES. Su Windows gli altri formati leggibili dal motore 7-Zip, tra cui 7Z, RAR, CAB e TAR, usano il suo test interno. Su Linux CAB usa libgcab e libarchive; WIM usa wimlib. Il test DEB controlla solo struttura ar esterna e lunghezza dei membri: ar non ha checksum per membro e gli archivi interni non vengono verificati ricorsivamente. Restano i limiti delle altre piattaforme e dei singoli formati.
 
 Il test SQX non è ancora disponibile e restituisce 7: il comando non estrae i file come ripiego.
 

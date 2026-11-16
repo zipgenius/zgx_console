@@ -10,8 +10,9 @@
 | ZIP | Managed engines; ZIP integrity testing includes AES-encrypted ZIPs |
 | Other archive tests | Windows uses 7-Zip where available; Linux/macOS use managed readers for recognised formats, including 7Z, RAR, TAR and GZIP |
 | SQX | Native libraries/bridges shipped for Windows x64, including x86 helpers; unsupported on ARM64/Linux/macOS; `-test` is not implemented and returns 7 |
-| CAB creation | Requires Windows components; do not assume Linux/macOS support |
+| Linux CAB | Requires `libgcab-1.0.so.0`; creates uncompressed/MSZIP, reads LZX; split cabinets unsupported. Snap/Flatpak do not bundle libgcab. |
 | Linux 7Z/TAR.XZ conversion output | Requires `libarchive.so.13` and locale `C.UTF-8`; no encrypted or split 7Z output |
+| Linux WIM | Requires `libwim.so.15`; single-image creation, listing, testing, extraction and update; extraction rejects reparse points. Snap/Flatpak do not bundle wimlib. |
 | macOS native formats | Included Windows/Linux 7-Zip libraries do not provide a macOS native backend; a macOS build does not imply complete format parity |
 | Disk information | Managed readers inspect ISO/UDF, VHDX, VHD, VMDK, VDI, DMG and RAW; some variants, encryption and missing parent/extents can prevent a full report |
 | SFX | Only templates embedded in that build are available; inspect `zg -sfx --list-targets`; creating/signing macOS packages requires a Mac |
@@ -50,7 +51,8 @@ Le distribuzioni portabili hanno target Windows, Linux e macOS, x64 e ARM64, ma 
 
 - ZIP usa motori gestiti; il test comprende ZIP AES. Su Linux/macOS i test degli altri archivi usano i lettori gestiti disponibili.
 - SQX richiede i componenti nativi forniti per Windows x64, con helper x86. Non è supportato su ARM64, Linux o macOS; `-test` SQX restituisce `7` anche su Windows.
-- La creazione CAB richiede componenti Windows. Su Linux la conversione verso 7Z/TAR.XZ richiede `libarchive.so.13` e `C.UTF-8`; non crea 7Z cifrati o divisi in volumi.
+- Su Linux CAB richiede `libgcab-1.0.so.0`: crea CAB senza compressione o MSZIP e legge LZX; i CAB divisi non sono supportati. Snap/Flatpak non includono libgcab. La conversione verso 7Z/TAR.XZ richiede `libarchive.so.13` e `C.UTF-8`; non crea 7Z cifrati o divisi in volumi.
+- Su Linux WIM richiede `libwim.so.15`: creazione, lettura, test, estrazione e aggiornamento supportano una sola immagine. L'estrazione rifiuta i reparse point. I pacchetti Snap e Flatpak non includono ancora wimlib.
 - La presenza di una build macOS non implica supporto completo dei backend nativi Windows/Linux.
 - I modelli SFX dipendono dalla build: controlla `zg -sfx --list-targets`. Per creare e firmare localmente un pacchetto macOS serve un Mac.
 - Le informazioni sulle immagini disco non montano i file. Varianti non supportate, cifratura o componenti mancanti possono produrre un rapporto incompleto, codice `9`.

@@ -78,7 +78,7 @@ sudo pacman -U ./zg-console-VERSION-1-x86_64.pkg.tar.zst
 
 These install into `/opt/zipgenius/zgshell` and own `/usr/bin/zg`. PATH registration is managed by package scripts; do not run `-install` manually for these packages. Verify with `zg -help`.
 
-The Linux payload requires glibc >= 2.34, ICU, OpenSSL 3, libgcc, libstdc++ and zlib. It does not target Alpine/musl. Linux conversion to 7Z/TAR.XZ additionally needs `libarchive.so.13` and the `C.UTF-8` locale. Package managers resolve declared dependencies using configured repositories.
+The Linux payload requires glibc >= 2.34, ICU, OpenSSL 3, libgcc, libstdc++ and zlib. It does not target Alpine/musl. Linux 7Z/TAR.XZ writing and CAB testing need `libarchive.so.13` and `C.UTF-8`; CAB operations also need `libgcab-1.0.so.0`, and WIM needs `libwim.so.15`. DEB/RPM/Arch package managers resolve declared dependencies using configured repositories. Portable users install them separately; Snap and Flatpak do not currently bundle libgcab or wimlib.
 
 Update by installing the newer package with the same command. Remove using the matching manager:
 

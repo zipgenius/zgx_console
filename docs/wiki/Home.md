@@ -23,6 +23,6 @@ ZipGenius X Console is a standalone command-line tool for creating, extracting, 
 - [Repository and build instructions](https://github.com/zipgenius/zgx_console).
 - [Release workflow](https://github.com/zipgenius/zgx_console/blob/main/docs/RELEASING.md).
 
-Packages include .NET. Building from source requires .NET SDK 10. The current product series is `10.0.1.BUILD`; examples use placeholders instead of pinning an old build. Availability of a particular package depends on the selected release or workflow run.
+Packages include .NET. Building from source requires .NET SDK 10. The current product series is `10.0.2.BUILD`; examples use placeholders instead of pinning an old build. Availability of a particular package depends on the selected release or workflow run.
 
 The Wiki sources are maintained in [docs/wiki](https://github.com/zipgenius/zgx_console/tree/main/docs/wiki). Detailed command help is embedded in the executable: `zg -help`, `zg -help -add`, `zg -help -exitcodes`.

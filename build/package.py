@@ -16,7 +16,7 @@ p.add_argument('--build-number', type=int, required=True)
 a = p.parse_args()
 if not 1 <= a.build_number <= 65534:
     p.error('build-number must be 1..65534')
-version = f'10.0.1.{a.build_number}'
+version = f'10.0.2.{a.build_number}'
 payload = root / 'artifacts' / 'publish' / a.rid
 dist = root / 'artifacts' / 'dist'
 if payload.exists():

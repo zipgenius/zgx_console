@@ -3,7 +3,8 @@
 
 Descrizione:
 Questo comando comprime file e cartelle in un archivio. Se l'archivio specificato esiste già, vi aggiunge i file e le cartelle selezionati.
-Non tutti i formati consentono di comprimere più file: è possibile creare archivi ZIP, basati su ZIP, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.Z/TAZ, BZ2, Z, SQX e CAB. BZ2 e Z sono flussi a file singolo; per più file usare TAR.BZ2 o TAR.Z. Il formato viene determinato dall'estensione del nome dell'archivio: "test.zip" crea un archivio ZIP, mentre "test.cab" crea un archivio CAB.
+Si possono creare archivi ZIP, basati su ZIP, 7Z, WIM, TAR e TAR compressi, BZ2, Z, SQX e CAB, secondo il supporto della piattaforma. BZ2 e Z sono flussi a file singolo. Su Linux WIM richiede wimlib (libwim.so.15); non supporta password o volumi suddivisi. Non è possibile aggiornare un WIM con più immagini. L'estensione determina il formato.
+Su Linux CAB richiede libgcab-1.0.so.0: C0 memorizza i file senza comprimerli e gli altri livelli usano MSZIP. Password e volumi suddivisi non sono supportati.
 
 [Parametri:
 [+ (file/cartella)

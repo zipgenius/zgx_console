@@ -4,6 +4,8 @@
 
 Checks whether an archive's files can be read and whether the available integrity checks pass. This is useful before keeping a backup or after downloading an archive.
 The command reads data without saving extracted files. It does not change the archive or ask for a destination folder. A valid empty archive also passes.
+For DEB packages the outer ar structure and member lengths are checked. ar has
+no member checksums; nested control and data archives are not tested recursively.
 
 [Options:
 ]Ppassword           Archive password. You can also use --password=value.

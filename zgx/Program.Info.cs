@@ -258,6 +258,17 @@ partial class Program
     {
         if (Path.GetExtension(path).Equals(".sqx", StringComparison.OrdinalIgnoreCase))
             throw new NotSupportedException("The SQX engine does not expose read-only metadata for -info.");
+        if (Path.GetExtension(path).Equals(".cab", StringComparison.OrdinalIgnoreCase) ||
+            (OperatingSystem.IsLinux() && Path.GetExtension(path).Equals(".wim", StringComparison.OrdinalIgnoreCase)) ||
+            Path.GetExtension(path).Equals(".deb", StringComparison.OrdinalIgnoreCase) ||
+            IsStandaloneCompressedStream(path) || TarArchiveEditor.IsTarArchivePath(path))
+        {
+            var entries = ReadArchiveList(path, out int total);
+            report.Table("Archive", ("Reader", "archive listing"), ("Entries", total), ("Files", entries.Count));
+            if (verbose)
+                foreach (var entry in entries) report.Table("Entry", ("Name", entry.Name));
+            return;
+        }
         try
         {
             using var archive = SharpCompress.Archives.ArchiveFactory.OpenArchive(path);

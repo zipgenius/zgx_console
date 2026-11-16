@@ -5,6 +5,24 @@ librerie gestite del progetto. La scrittura di 7Z e TAR.XZ usa direttamente
 `libarchive.so.13` tramite la sua API C: non avvia eseguibili esterni.
 La distribuzione Linux deve includere questa libreria e il locale `C.UTF-8`.
 
+La creazione e la lettura WIM usano `libwim.so.15` tramite l'API di wimlib.
+I pacchetti DEB, RPM e Arch dichiarano la dipendenza; per la versione portabile
+installare `libwim15t64` o `libwim15` su Debian/Ubuntu, oppure `wimlib` su
+Fedora/Arch. Snap e Flatpak non includono ancora wimlib. Gli archivi WIM creati
+contengono una singola immagine; l'aggiornamento e l'estrazione richiedono un
+WIM a immagine singola. L'estrazione rifiuta collegamenti e reparse point.
+Password e volumi suddivisi non sono supportati per la creazione WIM. I metadati
+dei file provengono dalla copia temporanea su Linux e non riproducono gli ACL
+o gli altri metadati propri di un filesystem Windows.
+
+La lettura, la verifica e la creazione CAB usano `libgcab-1.0.so.0`. I pacchetti
+DEB, RPM e Arch dichiarano la dipendenza; nella versione portabile installare
+`libgcab-1.0-0` su Debian/Ubuntu, `libgcab1` su Fedora o `gcab` su Arch. Snap
+e Flatpak non includono ancora libgcab. La creazione supporta dati non compressi
+(C0) o MSZIP (altri livelli); LZX è disponibile in lettura. Gli archivi CAB
+divisi in volumi non sono supportati. La verifica legge i dati tramite
+libarchive senza creare file estratti; CAB non fornisce checksum per singolo file.
+
 Esempio: `zg -convert documenti.zip documenti.7z`
 
 La password viene chiesta solo per archivi protetti. Le barre rispettano
@@ -14,7 +32,7 @@ solo dopo che la conversione è riuscita.
 Limiti del motore Linux:
 
 - Non crea 7Z cifrati o suddivisi in volumi; per la cifratura in uscita usare ZIP.
-- Non converte SQX e non crea CAB, che richiedono i componenti Windows.
+- Non converte SQX.
 - Gli altri comandi storici che usano SevenZipSharp non sono migrati da questa modifica.
 
 Verifica dalla radice del repository:

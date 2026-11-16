@@ -4,7 +4,8 @@
 Converte un archivio estraendolo in una cartella temporanea privata e ricreandolo nel formato di destinazione richiesto. L'archivio sorgente non viene mai modificato.
 
 [Formati di destinazione:
-]ZIP, 7Z, CAB, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.XZ/TXZ, SQX, BZ2 e Z.
+]ZIP, 7Z, WIM, CAB, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.XZ/TXZ, SQX, BZ2 e Z. Su Linux WIM richiede wimlib (libwim.so.15).
+]Su Linux CAB richiede libgcab; il risultato usa file memorizzati o compressione MSZIP.
 
 [Opzioni:
 ]C0, C1, C5, C9 o CB impostano la compressione di destinazione; C5 è il valore predefinito.

@@ -99,6 +99,24 @@ partial class Program
         }
         if (zip) return TestZipContents(path, password);
         string extension = Path.GetExtension(path).ToLowerInvariant();
+        if (OperatingSystem.IsLinux() && extension == ".cab") return TestGcab(path);
+        if (OperatingSystem.IsLinux() && extension == ".wim")
+        {
+            WimLibWriter.Verify(path);
+            return WimLibWriter.Entries(path).Count;
+        }
+        if (extension == ".deb" || IsStandaloneCompressedStream(path)) return TestSimpleArchive(path);
+        if (!IsWindows() && TarArchiveEditor.IsTarArchivePath(path) && extension is ".bz2" or ".xz" or ".z")
+        {
+            using var tar = TarArchiveEditor.OpenTarArchive(path) ?? throw new InvalidDataException("Cannot read TAR archive.");
+            int tarCount = 0;
+            foreach (var entry in tar.Entries)
+            {
+                if (!entry.IsDirectory) { using var stream = entry.OpenEntryStream(); stream.CopyTo(Stream.Null); }
+                tarCount++;
+            }
+            return tarCount;
+        }
         bool knownArchive = new[] { ".7z", ".rar", ".cab", ".wim", ".iso", ".dmg", ".rpm", ".deb", ".arj", ".cpio", ".tar", ".gz", ".gzip", ".bz2", ".xz", ".z" }.Contains(extension)
             || TarArchiveEditor.IsTarArchivePath(path);
         if (!knownArchive && !ArchiveFactory.IsArchive(path, out _))

@@ -3,7 +3,8 @@
 
 Overview:
 This command lets you compress files and folders in an archive; if the specified archive already exists, files and folders will be added to that.
-Not all archive formats allow files compression: you can create ZIP, ZIP-based, TAR, TAR.GZ/TGZ, TAR.BZ2/TBZ/TBZ2, TAR.Z/TAZ, BZ2, Z, SQX and CAB archives. BZ2 and Z are single-file streams; use TAR.BZ2 or TAR.Z for multiple files. You can tell the program which format you want to compress to by specifying the filename extension of the archive, so "test.zip" will create a ZIP archive, while "test.cab" will create a .CAB one.
+You can create ZIP, ZIP-based, 7Z, WIM, TAR and compressed TAR, BZ2, Z, SQX and CAB archives, subject to platform support. BZ2 and Z are single-file streams. On Linux WIM requires wimlib (libwim.so.15); WIM passwords and split volumes are not supported. Updating a WIM with multiple images is not supported. The extension selects the format.
+On Linux CAB requires libgcab-1.0.so.0; C0 stores files and other levels use MSZIP. CAB passwords and split volumes are not supported.
 
 [Parameters:
 [+ (file/folder)

@@ -3,6 +3,9 @@
 The GPL-3.0-only license applies to the original ZipGenius Console and SFX code.
 Third-party components retain their own licenses.
 
+* wimlib is used as a system-provided shared library on Linux (https://wimlib.net/). It is available under the GNU LGPL; consult the license supplied with the installed library. Portable and sandbox distributions do not currently bundle it.
+* libgcab is used as a system-provided shared library on Linux (https://gitlab.gnome.org/GNOME/gcab), under LGPL-2.1-or-later. Portable and sandbox distributions do not currently bundle it.
+
 * 7-Zip native binaries: see `native/sfx_stub/third_party/License.txt` (LGPL, BSD and unRAR restrictions). Upstream source: https://www.7-zip.org/ and https://www.7-zip.org/download.html. Keep these notices in redistributed packages and meet the corresponding-source obligations for the exact binary versions you distribute.
 * The unused AGPL Json.NET Schema dependency was removed during extraction.
 * NuGet dependencies and their transitive dependencies are restored by .NET. Their license expressions, license files and upstream repository links are recorded in the restored `.nuspec` files. `build/package.py` copies these into every distribution.

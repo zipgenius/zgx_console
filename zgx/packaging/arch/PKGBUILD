@@ -6,7 +6,7 @@ pkgdesc='Create and extract archives, inspect disk images and create SFX, with a
 arch=('x86_64')
 url='https://www.zipgenius.it'
 license=('GPL-3.0-only')
-depends=('glibc>=2.34' 'gcc-libs' 'icu' 'openssl' 'zlib' 'libarchive')
+depends=('glibc>=2.34' 'gcc-libs' 'icu' 'openssl' 'zlib' 'libarchive' 'wimlib' 'gcab>=1.4')
 provides=('zgshell')
 conflicts=('zgshell')
 replaces=('zgshell')

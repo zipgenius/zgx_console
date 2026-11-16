@@ -12,10 +12,10 @@ WiX 6.0.2 locally in the ignored `.tools` directory. Outputs and SHA-256
 checksums are in `dist/`; intermediate files are in `work/`.
 `-SkipPublish` repackages existing `work/win-x64` and `work/linux-x64` payloads.
 Normal builds regenerate the SFX templates for each target and include .NET.
-Packages are unsigned. The standalone product version is `10.0.1`; each local
+Packages are unsigned. The standalone product version is `10.0.2`; each local
 build increments its revision in `.build/build-number.txt`. The script allocates
 one version by building the console, then reuses it for each published target.
-`-Version 10.0.1.N` assigns an explicit shared version; `-SkipPublish` checks the
+`-Version 10.0.2.N` assigns an explicit shared version; `-SkipPublish` checks the
 existing payload version. CI obtains a shared revision from its workflow run.
 MSI compares only the first three fields. Same-version upgrades are enabled so
 revisions can be replaced; MSI can also accept an older fourth-field revision.

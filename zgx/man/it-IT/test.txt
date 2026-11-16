@@ -4,6 +4,8 @@
 
 Controlla se i file di un archivio possono essere letti e se i controlli di integrità disponibili risultano corretti. È utile, per esempio, prima di conservare un backup o dopo aver scaricato un archivio.
 Il comando legge i dati senza salvarli come file estratti. Non modifica l'archivio e non chiede una cartella di destinazione. Anche un archivio vuoto valido supera il test.
+Per i pacchetti DEB controlla la struttura ar esterna e la lunghezza dei membri.
+Il formato ar non ha checksum dei membri; gli archivi control e data interni non sono verificati ricorsivamente.
 
 [Opzioni:
 ]Ppassword           Password dell'archivio. Puoi usare anche --password=valore.

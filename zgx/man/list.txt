@@ -9,6 +9,9 @@ Lists the files in an archive without extracting them or modifying the archive.
 ]--silent / --s: hides the banner; the list remains visible.
 
 Values come from metadata: -list does not verify the integrity of file data.
+Compressed TAR files show their contained files. BZ2, XZ and Z streams do not
+store a file name, so the archive name without its extension is used. A dash
+indicates a value unavailable from the reader.
 To verify the archive, use: zg -test archive
 
 The ZipBomb check can report a risk, but does not block a readable file list.

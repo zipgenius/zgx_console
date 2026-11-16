@@ -4,6 +4,7 @@ Requires beautifulsoup4, markdownify and playwright (with Chromium installed).
 """
 from pathlib import Path
 import asyncio
+import os
 from bs4 import BeautifulSoup
 from markdownify import markdownify
 from playwright.async_api import async_playwright
@@ -36,7 +37,8 @@ async def main():
     out = ROOT / 'output/pdf'
     out.mkdir(parents=True, exist_ok=True)
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch()
+        executable = os.environ.get('ZG_GUIDE_CHROMIUM')
+        browser = await pw.chromium.launch(executable_path=executable) if executable else await pw.chromium.launch()
         for lang, name in PAGES.items():
             source = ROOT / f'zgx/help/{lang}/index.html'
             soup = BeautifulSoup(source.read_text(encoding='utf-8'), 'html.parser')
@@ -48,8 +50,8 @@ async def main():
             import re
             body = re.sub(r'WIKI\\?_ANCHOR\\?_(.*?)\\?_END',
                           lambda m: '<a name="' + m[1].replace('\\', '') + '"></a>', body)
-            intro = ('Versione 1.0 - 12 novembre 2026' if lang == 'it'
-                     else 'Version 1.0 - 12 November 2026')
+            intro = ('Versione 10.0.2 - 16 novembre 2026' if lang == 'it'
+                     else 'Version 10.0.2 - 16 November 2026')
             download = f'https://github.com/zipgenius/zgx_console/wiki/downloads/ZipGenius-X-console-{lang}.pdf'
             wiki = f'# ZipGenius X console\n\n{intro}\n\n[Italiano](Guida-completa) | [English](Command-reference) | [PDF]({download})\n\n' + body
             (ROOT / f'docs/wiki/{name}.md').write_text(wiki, encoding='utf-8')

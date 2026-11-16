@@ -9,6 +9,9 @@ Elenca i file presenti nell'archivio, senza estrarli o modificare l'archivio.
 ]--silent / --s: nasconde il banner; l'elenco rimane visibile.
 
 I valori mostrati provengono dai metadati: -list non verifica l'integrità dei dati.
+Per TAR compressi vengono mostrati i file contenuti nel TAR. Per BZ2, XZ e Z,
+che non conservano un nome, viene usato il nome dell'archivio senza estensione.
+Un trattino indica un valore non disponibile dal lettore.
 Per verificare l'archivio usa: zg -test archivio
 
 Il controllo ZipBomb può segnalare un rischio, ma non blocca la consultazione

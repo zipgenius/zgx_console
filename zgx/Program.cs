@@ -3150,7 +3150,7 @@ namespace zg
 
         private static readonly HashSet<string> ConvertibleOutputExtensions = new(StringComparer.OrdinalIgnoreCase)
         {
-            ".zip", ".7z", ".cab", ".tar", ".tgz", ".tbz", ".tbz2", ".txz", ".sqx", ".bz2", ".z"
+            ".zip", ".7z", ".cab", ".wim", ".tar", ".tgz", ".tbz", ".tbz2", ".txz", ".sqx", ".bz2", ".z"
         };
 
         private static ExitCode ConvertArchive(string[] args)
@@ -3180,11 +3180,11 @@ namespace zg
             }
 
             if (OperatingSystem.IsLinux() &&
-                (GetArchiveExtension(destinationPath) is ".cab" or ".sqx" ||
+                (GetArchiveExtension(destinationPath) == ".sqx" ||
                  GetArchiveExtension(sourcePath) == ".sqx"))
             {
                 WriteLocalizedError("ConvertLinuxUnsupportedFormat",
-                    "SQX conversion and CAB creation are not supported on Linux.");
+                    "SQX conversion is not supported on Linux.");
                 return ExitCode.CompressionError;
             }
 
@@ -3215,7 +3215,7 @@ namespace zg
                 // randomly named temporary root into the converted archive.
                 addArguments.AddRange(Directory.EnumerateFileSystemEntries(stagingRoot).Select(path => "+" + path));
                 string? encryptionAlgorithm = args.Skip(3).FirstOrDefault(argument => Regex.IsMatch(argument, "^Q[123]$", RegexOptions.IgnoreCase));
-                if (password is not null)
+                if (password is not null && GetArchiveExtension(destinationPath) is not (".wim" or ".cab"))
                     addArguments.Add(password);
                 if (encryptionAlgorithm is not null)
                     addArguments.Add(encryptionAlgorithm);
@@ -3280,12 +3280,14 @@ namespace zg
 
                 string extension = GetArchiveExtension(options.ArchivePath);
                 if (extension == ".cab")
-                    return WriteCompatibleCab(options, selectedFiles);
+                    return OperatingSystem.IsLinux() ? WriteCompatibleGcab(options, selectedFiles) : WriteCompatibleCab(options, selectedFiles);
                 if (extension == ".sqx")
                     return WriteCompatibleSqx(options, selectedFiles);
+                if (extension == ".wim" && OperatingSystem.IsLinux())
+                    return WriteCompatibleWim(options, selectedFiles);
                 if (TarArchiveEditor.IsTarArchivePath(options.ArchivePath))
                     return WriteCompatibleTar(options, selectedFiles);
-                if (extension is ".bz2" or ".z")
+                if (extension is ".bz2" or ".z" || (extension == ".gz" && !IsWindows()))
                     return WriteCompatibleSingleStream(options, selectedFiles, extension);
                 if (IsZipFile(extension) && options.VolumeSize <= int.MaxValue)
                     return WriteCompatibleZip(options, selectedFiles);
@@ -3778,6 +3780,13 @@ namespace zg
                     TarArchiveEditor.WriteUnixCompressArchive(files[0], temporaryArchive);
                     progress?.Tick(100, ".Z stream completed.");
                 }
+                else if (extension == ".gz")
+                {
+                    using FileStream input = File.OpenRead(files[0]);
+                    using FileStream output = File.Create(temporaryArchive);
+                    using var gzip = new System.IO.Compression.GZipStream(output, System.IO.Compression.CompressionLevel.Optimal);
+                    CopyStreamWithAddProgress(input, gzip, progress, files[0]);
+                }
                 else
                 {
                     using FileStream input = File.OpenRead(files[0]);
@@ -3933,6 +3942,41 @@ namespace zg
             if (string.IsNullOrWhiteSpace(normalized) || normalized.Split(Path.DirectorySeparatorChar).Any(part => part == ".."))
                 throw new ArgumentException($"Invalid archive path: {entryName}");
             return normalized;
+        }
+
+        private static ExitCode WriteCompatibleWim(AddCommandOptions options, Dictionary<string, string> selectedFiles)
+        {
+            if (!string.IsNullOrEmpty(options.Password))
+                throw new ArgumentException("WIM creation does not support password protection.");
+            if (options.VolumeSize != 0)
+                throw new ArgumentException("WIM creation does not support split volumes.");
+            string? existing = File.Exists(options.ArchivePath) ? options.ArchivePath : null;
+            if (existing != null && options.Mode == 'A')
+            {
+                var paths = WimLibWriter.ExistingPaths(existing);
+                selectedFiles = selectedFiles.Where(pair => Directory.Exists(pair.Value) || !paths.Contains(pair.Key.TrimEnd('/')))
+                    .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
+                if (!selectedFiles.Values.Any(File.Exists)) return ExitCode.Success;
+            }
+            string stagingRoot = Path.Combine(TempPath, "zg-wim-" + Guid.NewGuid().ToString("N"));
+            string destinationDirectory = Path.GetDirectoryName(options.ArchivePath) ?? Directory.GetCurrentDirectory();
+            Directory.CreateDirectory(destinationDirectory);
+            string temporary = Path.Combine(destinationDirectory, ".zg-wim-" + Guid.NewGuid().ToString("N") + ".tmp");
+            try
+            {
+                Directory.CreateDirectory(stagingRoot);
+                using (var progress = CreateAddProgress(selectedFiles.Count, "Preparing WIM files..."))
+                    StageCompatibleArchiveFiles(options, selectedFiles, stagingRoot, progress);
+                WimLibWriter.Write(stagingRoot, temporary, existing, options.CompressionLevel);
+                File.Move(temporary, options.ArchivePath, true);
+                CompleteLegacyMoveAndAttributes(options, selectedFiles.Values);
+                return ExitCode.Success;
+            }
+            finally
+            {
+                if (File.Exists(temporary)) File.Delete(temporary);
+                DeleteExtractionStagingFolder(stagingRoot);
+            }
         }
 
         private static ExitCode WriteCompatibleSevenZip(AddCommandOptions options, Dictionary<string, string> selectedFiles, string extension)
@@ -5868,6 +5912,10 @@ namespace zg
             public ulong PackedSize { get; init; }
             public ulong Size { get; init; }
             public uint Crc32 { get; init; }
+            public long DataOffset { get; init; }
+            public bool HasPackedSize { get; init; } = true;
+            public bool HasSize { get; init; } = true;
+            public bool HasCrc { get; init; } = true;
         }
 
         public static ExitCode ExportArchiveList(string[] args)
@@ -5911,21 +5959,7 @@ namespace zg
 
             try
             {
-                var entries = new List<ArchiveListExportEntry>();
-                using (ArchiveFile archive = new ArchiveFile(archivePath, FileUtils.GetSevenZipLibs()))
-                {
-                    foreach (SevenZipExtractor.Entry entry in archive.Entries.Where(entry => !entry.IsFolder))
-                    {
-                        entries.Add(new ArchiveListExportEntry
-                        {
-                            Name = entry.FileName,
-                            LastWriteTime = entry.LastWriteTime,
-                            PackedSize = entry.PackedSize,
-                            Size = entry.Size,
-                            Crc32 = entry.CRC
-                        });
-                    }
-                }
+                var entries = ReadArchiveList(archivePath, out _);
 
                 if (entries.Count == 0)
                 {
@@ -5985,10 +6019,10 @@ namespace zg
                 {
                     EscapeCsv(entry.Name),
                     EscapeCsv(entry.LastWriteTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture)),
-                    entry.PackedSize.ToString(CultureInfo.InvariantCulture),
-                    entry.Size.ToString(CultureInfo.InvariantCulture),
-                    ratio.ToString("P2", CultureInfo.InvariantCulture),
-                    entry.Crc32.ToString("X8", CultureInfo.InvariantCulture)
+                    entry.HasPackedSize ? entry.PackedSize.ToString(CultureInfo.InvariantCulture) : "",
+                    entry.HasSize ? entry.Size.ToString(CultureInfo.InvariantCulture) : "",
+                    entry.HasPackedSize && entry.HasSize ? ratio.ToString("P2", CultureInfo.InvariantCulture) : "",
+                    entry.HasCrc ? entry.Crc32.ToString("X8", CultureInfo.InvariantCulture) : ""
                 }));
             }
         }
@@ -6001,9 +6035,9 @@ namespace zg
             {
                 writer.WriteLine("Name: " + entry.Name);
                 writer.WriteLine("Date/Time: " + entry.LastWriteTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture));
-                writer.WriteLine("Packed size: " + entry.PackedSize.ToString(CultureInfo.InvariantCulture));
-                writer.WriteLine("Size: " + entry.Size.ToString(CultureInfo.InvariantCulture));
-                writer.WriteLine("CRC-32: " + entry.Crc32.ToString("X8", CultureInfo.InvariantCulture));
+                writer.WriteLine("Packed size: " + (entry.HasPackedSize ? entry.PackedSize.ToString(CultureInfo.InvariantCulture) : "not available"));
+                writer.WriteLine("Size: " + (entry.HasSize ? entry.Size.ToString(CultureInfo.InvariantCulture) : "not available"));
+                writer.WriteLine("CRC-32: " + (entry.HasCrc ? entry.Crc32.ToString("X8", CultureInfo.InvariantCulture) : "not available"));
                 writer.WriteLine();
             }
         }
@@ -6015,7 +6049,7 @@ namespace zg
             foreach (ArchiveListExportEntry entry in entries)
             {
                 double ratio = GetExportCompressionRatio(entry);
-                writer.WriteLine("<tr><td>" + System.Net.WebUtility.HtmlEncode(entry.Name) + "</td><td>" + entry.LastWriteTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture) + "</td><td class=\"num\">" + entry.PackedSize.ToString("N0", CultureInfo.InvariantCulture) + "</td><td class=\"num\">" + entry.Size.ToString("N0", CultureInfo.InvariantCulture) + "</td><td class=\"num\">" + ratio.ToString("P2", CultureInfo.InvariantCulture) + "</td><td>" + entry.Crc32.ToString("X8", CultureInfo.InvariantCulture) + "</td></tr>");
+                writer.WriteLine("<tr><td>" + System.Net.WebUtility.HtmlEncode(entry.Name) + "</td><td>" + entry.LastWriteTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture) + "</td><td class=\"num\">" + (entry.HasPackedSize ? entry.PackedSize.ToString("N0", CultureInfo.InvariantCulture) : "not available") + "</td><td class=\"num\">" + (entry.HasSize ? entry.Size.ToString("N0", CultureInfo.InvariantCulture) : "not available") + "</td><td class=\"num\">" + (entry.HasPackedSize && entry.HasSize ? ratio.ToString("P2", CultureInfo.InvariantCulture) : "not available") + "</td><td>" + (entry.HasCrc ? entry.Crc32.ToString("X8", CultureInfo.InvariantCulture) : "not available") + "</td></tr>");
             }
             writer.WriteLine("</tbody></table></body></html>");
         }
@@ -6031,9 +6065,9 @@ namespace zg
                 writer.WriteStartElement("file");
                 writer.WriteElementString("name", entry.Name);
                 writer.WriteElementString("dateTime", entry.LastWriteTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture));
-                writer.WriteElementString("packedSize", entry.PackedSize.ToString(CultureInfo.InvariantCulture));
-                writer.WriteElementString("size", entry.Size.ToString(CultureInfo.InvariantCulture));
-                writer.WriteElementString("crc32", entry.Crc32.ToString("X8", CultureInfo.InvariantCulture));
+                writer.WriteElementString("packedSize", entry.HasPackedSize ? entry.PackedSize.ToString(CultureInfo.InvariantCulture) : "");
+                writer.WriteElementString("size", entry.HasSize ? entry.Size.ToString(CultureInfo.InvariantCulture) : "");
+                writer.WriteElementString("crc32", entry.HasCrc ? entry.Crc32.ToString("X8", CultureInfo.InvariantCulture) : "");
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();
@@ -6053,46 +6087,119 @@ namespace zg
 
         private static List<ArchiveListExportEntry> ReadArchiveList(string archivePath, out int entryCount)
         {
+            if (OperatingSystem.IsLinux() && Path.GetExtension(archivePath).Equals(".cab", StringComparison.OrdinalIgnoreCase))
+            {
+                var cabEntries = GCabArchive.List(archivePath);
+                entryCount = cabEntries.Count;
+                return cabEntries.Select(entry => new ArchiveListExportEntry
+                {
+                    Name = entry.Name, Size = (ulong)entry.Size, LastWriteTime = entry.Modified,
+                    HasPackedSize = false, HasCrc = false
+                }).ToList();
+            }
+            if (OperatingSystem.IsLinux() && Path.GetExtension(archivePath).Equals(".wim", StringComparison.OrdinalIgnoreCase))
+            {
+                var wimEntries = WimLibWriter.Entries(archivePath);
+                entryCount = wimEntries.Count;
+                return wimEntries.Where(entry => !entry.IsDirectory).Select(entry => new ArchiveListExportEntry
+                {
+                    Name = entry.Name, HasSize = false, HasPackedSize = false, HasCrc = false
+                }).ToList();
+            }
+            // Debian packages are ar containers. Read their outer members directly:
+            // some 7-Zip handlers omit debian-binary and managed readers reject ar.
+            if (Path.GetExtension(archivePath).Equals(".deb", StringComparison.OrdinalIgnoreCase))
+            {
+                using var input = File.OpenRead(archivePath);
+                byte[] signature = new byte[8];
+                if (input.Read(signature, 0, signature.Length) == signature.Length &&
+                    System.Text.Encoding.ASCII.GetString(signature) == "!<arch>\n")
+                    return ReadArList(input, out entryCount);
+            }
+            if (IsStandaloneCompressedStream(archivePath))
+            {
+                ValidateSimpleStreamHeader(archivePath);
+                entryCount = 1;
+                return new List<ArchiveListExportEntry> { new() { Name = Path.GetFileNameWithoutExtension(archivePath), HasSize = false, HasPackedSize = false, HasCrc = false } };
+            }
             var entries = new List<ArchiveListExportEntry>();
             // The native SevenZip wrappers depend on Windows APIs. Use the managed
             // reader on other platforms so listing does not require a native handle.
-            if (!OperatingSystem.IsWindows())
+            if (!OperatingSystem.IsWindows() || TarArchiveEditor.IsTarArchivePath(archivePath) || ArchiveFactory.IsArchive(archivePath, out _))
             {
-                using IArchive archive = ArchiveFactory.OpenArchive(archivePath);
+                using IArchive archive = TarArchiveEditor.IsTarArchivePath(archivePath)
+                    ? TarArchiveEditor.OpenTarArchive(archivePath) ?? throw new InvalidDataException("Cannot read TAR archive.")
+                    : ArchiveFactory.OpenArchive(archivePath);
                 var archiveEntries = archive.Entries.ToList();
                 entryCount = archiveEntries.Count;
                 foreach (var entry in archiveEntries.Where(entry => !entry.IsDirectory))
                 {
                     entries.Add(new ArchiveListExportEntry
                     {
-                        Name = entry.Key ?? string.Empty,
+                        Name = string.IsNullOrEmpty(entry.Key) ? Path.GetFileNameWithoutExtension(archivePath) : entry.Key,
                         LastWriteTime = entry.LastModifiedTime ?? DateTime.MinValue,
                         PackedSize = (ulong)Math.Max(0, entry.CompressedSize),
                         Size = (ulong)Math.Max(0, entry.Size),
-                        Crc32 = unchecked((uint)entry.Crc)
+                        Crc32 = unchecked((uint)entry.Crc),
+                        HasCrc = archive.Type is SharpCompress.Common.ArchiveType.Zip or SharpCompress.Common.ArchiveType.Rar or SharpCompress.Common.ArchiveType.SevenZip or SharpCompress.Common.ArchiveType.GZip
                     });
                 }
             }
             else
             {
-                using var archive = new ArchiveFile(archivePath, FileUtils.GetSevenZipLibs());
-                entryCount = archive.Entries.Count;
-                foreach (var entry in archive.Entries.Where(entry => !entry.IsFolder))
-                {
-                    entries.Add(new ArchiveListExportEntry
-                    {
-                        Name = entry.FileName,
-                        LastWriteTime = entry.LastWriteTime,
-                        PackedSize = entry.PackedSize,
-                        Size = entry.Size,
-                        Crc32 = entry.CRC
-                    });
-                }
+                    SevenZip.SevenZipBase.SetLibraryPath(FileUtils.GetSevenZipLibs());
+                    using var archive = new SevenZip.SevenZipExtractor(archivePath);
+                    entryCount = archive.ArchiveFileData.Count;
+                    foreach (var entry in archive.ArchiveFileData.Where(entry => !entry.IsDirectory))
+                        entries.Add(new ArchiveListExportEntry
+                        {
+                            Name = entry.FileName,
+                            LastWriteTime = entry.LastWriteTime,
+                            Size = entry.Size,
+                            Crc32 = entry.Crc,
+                            HasPackedSize = false,
+                            HasCrc = !Path.GetExtension(archivePath).Equals(".cab", StringComparison.OrdinalIgnoreCase)
+                        });
             }
             return entries;
         }
 
-        private static void WriteVerboseArchiveTable(IEnumerable<ArchiveListExportEntry> entries, int terminalWidth)
+        private static List<ArchiveListExportEntry> ReadArList(Stream input, out int entryCount)
+        {
+            var entries = new List<ArchiveListExportEntry>();
+            byte[] header = new byte[60];
+            while (input.Position < input.Length)
+            {
+                input.ReadExactly(header);
+                if (header[58] != '`' || header[59] != '\n')
+                    throw new InvalidDataException("Invalid ar member header.");
+                string name = System.Text.Encoding.ASCII.GetString(header, 0, 16).Trim();
+                string sizeText = System.Text.Encoding.ASCII.GetString(header, 48, 10).Trim();
+                if (!long.TryParse(sizeText, System.Globalization.NumberStyles.None,
+                    System.Globalization.CultureInfo.InvariantCulture, out long size) || size < 0 || size > input.Length - input.Position)
+                    throw new InvalidDataException("Invalid ar member size.");
+                if (name.StartsWith("#1/", StringComparison.Ordinal) || name.StartsWith("/", StringComparison.Ordinal))
+                    throw new NotSupportedException("Extended ar member names are not supported.");
+                name = name.TrimEnd('/');
+                string timeText = System.Text.Encoding.ASCII.GetString(header, 16, 12).Trim();
+                DateTime modified = DateTime.MinValue;
+                if (long.TryParse(timeText, out long timestamp))
+                {
+                    try { modified = DateTimeOffset.FromUnixTimeSeconds(timestamp).LocalDateTime; }
+                    catch (ArgumentOutOfRangeException) { }
+                }
+                entries.Add(new ArchiveListExportEntry { Name = name, Size = (ulong)size, PackedSize = (ulong)size, LastWriteTime = modified, DataOffset = input.Position, HasCrc = false });
+                input.Position += size;
+                if ((size & 1) != 0)
+                {
+                    if (input.ReadByte() != '\n') throw new InvalidDataException("Invalid ar member padding.");
+                }
+            }
+            entryCount = entries.Count;
+            return entries;
+        }
+
+        private static void WriteVerboseArchiveTable(IEnumerable<ArchiveListExportEntry> entries, int terminalWidth, string archivePath)
         {
             // Keep each rendered line narrower than the terminal to avoid auto-wrap.
             int lineWidth = Math.Max(32, terminalWidth - 1);
@@ -6116,11 +6223,12 @@ namespace zg
             Console.WriteLine(new string('-', Math.Min(lineWidth, Header.Length)));
             foreach (ArchiveListExportEntry entry in entries)
             {
-                string fileName = Path.GetFileName(entry.Name.TrimEnd('/', '\\'));
-                string directory = entry.Name[..Math.Max(0, entry.Name.Length - fileName.Length)].TrimEnd('/', '\\');
+                string entryName = string.IsNullOrEmpty(entry.Name) ? Path.GetFileNameWithoutExtension(archivePath) : entry.Name;
+                string fileName = Path.GetFileName(entryName.TrimEnd('/', '\\'));
+                string directory = entryName[..Math.Max(0, entryName.Length - fileName.Length)].TrimEnd('/', '\\');
                 string name = Clip(fileName, nameWidth);
                 double compressionRatio = GetExportCompressionRatio(entry);
-                string details = string.Join(" | ", name, Right(entry.PackedSize.ToString("N0"), packedWidth), Right(entry.Size.ToString("N0"), sizeWidth), Right(compressionRatio.ToString("P1"), ratioWidth), Right(entry.Crc32.ToString("X8"), crcWidth));
+                string details = string.Join(" | ", name, Right(entry.HasPackedSize ? entry.PackedSize.ToString("N0") : "-", packedWidth), Right(entry.HasSize ? entry.Size.ToString("N0") : "-", sizeWidth), Right(entry.HasPackedSize && entry.HasSize ? compressionRatio.ToString("P1") : "-", ratioWidth), Right(entry.HasCrc ? entry.Crc32.ToString("X8") : "-", crcWidth));
                 Console.WriteLine(details);
 
                 if (!string.IsNullOrEmpty(directory))
@@ -6164,7 +6272,10 @@ namespace zg
 
                     Console.WriteLine(new string('─', 80));
                     Console.WriteLine(GetLocalizedString("ListStats", "Files: {0:N0}    Folders: {1:N0}    Archive size: {2:N0} bytes ({3})", entries.Count, entryCount - entries.Count, info.Length, FormatSizeEx(info.Length, true)));
-                    Console.WriteLine(GetLocalizedString("ListSizes", "Unpacked: {0:N0} bytes    Packed: {1:N0} bytes    Compression: {2:P1}", totalSize, totalPackedSize, totalRatio));
+                    if (entries.All(entry => entry.HasSize && entry.HasPackedSize))
+                        Console.WriteLine(GetLocalizedString("ListSizes", "Unpacked: {0:N0} bytes    Packed: {1:N0} bytes    Compression: {2:P1}", totalSize, totalPackedSize, totalRatio));
+                    else
+                        Console.WriteLine("Entry sizes and compression ratio: not available from this reader.");
                     Console.WriteLine(GetLocalizedString("ListModified", "Modified: {0:yyyy-MM-dd HH:mm:ss}", info.LastWriteTime));
                     Console.WriteLine();
                 }
@@ -6179,11 +6290,11 @@ namespace zg
                     {
                         terminalWidth = 100;
                     }
-                    WriteVerboseArchiveTable(entries, terminalWidth);
+                    WriteVerboseArchiveTable(entries, terminalWidth, args[1]);
                 }
                 else
                     foreach (ArchiveListExportEntry entry in entries)
-                        Console.WriteLine(entry.Name);
+                        Console.WriteLine(string.IsNullOrEmpty(entry.Name) ? Path.GetFileNameWithoutExtension(args[1]) : entry.Name);
             }
             catch (Exception ex)
             {
@@ -7719,6 +7830,15 @@ namespace zg
                 if (Path.GetExtension(options.ArchivePath).Equals(".sqx", StringComparison.OrdinalIgnoreCase))
                     return ExtractSqxFilesWithPasswordRetries(options);
 
+                if (OperatingSystem.IsLinux() && Path.GetExtension(options.ArchivePath).Equals(".wim", StringComparison.OrdinalIgnoreCase))
+                    return ExtractWimFiles(options);
+
+                if (OperatingSystem.IsLinux() && Path.GetExtension(options.ArchivePath).Equals(".cab", StringComparison.OrdinalIgnoreCase))
+                    return ExtractGcabFiles(options);
+
+                if (Path.GetExtension(options.ArchivePath).Equals(".deb", StringComparison.OrdinalIgnoreCase) || IsStandaloneCompressedStream(options.ArchivePath))
+                    return ExtractSimpleArchive(options);
+
                 return IsWindows() && !TarArchiveEditor.IsTarArchivePath(options.ArchivePath)
                     ? ExtractSevenZipFilesWithPasswordRetries(options)
                     : ExtractManagedFilesWithPasswordRetries(options);
@@ -7765,7 +7885,7 @@ namespace zg
                             ?? throw new InvalidDataException(GetLocalizedString("TarUnreadable", "The TAR archive cannot be read."))
                         : ArchiveFactory.OpenArchive(options.ArchivePath, new ReaderOptions { Password = options.Password });
                     var entries = archive.Entries.Where(entry =>
-                        ShouldExtractStagedFile(entry.Key ?? string.Empty,
+                        ShouldExtractStagedFile(string.IsNullOrEmpty(entry.Key) ? Path.GetFileNameWithoutExtension(options.ArchivePath) : entry.Key,
                             entry.IsDirectory ? FileAttributes.Directory : FileAttributes.Normal, options) &&
                         (!entry.IsDirectory || options.Recursive)).ToList();
                     if (entries.Count == 0)
@@ -7782,7 +7902,7 @@ namespace zg
                         for (int index = 0; index < entries.Count; index++)
                         {
                             var entry = entries[index];
-                            string name = entry.Key ?? string.Empty;
+                            string name = string.IsNullOrEmpty(entry.Key) ? Path.GetFileNameWithoutExtension(options.ArchivePath) : entry.Key;
                             string path = GetSafeExtractionPath(stagingRoot, GetExtractedEntryPath(name, options.RestorePaths));
                             if (entry.IsDirectory)
                             {

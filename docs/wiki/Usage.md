@@ -95,7 +95,7 @@ zg -info machine.vhdx --verbose --silent > disk-report.txt
 zg -convert documents.zip documents.tar.gz C5
 ```
 
-Conversion extracts into a private temporary folder and recreates the destination; allow enough disk space. The source stays unchanged. Existing destinations are refused unless `--overwrite` is supplied. Destination format support depends on the platform: Linux 7Z/TAR.XZ writing requires libarchive; SQX and CAB creation require Windows components. See [platform support](Platform-support).
+Conversion extracts into a private temporary folder and recreates the destination; allow enough disk space. The source stays unchanged. Existing destinations are refused unless `--overwrite` is supplied. On Linux, 7Z/TAR.XZ writing requires libarchive, CAB requires libgcab and WIM requires wimlib. SQX requires Windows components. See [platform support](Platform-support).
 
 The Windows build checked for this guide returned code `99` when converting a ZIP containing directory entries to 7Z. Use the TAR.GZ example above for that case; 7Z conversion is not claimed as verified on Windows here.
 

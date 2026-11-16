@@ -79,7 +79,7 @@ Priority: optional
 Architecture: amd64
 Maintainer: The ZipGenius Team <support@zipgenius.com>
 Installed-Size: {size}
-Depends: libc6 (>= 2.34), libgcc-s1, libstdc++6, libicu78 | libicu76 | libicu74 | libicu72, libssl3t64 | libssl3, zlib1g, libarchive13t64 | libarchive13
+Depends: libc6 (>= 2.34), libgcc-s1, libstdc++6, libicu78 | libicu76 | libicu74 | libicu72, libssl3t64 | libssl3, zlib1g, libarchive13t64 | libarchive13, libwim15t64 | libwim15, libgcab-1.0-0 (>= 1.4)
 Description: ZipGenius X Console
  ZipGenius X Console lets you create and extract archives, check their integrity, view detailed information about archives and disk images, and create self-extracting packages. Built-in ZipBomb protection is always active.
 """)
@@ -102,7 +102,7 @@ BuildArch: x86_64
 AutoReqProv: no
 Provides: zgshell
 Obsoletes: zgshell
-Requires: glibc >= 2.34, libgcc, libstdc++, libicu, openssl-libs, zlib, libarchive
+Requires: glibc >= 2.34, libgcc, libstdc++, libicu, openssl-libs, zlib, libarchive, wimlib, libgcab1 >= 1.4
 %global debug_package %{{nil}}
 %global __os_install_post %{{nil}}
 

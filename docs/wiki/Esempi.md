@@ -90,7 +90,7 @@ Con `-hash`, `--silent` stampa soltanto gli hash; con `-info` conserva il rappor
 zg -convert documents.zip documents.tar.gz C5
 ```
 
-La conversione estrae in una cartella temporanea privata e ricrea il risultato: serve spazio sufficiente. La sorgente rimane invariata. Una destinazione già esistente viene rifiutata salvo uso di `--overwrite`. Il supporto varia per piattaforma: su Linux la scrittura 7Z/TAR.XZ richiede libarchive; SQX e creazione CAB richiedono componenti Windows. Consulta i [limiti](Platform-support#italiano).
+La conversione estrae in una cartella temporanea privata e ricrea il risultato: serve spazio sufficiente. La sorgente rimane invariata. Una destinazione già esistente viene rifiutata salvo uso di `--overwrite`. Su Linux la scrittura 7Z/TAR.XZ richiede libarchive, CAB richiede libgcab e WIM richiede wimlib. SQX richiede componenti Windows. Consulta i [limiti](Platform-support#italiano).
 
 La build Windows controllata per questa guida ha restituito `99` convertendo in 7Z uno ZIP con voci di cartella. Per questo caso usa l'esempio TAR.GZ sopra; la conversione 7Z su Windows non viene dichiarata verificata qui.
 
