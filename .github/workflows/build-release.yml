@@ -5,6 +5,7 @@ on:
     tags: ['v*']
   pull_request:
   workflow_dispatch:
+    # Select an existing v* tag in "Use workflow from" to publish a release.
 permissions:
   contents: read
 jobs:
@@ -115,7 +116,7 @@ jobs:
     with:
       build_number: ${{ fromJSON(needs.version.outputs.build) }}
   release:
-    if: github.event_name == 'push' && github.ref_type == 'tag'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
     needs: [version, packages, linux-extra]
     runs-on: ubuntu-24.04
     permissions:
@@ -137,4 +138,8 @@ jobs:
           cd dist
           rm -f SHA256SUMS
           sha256sum * > SHA256SUMS
-          gh release create "$RELEASE_TAG" ./* --verify-tag --title "ZipGenius X Console $RELEASE_VERSION" --notes-file ../docs/RELEASE_NOTES.md --generate-notes
+          if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" ./* --clobber
+          else
+            gh release create "$RELEASE_TAG" ./* --verify-tag --title "ZipGenius X Console $RELEASE_VERSION" --notes-file ../docs/RELEASE_NOTES.md --generate-notes
+          fi
