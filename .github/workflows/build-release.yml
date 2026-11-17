@@ -5,7 +5,12 @@ on:
     tags: ['v*']
   pull_request:
   workflow_dispatch:
-    # Select an existing v* tag in "Use workflow from" to publish a release.
+    inputs:
+      release_tag:
+        description: 'Existing release tag (for example v10.0.2); leave empty to build only on main'
+        type: string
+        required: false
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -20,8 +25,8 @@ jobs:
         env:
           RUN_NUMBER: ${{ github.run_number }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
-          REF_TYPE: ${{ github.ref_type }}
-          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ inputs.release_tag && 'tag' || github.ref_type }}
+          REF_NAME: ${{ inputs.release_tag || github.ref_name }}
         run: |
           build=$((RUN_NUMBER * 10 + RUN_ATTEMPT))
           test "$RUN_ATTEMPT" -le 9
@@ -50,6 +55,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
@@ -115,14 +122,17 @@ jobs:
     uses: ./.github/workflows/linux-extra.yml
     with:
       build_number: ${{ fromJSON(needs.version.outputs.build) }}
+      source_ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
   release:
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
+    if: (github.event_name == 'push' && github.ref_type == 'tag') || (github.event_name == 'workflow_dispatch' && (inputs.release_tag != '' || github.ref_type == 'tag'))
     needs: [version, packages, linux-extra]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
       - uses: actions/download-artifact@v4
         with:
           pattern: packages-*
@@ -132,7 +142,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
           RELEASE_VERSION: ${{ needs.version.outputs.version }}
         run: |
           cd dist
